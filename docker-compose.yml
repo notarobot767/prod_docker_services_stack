@@ -521,6 +521,31 @@ services:
       resources:
         limits:
           memory: 8g
+  plexstats:
+    depends_on:
+      - plex
+      - swag
+    container_name: prod_plexstats
+    hostname: plexstats
+    networks:
+      - plex
+    image: ghcr.io/linuxserver/tautulli:latest
+      #https://hub.docker.com/r/linuxserver/tautulli
+    environment:
+      - TZ=$TZ
+      - PUID=$ID
+      - PGID=$ID
+    ports:
+      - $SRV_SWAG_PROXY:$PLEXSTATS_H_PORT:8181
+    volumes:
+      - $PLEXSTATS_CONFIG_DIR:/config
+      - $PLEX_CONFIG_DIR:/plex:ro
+        #to read plex logs
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 512m
 networks:
   rproxy:
     ipam:
