@@ -460,7 +460,72 @@ services:
       resources:
         limits:
           memory: 512m
+  swag:
+    container_name: prod_swag
+    hostname: swag
+    networks:
+      - swag
+    image: ghcr.io/linuxserver/swag:latest
+      #https://hub.docker.com/r/linuxserver/swag
+    environment:
+      - TZ=$TZ
+      - PUID=$ID
+      - PGID=$ID
+      - URL=$SWAG_URL
+      - SUBDOMAINS=$SWAG_SUBDOMAINS
+      - VALIDATION=http
+      - EMAIL=$EMAIL
+      - ONLY_SUBDOMAINS=false
+      - EXTRA_DOMAINS=$SWAG_EXTRA_DOMAINS
+      - STAGING=false
+    ports:
+      - $SRV_IP_1:80:80
+      - $SRV_IPV6_1:80:80
+      - $SRV_IPV6_WAN:80:80
+      - $SRV_IP_1:443:443
+      - $SRV_IPV6_1:443:443
+      - $SRV_IPV6_WAN:443:443
+    volumes:
+      - $SWAG_CONFIG_DIR:/config
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 4g
+  plex:
+    depends_on:
+      - swag
+    container_name: prod_plex
+    hostname: plex
+    networks:
+      - plex
+    devices:
+      - $GPU_DEV:$GPU_DEV
+    image: ghcr.io/linuxserver/plex:latest
+      #https://hub.docker.com/r/linuxserver/plex
+    networks:
+      - plex
+    environment:
+      - VERSION=$PLEX_VERSION
+      - TZ=$TZ
+      - PUID=$ID
+      - PGID=$ID
+    ports:
+      - $SRV_SWAG_PROXY:$PLEX_H_PORT:32400
+    volumes:
+      - $PLEX_CONFIG_DIR:/config
+      - $PLEX_MEDIA_DIR:/media
+      - $RAMDISK:/transcode
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 8g
 networks:
+  rproxy:
+    ipam:
+      config:
+        - subnet: $PROXY_NETWORK
   ns1:
     ipam:
       config:
@@ -509,7 +574,11 @@ networks:
     ipam:
       config:
         - subnet: $DEVBOX_NETWORK
-  rproxy:
+  swag:
     ipam:
       config:
-        - subnet: $PROXY_NETWORK
+        - subnet: $SWAG_NETWORK
+  plex:
+    ipam:
+      config:
+        - subnet: $PLEX_NETWORK
