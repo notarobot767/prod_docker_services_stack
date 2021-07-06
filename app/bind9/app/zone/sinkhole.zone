@@ -1,0 +1,13 @@
+$TTL 3600
+@               IN      SOA     localhost. root.localhost. (
+    20210107;         #Serial
+    1h;               #Refresh                #default value in minutes
+    120;              #Retry                  #default value in seconds
+    1h;               #Expire                 #default value in minutes
+    1h);              #Negative caching TTL   #default value in minutes
+
+                IN      NS      localhost.
+
+@               IN      A       0.0.0.0
+@               IN      AAAA    ::
+*               IN      CNAME   @

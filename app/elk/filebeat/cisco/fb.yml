@@ -1,0 +1,14 @@
+filebeat.modules:
+- module: cisco
+  ios:
+    enabled: true
+    var.syslog_host: 0.0.0.0
+    var.syslog_port: 5101
+
+setup.ilm.rollover_alias: cisco-syslog-%{[agent.version]}
+#change default index 'filebeat-%{[agent.version]}'
+#https://www.elastic.co/guide/en/beats/filebeat/current/ilm.html
+
+output.elasticsearch:
+  hosts: ["elastic:9200"]
+  #see logstash pipline/main.conf

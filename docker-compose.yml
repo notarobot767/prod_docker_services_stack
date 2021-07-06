@@ -1,0 +1,515 @@
+version: "3.9"
+services:
+  code-server:
+    container_name: prod_code-server
+    hostname: code-server
+    networks:
+      - code-server
+    image: ghcr.io/linuxserver/code-server:latest
+      #https://hub.docker.com/r/linuxserver/code-server
+    environment:
+      - TZ=$TZ
+      - PUID=$ID
+      - PGID=$ID
+    ports:
+      - $SRV_IP_1:$CS_H_PORT:8443
+    volumes:
+       - $CS_CONFIG_DIR:/config
+       - $ROOT_DIR:/app
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+  ns1:
+    container_name: prod_ns1
+    hostname: ns1
+    networks:
+      - ns1
+    build:
+      context: ./app/bind9
+    volumes:
+      - $DNS_LOG_DIR:/app/log
+    ports:
+      - $SRV_IP_1:53:53
+      - $SRV_IP_1:53:53/udp
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 2g
+  ns2:
+    container_name: prod_ns2
+    hostname: ns2
+    networks:
+      - ns2
+    build:
+      context: ./app/bind9
+    volumes:
+      - $DNS_LOG_DIR:/app/log
+    ports:
+      - $SRV_IP_2:53:53
+      - $SRV_IP_2:53:53/udp
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 2g
+  tftp:
+    container_name: prod_tftp
+    hostname: tftp
+    networks:
+      - tftp
+    build:
+      context: ./app/tftp
+    volumes:
+      - $TFTP_LOG_DIR:/var/log
+      - $TFTP_DATA_DIR:/srv/tftp
+    ports:
+      - $SRV_IP_1:69:69/udp
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 512m
+  ntp-a:
+    container_name: prod_ntp-a
+    hostname: ntp-a
+    networks:
+      - ntp-a
+    build:
+      context: ./app/ntp
+    ports:
+      - $SRV_IP_1:123:123/udp
+    cap_add:
+      - SYS_TIME
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 256m
+  ntp-b:
+    container_name: prod_ntp-b
+    hostname: ntp-b
+    networks:
+      - ntp-b
+    build:
+      context: ./app/ntp
+    ports:
+      - $SRV_IP_2:123:123/udp
+    cap_add:
+      - SYS_TIME
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 256m
+  elastic:
+    container_name: prod_elastic
+    hostname: elastic
+    networks:
+      - elk
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.2
+      #https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms4g -Xmx4g"
+        #set no more than half of allocated memory
+        #https://www.elastic.co/guide/en/elasticsearch/reference/current/advanced-configuration.html#set-jvm-options
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - $ELASTIC_DATA_DIR:/usr/share/elasticsearch/data
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 8g
+  logstash:
+    depends_on:
+      - elastic
+    container_name: prod_logstash
+    hostname: logstash
+    networks:
+      - elk
+    build:
+      context: ./app/elk/logstash
+    volumes:
+      - ${LOGSTASH_DATA_DIR}:/usr/share/logstash/data
+    #ports:
+    #  - $SRV_IP_1:$LOGSTASH_H_PORT:$LOGSTASH_C_PORT/udp
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 3g
+  kibana:
+    depends_on:
+      - elastic
+      - rproxy
+    container_name: prod_kibana
+    hostname: kibana
+    networks:
+      - elk
+    build:
+      context: ./app/elk/kibana
+    ports:
+      - $SRV_PROXY:$KIBANA_H_PORT:5601
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+  fb_tftp:
+    depends_on:
+      - logstash
+    container_name: prod_fb_tftp
+    hostname: fb_tftp
+    networks:
+      - elk
+    build:
+      context: ./app/elk/filebeat/tftp
+      #may have to restrict fb.yml to read only on host
+    volumes:
+      - $FB_TFTP_DATA_DIR:/usr/share/filebeat/data
+      - $TFTP_LOG_DIR:/app/log:ro
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 256m
+  fb_dns:
+    depends_on:
+      - logstash
+    container_name: prod_fb_dns
+    hostname: fb_dns
+    networks:
+      - elk
+    build:
+      context: ./app/elk/filebeat/dns
+      #may have to restrict fb.yml to read only on host
+    volumes:
+      - $FB_DNS_DATA_DIR:/usr/share/filebeat/data
+      - $DNS_LOG_DIR:/app/log:ro
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 256m
+  fb_freeradius:
+    depends_on:
+      - logstash
+    container_name: prod_fb_freeradius
+    hostname: fb_freeradius
+    networks:
+      - elk
+    build:
+      context: ./app/elk/filebeat/freeradius
+      #may have to restrict fb.yml to read only on host
+    volumes:
+      - $FB_FREERADIUS_DATA_DIR:/usr/share/filebeat/data
+      - $RAD_LOG_DIR:/app/log:ro
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 256m
+  fb_netflow:
+    depends_on:
+      - elastic
+    container_name: prod_fb_netflow
+    hostname: fb_dns
+    networks:
+      - elk
+    build:
+      context: ./app/elk/filebeat/netflow
+      #may have to restrict fb.yml to read only on host
+    volumes:
+      - $FB_NETFLOW_DATA_DIR:/usr/share/filebeat/data
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 256m
+  fb_cisco:
+    depends_on:
+      - elastic
+    container_name: prod_fb_cisco
+    hostname: fb_cisco
+    networks:
+      - elk
+    build:
+      context: ./app/elk/filebeat/netflow
+      #may have to restrict fb.yml to read only on host
+    volumes:
+      - $FB_CISCO_DATA_DIR:/usr/share/filebeat/data
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 256m
+  fb_panos:
+    depends_on:
+      - elastic
+    container_name: prod_fb_panos
+    hostname: fb_panos
+    networks:
+      - elk
+    build:
+      context: ./app/elk/filebeat/panos
+      #may have to restrict fb.yml to read only on host
+    volumes:
+      - $FB_PANOS_DATA_DIR:/usr/share/filebeat/data
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 256m
+  fb_nginx:
+    depends_on:
+      - elastic
+    container_name: prod_fb_nginx
+    hostname: fb_nginx
+    networks:
+      - elk
+    build:
+      context: ./app/elk/filebeat/nginx
+      #may have to restrict fb.yml to read only on host
+    volumes:
+      - $FB_NGINX_DATA_DIR:/usr/share/filebeat/data
+      - $RPROXY_LOG_DIR:/app/log:ro
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 256m
+  radius_db:
+    container_name: prod_radius_db
+    hostname: radius_db
+    networks:
+      - freeradius
+    build:
+      context: ./app/freeradius/radius_db
+    environment:
+      MYSQL_ROOT_PASSWORD: $RADIUS_SQL_ROOT_PW
+      #change this before deployment
+      #also change default pws in
+        #./app/radius_db/docker-entrypoint-initdb.d/01_create_db_add_user.sql
+        #./app/daloradius/daloradius.conf.php
+    volumes:
+      - $RADIUS_DB_DIR:/var/lib/mysql
+    deploy:
+      resources:
+        limits:
+          memory: 256m
+  radius_srv:
+    depends_on:
+      - radius_db
+    container_name: prod_radius_srv
+    hostname: radius_srv
+    networks:
+      - freeradius
+    build:
+      context: ./app/freeradius/radius_srv
+    ports:
+      - $SRV_IP_1:1812-1813:1812-1813/udp
+    volumes:
+      - $RAD_LOG_DIR:/var/log/freeradius
+    #command: ["freeradius", "-X"]
+    #use to troubleshoot
+    deploy:
+      resources:
+        limits:
+          memory: 256m
+  daloradius:
+    depends_on:
+      - radius_db
+      - rproxy
+    container_name: prod_daloradius
+    hostname: daloradius
+    networks:
+      - freeradius
+    build:
+      context: ./app/freeradius/daloradius
+    ports:
+      - $SRV_PROXY:$DALORADIUS_H_PORT:80
+    volumes:
+      - $RAD_LOG_DIR:/var/log/freeradius:ro
+      #chmod +r /disk2/freeradius_srv/radius.log
+      #run on host machine
+      #may be necessary to ensure daloradius container has read rights to log file
+    deploy:
+      resources:
+        limits:
+          memory: 256m
+  nagios:
+    depends_on:
+      - rproxy
+    container_name: prod_nagios
+    hostname: nagios
+    networks:
+      - nagios
+    build:
+      context: ./app/nagios
+    environment:
+      - NAGIOSADMIN=cisco
+    ports:
+      - $SRV_PROXY:$NAGIOS_H_PORT:80
+    volumes:
+      - $NAGIOS_TMP_DIR:/app/tmp
+        #for easily writing data back to host
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+  www:
+    depends_on:
+      - rproxy
+    container_name: prod_www
+    hostname: www
+    networks:
+      - www
+    build:
+      context: ./app/www
+    ports:
+      - $SRV_PROXY:$WWW_H_PORT:80
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 512m
+  rproxy:
+    container_name: prod_rproxy
+    hostname: rproxy
+    networks:
+      - rproxy
+    build:
+      context: ./app/rproxy
+    ports:
+      - $SRV_IP_1:80:80
+    volumes:
+      - $RPROXY_LOG_DIR:/var/log/nginx
+      - $TFTP_DATA_DIR:/app/tftp:ro
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+  rocket_db:
+    container_name: prod_rocket_db
+    hostname: rocket_db
+    networks:
+      - rocket
+    image: mongo:4.0
+    restart: unless-stopped
+    command: mongod --smallfiles --oplogSize 128 --replSet rs0
+    labels:
+      - "traefik.enable=false"
+    volumes:
+      - $ROCKET_DB_DIR:/data/db
+      #datastore
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+  #run once and then comment it out to avoid accidently deleting data 
+  rocket-mongo-init-replica:
+    image: mongo:4.0
+    networks:
+      - rocket
+    command: 'mongo rocket_db/rocketchat --eval "rs.initiate({ _id: ''rs0'', members: [ { _id: 0, host: ''localhost:27017'' } ]})"'
+    depends_on:
+      - rocket_db
+  rocket_chat:
+    depends_on:
+      - rocket_db
+    container_name: prod_rocket_chat
+    hostname: rocket_chat
+    networks:
+      - rocket
+    image: rocketchat/rocket.chat:latest
+    labels:
+      - "traefik.backend=rocketchat"
+      - "traefik.frontend.rule=Host: $ROCKET_ROOT_URL"
+    restart: unless-stopped
+    ports:
+      - $SRV_PROXY:$ROCKET_H_PORT:3000
+    environment:
+      - PORT=3000
+      - ROOT_URL="http://$ROCKET_ROOT_URL"
+      - MONGO_OPLOG_URL=mongodb://rocket_db:27017/local
+      - MONGO_URL=mongodb://rocket_db:27017/rocketchat
+    deploy:
+      resources:
+        limits:
+          memory: 2g
+  devbox:
+    container_name: prod_devbox
+    hostname: devbox
+    networks:
+      - devbox
+    build:
+      context: ./app/devbox
+    deploy:
+      resources:
+        limits:
+          memory: 512m
+networks:
+  ns1:
+    ipam:
+      config:
+        - subnet: $NS1_NETWORK
+  ns2:
+    ipam:
+      config:
+        - subnet: $NS2_NETWORK
+  elk:
+    ipam:
+      config:
+        - subnet: $ELK_NETWORK
+  freeradius:
+    ipam:
+      config:
+        - subnet: $FREERADIUS_NETWORK
+  code-server:
+    ipam:
+      config:
+        - subnet: $CODE_SERVER_NETWORK
+  tftp:
+    ipam:
+      config:
+        - subnet: $TFTP_NETWORK
+  ntp-a:
+    ipam:
+      config:
+        - subnet: $NTP_A_NETWORK
+  ntp-b:
+    ipam:
+      config:
+        - subnet: $NTP_B_NETWORK
+  nagios:
+    ipam:
+      config:
+        - subnet: $NAGIOS_NETWORK
+  www:
+    ipam:
+      config:
+        - subnet: $WWW_NETWORK
+  rocket:
+    ipam:
+      config:
+        - subnet: $ROCKET_NETWORK
+  devbox:
+    ipam:
+      config:
+        - subnet: $DEVBOX_NETWORK
+  rproxy:
+    ipam:
+      config:
+        - subnet: $PROXY_NETWORK

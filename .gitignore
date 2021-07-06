@@ -1,0 +1,4 @@
+..*
+/app/code_server/config/*
+/app/tftp/data/*
+/app/log/*

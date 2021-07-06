@@ -1,0 +1,14 @@
+filebeat.modules:
+- module: netflow
+  log:
+    enabled: true
+    var:
+      netflow_host: 0.0.0.0
+      netflow_port: 5100
+
+setup.ilm.rollover_alias: netflow-%{[agent.version]}
+#change default index 'filebeat-%{[agent.version]}'
+#https://www.elastic.co/guide/en/beats/filebeat/current/ilm.html
+
+output.elasticsearch:
+  hosts: ["elastic:9200"]

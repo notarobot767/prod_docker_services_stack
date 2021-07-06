@@ -1,0 +1,13 @@
+filebeat.modules:
+- module: nginx
+  access:
+    enabled: true
+    var.paths: ["/app/log/access.log"]
+  error:
+    enabled: true
+    var.paths: ["/app/log/error.log"]
+
+setup.ilm.rollover_alias: nginx-%{[agent.version]}
+
+output.elasticsearch:
+  hosts: ["elastic:9200"]

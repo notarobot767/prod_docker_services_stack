@@ -1,0 +1,20 @@
+$TTL 1h
+@								IN			SOA			ns1.ogrydziak.com. god.ogrydziak.net. (
+		20210107;					#Serial
+		1h;								#Refresh								#default value in minutes
+		120;							#Retry									#default value in seconds
+		1h;								#Expire									#default value in minutes
+		1h);							#Negative caching TTL		#default value in minutes
+
+;name servers
+								IN			NS			ns1.ogrydziak.com.
+								IN			NS			ns2.ogrydziak.com.
+ns1							IN			A				10.0.20.10
+ns2							IN			A				10.0.20.9
+ns1							IN			AAAA		2601:100:8181:f9e2:0:0:dead:beef
+ns2							IN			AAAA		2601:100:8181:f9e2:0:0:cafe:babe
+
+;docker
+@								IN			A				10.0.20.10
+@								IN			AAAA		2601:100:8181:f9e2:0:0:dead:beef
+www							IN			CNAME		@

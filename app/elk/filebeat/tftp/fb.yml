@@ -1,0 +1,9 @@
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - /app/log/messages
+
+output.logstash:
+  hosts: ["logstash:6001"]
+  #see logstash pipline/main.conf
