@@ -20,7 +20,7 @@ daloradius      IN      CNAME   @
 nagios          IN      CNAME   @
 rocket          IN      CNAME   @
 ntp-a           IN      CNAME   @
-tftp            IN      CNAME   @
+files           IN      CNAME   @
 
 ntp-b           IN      A       10.0.20.8
 
