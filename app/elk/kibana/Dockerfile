@@ -1,4 +1,4 @@
-FROM docker.elastic.co/kibana/kibana:7.13.2
+FROM docker.elastic.co/kibana/kibana:7.13.3
 #https://www.elastic.co/guide/en/kibana/current/docker.html
 
 LABEL maintainer="notarobot" \

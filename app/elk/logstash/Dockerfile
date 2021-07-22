@@ -1,4 +1,4 @@
-FROM docker.elastic.co/logstash/logstash:7.13.2
+FROM docker.elastic.co/logstash/logstash:7.13.3
 #https://www.elastic.co/guide/en/logstash/current/index.html
 
 LABEL maintainer="notarobot" \

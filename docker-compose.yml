@@ -109,7 +109,7 @@ services:
     hostname: elastic
     networks:
       - elk
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.2
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.3
       #https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
     environment:
       - discovery.type=single-node
@@ -151,15 +151,17 @@ services:
   kibana:
     depends_on:
       - elastic
-      - rproxy
+      - swag
     container_name: prod_kibana
     hostname: kibana
     networks:
       - elk
     build:
       context: ./app/elk/kibana
+    volumes:
+      - ${KIBANA_DATA_DIR}:/usr/share/kibana/data
     ports:
-      - $SRV_PROXY:$KIBANA_H_PORT:5601
+      - $SRV_SWAG_PROXY:$KIBANA_H_PORT:5601
     restart: unless-stopped
     deploy:
       resources:
@@ -349,7 +351,7 @@ services:
           memory: 256m
   nagios:
     depends_on:
-      - rproxy
+      - swag
     container_name: prod_nagios
     hostname: nagios
     networks:
@@ -359,7 +361,7 @@ services:
     environment:
       - NAGIOSADMIN=cisco
     ports:
-      - $SRV_PROXY:$NAGIOS_H_PORT:80
+      - $SRV_SWAG_PROXY:$NAGIOS_H_PORT:80
     volumes:
       - $NAGIOS_TMP_DIR:/app/tmp
         #for easily writing data back to host
@@ -419,13 +421,13 @@ services:
         limits:
           memory: 1g
   #run once and then comment it out to avoid accidently deleting data 
-  rocket-mongo-init-replica:
-    image: mongo:4.0
-    networks:
-      - rocket
-    command: 'mongo rocket_db/rocketchat --eval "rs.initiate({ _id: ''rs0'', members: [ { _id: 0, host: ''localhost:27017'' } ]})"'
-    depends_on:
-      - rocket_db
+  #rocket-mongo-init-replica:
+  #  image: mongo:4.0
+  #  networks:
+  #    - rocket
+  #  command: 'mongo rocket_db/rocketchat --eval "rs.initiate({ _id: ''rs0'', members: [ { _id: 0, host: ''localhost:27017'' } ]})"'
+  #  depends_on:
+  #    - rocket_db
   rocket_chat:
     depends_on:
       - rocket_db
@@ -442,7 +444,7 @@ services:
       - $SRV_PROXY:$ROCKET_H_PORT:3000
     environment:
       - PORT=3000
-      - ROOT_URL="http://$ROCKET_ROOT_URL"
+      - ROOT_URL=https://$ROCKET_ROOT_URL
       - MONGO_OPLOG_URL=mongodb://rocket_db:27017/local
       - MONGO_URL=mongodb://rocket_db:27017/rocketchat
     deploy:

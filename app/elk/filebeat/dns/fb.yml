@@ -7,5 +7,5 @@ filebeat.inputs:
     - /app/log/queries.log
 
 output.logstash:
-  hosts: ["logstash:6000"]
+  hosts: ["prod_logstash:6000"]
   #see logstash pipline/main.conf

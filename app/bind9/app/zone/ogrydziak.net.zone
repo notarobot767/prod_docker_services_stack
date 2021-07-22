@@ -1,5 +1,5 @@
 $TTL 1h
-@	              IN      SOA	    ns1.ogrydziak.com. god.ogrydziak.net. (
+@	              IN      SOA	    ns1.ogrydziak.net. god.ogrydziak.net. (
     20210107;         #Serial
     1h;               #Refresh                #default value in minutes
     120;              #Retry                  #default value in seconds
@@ -13,6 +13,16 @@ ns1             IN      A       10.0.20.10
 ns2             IN      A       10.0.20.9
 ns1             IN      AAAA    2601:100:8181:f9e2:0:0:dead:beef
 ns2             IN      AAAA    2601:100:8181:f9e2:0:0:cafe:babe
+
+;domain controller
+_msdcs.ogrydziak.net.           86400 IN NS dc1.ogrydziak.net.
+_sites.ogrydziak.net.           86400 IN NS dc1.ogrydziak.net.
+_ldap._tcp.ogrydziak.net.       86400 IN CNAME _ldap._tcp.dc._msdcs.ogrydziak.net.
+_gc._tcp.ogrydziak.net.         86400 IN CNAME _ldap._tcp.gc._msdcs.ogrydziak.net.
+_kerberos._tcp.ogrydziak.net.   86400 IN CNAME _kerberos._tcp.dc._msdcs.ogrydziak.net.
+_kerberos._udp.ogrydziak.net.   86400 IN CNAME _kerberos._tcp.dc._msdcs.ogrydziak.net.
+_kpasswd._tcp.ogrydziak.net.    3600  IN SRV 0 100 464 dc1.ogrydziak.net
+_kpasswd._udp.ogrydziak.net.    3600  IN SRV 0 100 464 dc1.ogrydziak.net
 
 ;net infastructure
 gateway         IN      A       10.0.0.255
@@ -35,10 +45,10 @@ nagios          IN      CNAME   @
 rocket          IN      CNAME   @
 
 ;ntp pool
-ntp             IN      A       10.0.20.10
-ntp             IN      A       10.0.20.9
-ntp             IN      AAAA    2601:100:8181:f9e2:0:0:dead:beef
-ntp             IN      AAAA    2601:100:8181:f9e2:0:0:cafe:babe
+pool.ntp             IN      A       10.0.20.10
+pool.ntp             IN      A       10.0.20.9
+pool.ntp             IN      AAAA    2601:100:8181:f9e2:0:0:dead:beef
+pool.ntp             IN      AAAA    2601:100:8181:f9e2:0:0:cafe:babe
 
 ;synology file share
 dropzone        IN      A       10.0.20.11
@@ -52,3 +62,6 @@ cucm            IN      A       10.0.10.210
 ;oracle
 sabriel         IN      A       129.159.85.122
 lirael          IN      A       150.136.203.248
+
+;domain controller
+dc1             IN      A       10.0.10.240

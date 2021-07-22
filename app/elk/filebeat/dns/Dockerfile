@@ -1,4 +1,4 @@
-FROM docker.elastic.co/beats/filebeat:7.13.2
+FROM docker.elastic.co/beats/filebeat:7.13.3
 #https://www.elastic.co/guide/en/beats/filebeat/current/running-on-docker.html
 
 LABEL maintainer="notarobot" \

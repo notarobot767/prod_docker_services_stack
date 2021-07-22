@@ -25,23 +25,24 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
 RUN apt-get update -y && apt-get install -y \
   apache2 \
   autoconf \
-  bc \
   php \
-  gawk \
   libapache2-mod-php \
+  #apache dependencies
+  \
+  bc \
+  build-essential \
+  dc \
+  gawk \
+  gcc \
+  gettext \
   libc6 \
   libgd-dev \
   libmcrypt-dev \
   libssl-dev \
-  #apache dependencies
-  \
-  build-essential \
-  gcc \
-  gettext \
   make \
   unzip \
   wget \
-  #for downloading, unziping, building
+  #nagios dependencies
   \
   bind9-utils \
   iputils-ping \
@@ -52,23 +53,26 @@ RUN apt-get update -y && apt-get install -y \
   traceroute
   #for nagios check commands
 
-  RUN useradd -m -s /bin/bash nagios && \
+RUN useradd -m -s /bin/bash nagios && \
   usermod --password nagios nagios && \
   #create nagios user
+  \
+  cd /tmp && \
+  wget -O nagios.tar.gz https://assets.nagios.com/downloads/nagioscore/releases/nagios-4.4.6.tar.gz && \
+  mkdir nagios && \
+  tar xzf ./nagios.tar.gz -C ./nagios --strip-components=1 && \
+  #download and unzip nagios core
+  \
+  cd /tmp/nagios && \
+  ./configure --with-command-group=nagcmd && \
+  make all && \
   \
   groupadd nagcmd && \
   usermod -a -G nagcmd nagios && \
   usermod -a -G nagcmd www-data && \
+  make install-groups-users && \
   #create nagios command group for commands via web interface
   \
-  cd /tmp && \
-  wget https://assets.nagios.com/downloads/nagioscore/releases/nagios-4.4.6.tar.gz && \
-  tar xzf ./nagios-4.4.6.tar.gz && \
-  #download and unzip nagios core
-  \
-  cd /tmp/nagios-4.4.6 && \
-  ./configure --with-command-group=nagcmd && \
-  make all && \
   make install && \
   make install && \
   make install-init && \
@@ -83,18 +87,20 @@ RUN apt-get update -y && apt-get install -y \
   #accessible via http://localhost:80/
   \
   cd /tmp && \
-  wget https://github.com/chriscareycode/nagiostv-react/releases/download/v0.7.3/nagiostv-0.7.3.tar.gz && \
-  tar xzf ./nagiostv-0.7.3.tar.gz && \
+  wget -O nagiostv.tar.gz https://github.com/chriscareycode/nagiostv-react/releases/download/v0.7.4/nagiostv-0.7.4.tar.gz && \
+  mkdir nagiostv && \
+  tar xzf ./nagiostv.tar.gz -C nagiostv --strip-components=1 && \
   mv nagiostv /usr/local/nagios/share/tv && \
   #install nagiostv
   #accessible via http://localhost:80/tv
   \
   cd /tmp && \
-  wget https://nagios-plugins.org/download/nagios-plugins-2.3.3.tar.gz && \
-  tar xzf ./nagios-plugins-2.3.3.tar.gz && \
+  wget -O nagios-plugins.tar.gz https://nagios-plugins.org/download/nagios-plugins-2.3.3.tar.gz && \
+  mkdir nagios-plugins && \
+  tar xzf ./nagios-plugins.tar.gz -C ./nagios-plugins --strip-components=1 && \
   #download and unzip nagios plugins
   \
-  cd nagios-plugins-2.3.3 && \
+  cd nagios-plugins && \
   ./configure --with-nagios-user=nagios --with-nagios-group=nagios && \
   make && \
   make install && \
@@ -111,4 +117,4 @@ COPY ./etc/. /usr/local/nagios/etc
 EXPOSE 80
 #nagios core http:80
 
-CMD ["bash", "-c", "htpasswd -b -c /usr/local/nagios/etc/htpasswd.users nagiosadmin $NAGIOSADMIN; /etc/init.d/nagios start; a2enmod cgi; apache2ctl -D FOREGROUND"]
+CMD ["bash", "-c", "htpasswd -b -c /usr/local/nagios/etc/htpasswd.users nagiosadmin $NAGIOSADMIN; /etc/init.d/nagios start; a2enmod rewrite cgi; apache2ctl -D FOREGROUND"]
