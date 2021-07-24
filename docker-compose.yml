@@ -1,26 +1,5 @@
 version: "3.9"
 services:
-  code-server:
-    container_name: prod_code-server
-    hostname: code-server
-    networks:
-      - code-server
-    image: ghcr.io/linuxserver/code-server:latest
-      #https://hub.docker.com/r/linuxserver/code-server
-    environment:
-      - TZ=$TZ
-      - PUID=$ID
-      - PGID=$ID
-    ports:
-      - $SRV_IP_1:$CS_H_PORT:8443
-    volumes:
-       - $CS_CONFIG_DIR:/config
-       - $ROOT_DIR:/app
-    restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          memory: 1g
   ns1:
     container_name: prod_ns1
     hostname: ns1
@@ -55,23 +34,6 @@ services:
       resources:
         limits:
           memory: 2g
-  tftp:
-    container_name: prod_tftp
-    hostname: tftp
-    networks:
-      - tftp
-    build:
-      context: ./app/tftp
-    volumes:
-      - $TFTP_LOG_DIR:/var/log
-      - $TFTP_DATA_DIR:/srv/tftp
-    ports:
-      - $SRV_IP_1:69:69/udp
-    restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          memory: 512m
   ntp-a:
     container_name: prod_ntp-a
     hostname: ntp-a
@@ -167,24 +129,6 @@ services:
       resources:
         limits:
           memory: 1g
-  fb_tftp:
-    depends_on:
-      - logstash
-    container_name: prod_fb_tftp
-    hostname: fb_tftp
-    networks:
-      - elk
-    build:
-      context: ./app/elk/filebeat/tftp
-      #may have to restrict fb.yml to read only on host
-    volumes:
-      - $FB_TFTP_DATA_DIR:/usr/share/filebeat/data
-      - $TFTP_LOG_DIR:/app/log:ro
-    restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          memory: 256m
   fb_dns:
     depends_on:
       - logstash
@@ -233,41 +177,7 @@ services:
       #may have to restrict fb.yml to read only on host
     volumes:
       - $FB_NETFLOW_DATA_DIR:/usr/share/filebeat/data
-    restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          memory: 256m
-  fb_cisco:
-    depends_on:
-      - elastic
-    container_name: prod_fb_cisco
-    hostname: fb_cisco
-    networks:
-      - elk
-    build:
-      context: ./app/elk/filebeat/netflow
-      #may have to restrict fb.yml to read only on host
-    volumes:
-      - $FB_CISCO_DATA_DIR:/usr/share/filebeat/data
-    restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          memory: 256m
-  fb_panos:
-    depends_on:
-      - elastic
-    container_name: prod_fb_panos
-    hostname: fb_panos
-    networks:
-      - elk
-    build:
-      context: ./app/elk/filebeat/panos
-      #may have to restrict fb.yml to read only on host
-    volumes:
-      - $FB_PANOS_DATA_DIR:/usr/share/filebeat/data
-    restart: unless-stopped
+    #restart: unless-stopped
     deploy:
       resources:
         limits:
@@ -285,7 +195,7 @@ services:
     volumes:
       - $FB_NGINX_DATA_DIR:/usr/share/filebeat/data
       - $RPROXY_LOG_DIR:/app/log:ro
-    restart: unless-stopped
+    #restart: unless-stopped
     deploy:
       resources:
         limits:
@@ -305,6 +215,7 @@ services:
         #./app/daloradius/daloradius.conf.php
     volumes:
       - $RADIUS_DB_DIR:/var/lib/mysql
+    restart: unless-stopped
     deploy:
       resources:
         limits:
@@ -324,6 +235,7 @@ services:
       - $RAD_LOG_DIR:/var/log/freeradius
     #command: ["freeradius", "-X"]
     #use to troubleshoot
+    restart: unless-stopped
     deploy:
       resources:
         limits:
@@ -331,7 +243,7 @@ services:
   daloradius:
     depends_on:
       - radius_db
-      - rproxy
+      - swag
     container_name: prod_daloradius
     hostname: daloradius
     networks:
@@ -339,12 +251,13 @@ services:
     build:
       context: ./app/freeradius/daloradius
     ports:
-      - $SRV_PROXY:$DALORADIUS_H_PORT:80
+      - $SRV_SWAG_PROXY:$DALORADIUS_H_PORT:80
     volumes:
       - $RAD_LOG_DIR:/var/log/freeradius:ro
       #chmod +r /disk2/freeradius_srv/radius.log
       #run on host machine
       #may be necessary to ensure daloradius container has read rights to log file
+    restart: unless-stopped
     deploy:
       resources:
         limits:
@@ -365,14 +278,14 @@ services:
     volumes:
       - $NAGIOS_TMP_DIR:/app/tmp
         #for easily writing data back to host
-    restart: unless-stopped
+    #restart: unless-stopped
     deploy:
       resources:
         limits:
           memory: 1g
   www:
     depends_on:
-      - rproxy
+      - swag
     container_name: prod_www
     hostname: www
     networks:
@@ -380,29 +293,12 @@ services:
     build:
       context: ./app/www
     ports:
-      - $SRV_PROXY:$WWW_H_PORT:80
+      - $SRV_SWAG_PROXY:$WWW_H_PORT:80
     restart: unless-stopped
     deploy:
       resources:
         limits:
           memory: 512m
-  rproxy:
-    container_name: prod_rproxy
-    hostname: rproxy
-    networks:
-      - rproxy
-    build:
-      context: ./app/rproxy
-    ports:
-      - $SRV_IP_1:80:80
-    volumes:
-      - $RPROXY_LOG_DIR:/var/log/nginx
-      - $TFTP_DATA_DIR:/app/tftp:ro
-    restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          memory: 1g
   rocket_db:
     container_name: prod_rocket_db
     hostname: rocket_db
@@ -416,6 +312,7 @@ services:
     volumes:
       - $ROCKET_DB_DIR:/data/db
       #datastore
+    restart: unless-stopped
     deploy:
       resources:
         limits:
@@ -441,12 +338,13 @@ services:
       - "traefik.frontend.rule=Host: $ROCKET_ROOT_URL"
     restart: unless-stopped
     ports:
-      - $SRV_PROXY:$ROCKET_H_PORT:3000
+      - $SRV_SWAG_PROXY:$ROCKET_H_PORT:3000
     environment:
       - PORT=3000
       - ROOT_URL=https://$ROCKET_ROOT_URL
       - MONGO_OPLOG_URL=mongodb://rocket_db:27017/local
       - MONGO_URL=mongodb://rocket_db:27017/rocketchat
+    restart: unless-stopped
     deploy:
       resources:
         limits:
@@ -549,10 +447,6 @@ services:
         limits:
           memory: 512m
 networks:
-  rproxy:
-    ipam:
-      config:
-        - subnet: $PROXY_NETWORK
   ns1:
     ipam:
       config:
@@ -569,14 +463,6 @@ networks:
     ipam:
       config:
         - subnet: $FREERADIUS_NETWORK
-  code-server:
-    ipam:
-      config:
-        - subnet: $CODE_SERVER_NETWORK
-  tftp:
-    ipam:
-      config:
-        - subnet: $TFTP_NETWORK
   ntp-a:
     ipam:
       config:
