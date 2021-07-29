@@ -43,6 +43,7 @@ kibana          IN      CNAME   @
 daloradius      IN      CNAME   @
 nagios          IN      CNAME   @
 rocket          IN      CNAME   @
+guac            IN      CNAME   @
 
 ;ntp pool
 pool.ntp             IN      A       10.0.20.10
