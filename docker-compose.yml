@@ -385,6 +385,8 @@ services:
       - $SRV_IP_1:443:443
       - $SRV_IPV6_1:443:443
       - $SRV_IPV6_WAN:443:443
+      - 10.13.13.2:80:80
+      - 10.13.13.2:443:443
     volumes:
       - $SWAG_CONFIG_DIR:/config
     restart: unless-stopped
@@ -502,6 +504,37 @@ services:
     #  resources:
     #    limits:
     #      memory: 512m
+  wireguard:
+    network_mode: host
+    container_name: prod_wireguard
+    #hostname: wireguard
+    #networks:
+    #  - swag
+    image: ghcr.io/linuxserver/wireguard:latest
+      #https://hub.docker.com/r/linuxserver/wireguard
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    privileged: true
+    environment:
+      - TZ=$TZ
+      - PUID=$ID
+      - PGID=$ID
+      - SERVERURL=$WG_SERVERURL
+      #- ALLOWEDIPS=0.0.0.0/0
+    volumes:
+      - $WG_CONFIG_DIR:/config
+      - /lib/modules
+    #sysctls:
+    #  - net.ipv4.conf.all.src_valid_mark=1
+    #  - net.ipv6.conf.all.disable_ipv6=0
+    #ports:
+    #  - 51820:51820/udp
+    restart: unless-stopped
+    #deploy:
+    #  resources:
+    #    limits:
+    #      memory: 4g
 networks:
   ns1:
     ipam:
