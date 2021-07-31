@@ -385,8 +385,6 @@ services:
       - $SRV_IP_1:443:443
       - $SRV_IPV6_1:443:443
       - $SRV_IPV6_WAN:443:443
-      - 10.13.13.2:80:80
-      - 10.13.13.2:443:443
     volumes:
       - $SWAG_CONFIG_DIR:/config
     restart: unless-stopped
