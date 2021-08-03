@@ -169,14 +169,16 @@ services:
     depends_on:
       - elastic
     container_name: prod_fb_netflow
-    hostname: fb_dns
+    hostname: fb_netflow
     networks:
       - elk
     build:
       context: ./app/elk/filebeat/netflow
       #may have to restrict fb.yml to read only on host
-    volumes:
-      - $FB_NETFLOW_DATA_DIR:/usr/share/filebeat/data
+    #ports:
+    #  - $SRV_IP_1:$FB_NETFLOW_PORT:$FB_NETFLOW_PORT/udp
+    #volumes:
+    #  - $FB_NETFLOW_DATA_DIR:/usr/share/filebeat/data
     #restart: unless-stopped
     deploy:
       resources:
@@ -420,7 +422,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 8g
+          memory: 16g
   plexstats:
     depends_on:
       - plex
@@ -498,11 +500,12 @@ services:
       - 9080:8080
       - $SRV_SWAG_PROXY:$GUAC_H_PORT:8080
     restart: unless-stopped
-    #deploy:
-    #  resources:
-    #    limits:
-    #      memory: 512m
+    deploy:
+      resources:
+        limits:
+          memory: 1g
   wireguard:
+    command: ["/bin/bash"]
     network_mode: host
     container_name: prod_wireguard
     #hostname: wireguard
@@ -533,6 +536,27 @@ services:
     #  resources:
     #    limits:
     #      memory: 4g
+  download:
+    container_name: prod_download
+    hostname: download
+    networks:
+      - download
+    image: ghcr.io/linuxserver/qbittorrent:latest
+      #https://hub.docker.com/r/linuxserver/qbittorrent
+    environment:
+      - TZ=$TZ
+      - PUID=$ID
+      - PGID=$ID
+    ports:
+      - $SRV_SWAG_PROXY:$DOWNLOAD_H_PORT:8080
+    volumes:
+      - $DOWNLOADS_DATA_DIR:/config
+      - $DOWNLOADS_DIR:/downloads
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 4g
 networks:
   ns1:
     ipam:
@@ -586,3 +610,7 @@ networks:
     ipam:
       config:
         - subnet: $GUAC_NETWORK
+  download:
+    ipam:
+      config:
+        - subnet: $DOWNLOAD_NETWORK
