@@ -476,10 +476,10 @@ services:
     volumes:
       - $GUAC_DB_DIR:/var/lib/mysql
     restart: unless-stopped
-    #deploy:
-    #  resources:
-    #    limits:
-    #      memory: 512m
+    deploy:
+      resources:
+        limits:
+          memory: 512m
   guac:
     depends_on:
       - guacd
@@ -496,6 +496,7 @@ services:
       - MYSQL_DATABASE=$GUAC_DB
       - MYSQL_USER=$GUAC_DB_USER
       - MYSQL_PASSWORD=$GUAC_DB_PW
+      - TOTP_ENABLED=true
     ports:
       - 9080:8080
       - $SRV_SWAG_PROXY:$GUAC_H_PORT:8080
@@ -557,6 +558,24 @@ services:
       resources:
         limits:
           memory: 4g
+  rdesktop:
+    container_name: prod_rdesktop
+    hostname: rdesktop
+    networks:
+      - servers
+    image: ghcr.io/linuxserver/rdesktop:latest
+    privileged: true
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=$TZ
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - $RDESKTOP_CONFIG_DIR:/config
+    ports:
+      - $SRV_IP_1:3389:3389
+    shm_size: "2gb"
+    restart: unless-stopped
 networks:
   ns1:
     ipam:
@@ -614,3 +633,7 @@ networks:
     ipam:
       config:
         - subnet: $DOWNLOAD_NETWORK
+  servers:
+    ipam:
+      config:
+        - subnet: $SERVERS_NETWORK
