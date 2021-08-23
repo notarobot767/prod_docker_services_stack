@@ -10,10 +10,10 @@ LABEL maintainer="notarobot" \
 
 ENV TZ=America/New_York
 
-RUN export DEBIAN_FRONTEND=noninteractive && \
-  ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
-  apt-get update -y && apt-get upgrade -y && apt-get install -y tzdata && \
-  dpkg-reconfigure --frontend noninteractive tzdata
+#RUN export DEBIAN_FRONTEND=noninteractive && \
+#  ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
+#  apt-get update -y && apt-get upgrade -y && apt-get install -y tzdata && \
+#  dpkg-reconfigure --frontend noninteractive tzdata
 #update, upgrade, set timezone
 
 COPY ./docker-entrypoint-initdb.d/. /docker-entrypoint-initdb.d/

@@ -355,13 +355,17 @@ services:
     container_name: prod_devbox
     hostname: devbox
     networks:
-      - devbox
+      - servers
     build:
       context: ./app/devbox
+    ports:
+      - $SRV_IP_1:2013:22
+    volumes:
+      - $DEVBOX_DATA_DIR:/app
     deploy:
       resources:
         limits:
-          memory: 512m
+          memory: 1g
   swag:
     container_name: prod_swag
     hostname: swag
@@ -574,6 +578,30 @@ services:
       - $RDESKTOP_CONFIG_DIR:/config
     ports:
       - $SRV_IP_1:3389:3389
+    shm_size: "2gb"
+    restart: unless-stopped
+  radius_proxy:
+    depends_on:
+      - radius_srv
+    container_name: prod_radius_proxy
+    hostname: radius_proxy
+    networks:
+      - servers
+      - freeradius
+    build:
+      context: ./app/freeradius/proxy 
+    shm_size: "2gb"
+    restart: unless-stopped
+  rproxy:
+    container_name: prod_rproxy
+    hostname: rproxy
+    networks:
+      - servers
+      - freeradius
+    build:
+      context: ./app/rproxy
+    ports:
+      - 9090:80
     shm_size: "2gb"
     restart: unless-stopped
 networks:
