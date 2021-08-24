@@ -25,22 +25,27 @@ RUN apt-get update -y && apt-get upgrade -y && apt-get install -y \
   iputils-ping \
   iproute2 \
   monitoring-plugins \
+  mtr \
   nano \
+  netcat \
   nmap \
   openssh-server \
+  python3 \
   python3-pip \
   screen \
   snmp \
   ssh \
   sudo \
+  tcpdump \
   telnet \
   traceroute \
-  python3 && \
+  unzip \
+  wget \
+  whois && \
   #install packages
   \
-  pip install --upgrade pip && \
-  pip install numpy
-  #upgrade pip and install numpy
+  pip install --upgrade pip
+  #upgrade pip
 
 RUN useradd -m -s /bin/bash admin && \
   usermod -aG sudo admin && \
