@@ -4,7 +4,7 @@ services:
     container_name: prod_ns1
     hostname: ns1
     networks:
-      - ns1
+      - servers
     build:
       context: ./app/bind9
     volumes:
@@ -21,11 +21,11 @@ services:
     container_name: prod_ns2
     hostname: ns2
     networks:
-      - ns2
+      - servers
     build:
       context: ./app/bind9
-    volumes:
-      - $DNS_LOG_DIR:/app/log
+    #volumes:
+    #  - $DNS_LOG_DIR:/app/log
     ports:
       - $SRV_IP_2:53:53
       - $SRV_IP_2:53:53/udp
@@ -38,13 +38,11 @@ services:
     container_name: prod_ntp-a
     hostname: ntp-a
     networks:
-      - ntp-a
+      - servers
     build:
-      context: ./app/ntp
+      context: ./app/ntp/ntp-a
     ports:
       - $SRV_IP_1:123:123/udp
-    cap_add:
-      - SYS_TIME
     restart: unless-stopped
     deploy:
       resources:
@@ -54,23 +52,23 @@ services:
     container_name: prod_ntp-b
     hostname: ntp-b
     networks:
-      - ntp-b
+      - servers
     build:
-      context: ./app/ntp
+      context: ./app/ntp/ntp-b
     ports:
       - $SRV_IP_2:123:123/udp
-    cap_add:
-      - SYS_TIME
     restart: unless-stopped
     deploy:
       resources:
         limits:
           memory: 256m
   elastic:
+    entrypoint: ["/bin/bash"]
+      #comment to disable
     container_name: prod_elastic
     hostname: elastic
     networks:
-      - elk
+      - servers
     image: docker.elastic.co/elasticsearch/elasticsearch:7.13.3
       #https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
     environment:
@@ -92,12 +90,14 @@ services:
           cpus: '4.0'
           memory: 8g
   logstash:
+    entrypoint: ["/bin/bash"]
+      #comment to disable
     depends_on:
       - elastic
     container_name: prod_logstash
     hostname: logstash
     networks:
-      - elk
+      - servers
     build:
       context: ./app/elk/logstash
     volumes:
@@ -111,13 +111,15 @@ services:
           cpus: '4.0'
           memory: 3g
   kibana:
+    entrypoint: ["/bin/bash"]
+      #comment to disable
     depends_on:
       - elastic
-      - swag
     container_name: prod_kibana
     hostname: kibana
     networks:
-      - elk
+      - servers
+      - swag
     build:
       context: ./app/elk/kibana
     volumes:
@@ -130,12 +132,14 @@ services:
         limits:
           memory: 1g
   fb_dns:
+    entrypoint: ["/bin/bash"]
+      #comment to disable
     depends_on:
       - logstash
     container_name: prod_fb_dns
     hostname: fb_dns
     networks:
-      - elk
+      - servers
     build:
       context: ./app/elk/filebeat/dns
       #may have to restrict fb.yml to read only on host
@@ -148,12 +152,14 @@ services:
         limits:
           memory: 256m
   fb_freeradius:
+    entrypoint: ["/bin/bash"]
+      #comment to disable
     depends_on:
       - logstash
     container_name: prod_fb_freeradius
     hostname: fb_freeradius
     networks:
-      - elk
+      - servers
     build:
       context: ./app/elk/filebeat/freeradius
       #may have to restrict fb.yml to read only on host
@@ -166,12 +172,14 @@ services:
         limits:
           memory: 256m
   fb_netflow:
+    entrypoint: ["/bin/bash"]
+      #comment to disable
     depends_on:
       - elastic
     container_name: prod_fb_netflow
     hostname: fb_netflow
     networks:
-      - elk
+      - servers
     build:
       context: ./app/elk/filebeat/netflow
       #may have to restrict fb.yml to read only on host
@@ -185,12 +193,14 @@ services:
         limits:
           memory: 256m
   fb_nginx:
+    entrypoint: ["/bin/bash"]
+      #comment to disable
     depends_on:
       - elastic
     container_name: prod_fb_nginx
     hostname: fb_nginx
     networks:
-      - elk
+      - servers
     build:
       context: ./app/elk/filebeat/nginx
       #may have to restrict fb.yml to read only on host
@@ -203,10 +213,12 @@ services:
         limits:
           memory: 256m
   radius_db:
+    entrypoint: ["/bin/bash"]
+      #comment to disable
     container_name: prod_radius_db
     hostname: radius_db
     networks:
-      - freeradius
+      - servers
     build:
       context: ./app/freeradius/radius_db
     environment:
@@ -223,12 +235,14 @@ services:
         limits:
           memory: 256m
   radius_srv:
+    entrypoint: ["/bin/bash"]
+      #comment to disable
     depends_on:
       - radius_db
     container_name: prod_radius_srv
     hostname: radius_srv
     networks:
-      - freeradius
+      - servers
     build:
       context: ./app/freeradius/radius_srv
     ports:
@@ -243,13 +257,15 @@ services:
         limits:
           memory: 256m
   daloradius:
+    entrypoint: ["/bin/bash"]
+      #comment to disable
     depends_on:
       - radius_db
-      - swag
     container_name: prod_daloradius
     hostname: daloradius
     networks:
-      - freeradius
+      - servers
+      - swag
     build:
       context: ./app/freeradius/daloradius
     ports:
@@ -265,12 +281,14 @@ services:
         limits:
           memory: 256m
   nagios:
+    entrypoint: ["/bin/bash"]
+      #comment to disable
     depends_on:
       - swag
     container_name: prod_nagios
     hostname: nagios
     networks:
-      - nagios
+      - swag
     build:
       context: ./app/nagios
     environment:
@@ -291,7 +309,7 @@ services:
     container_name: prod_www
     hostname: www
     networks:
-      - www
+      - swag
     build:
       context: ./app/www
     ports:
@@ -302,10 +320,12 @@ services:
         limits:
           memory: 512m
   rocket_db:
+    entrypoint: ["/bin/bash"]
+      #comment to disable
     container_name: prod_rocket_db
     hostname: rocket_db
     networks:
-      - rocket
+      - servers
     image: mongo:4.0
     restart: unless-stopped
     command: mongod --smallfiles --oplogSize 128 --replSet rs0
@@ -320,20 +340,24 @@ services:
         limits:
           memory: 1g
   #run once and then comment it out to avoid accidently deleting data 
-  #rocket-mongo-init-replica:
-  #  image: mongo:4.0
-  #  networks:
-  #    - rocket
-  #  command: 'mongo rocket_db/rocketchat --eval "rs.initiate({ _id: ''rs0'', members: [ { _id: 0, host: ''localhost:27017'' } ]})"'
-  #  depends_on:
-  #    - rocket_db
+  rocket-mongo-init-replica:
+    image: mongo:4.0
+    networks:
+      - servers
+    entrypoint: ["/bin/bash"]
+    #command: 'mongo rocket_db/rocketchat --eval "rs.initiate({ _id: ''rs0'', members: [ { _id: 0, host: ''localhost:27017'' } ]})"'
+    depends_on:
+      - rocket_db
   rocket_chat:
+    entrypoint: ["/bin/bash"]
+      #comment to disable
     depends_on:
       - rocket_db
     container_name: prod_rocket_chat
     hostname: rocket_chat
     networks:
-      - rocket
+      - servers
+      - swag
     image: rocketchat/rocket.chat:latest
     labels:
       - "traefik.backend=rocketchat"
@@ -410,7 +434,8 @@ services:
     image: ghcr.io/linuxserver/plex:latest
       #https://hub.docker.com/r/linuxserver/plex
     networks:
-      - plex
+      - servers
+      - swag
     environment:
       - VERSION=$PLEX_VERSION
       - TZ=$TZ
@@ -434,7 +459,8 @@ services:
     container_name: prod_plexstats
     hostname: plexstats
     networks:
-      - plex
+      - servers
+      - swag
     image: ghcr.io/linuxserver/tautulli:latest
       #https://hub.docker.com/r/linuxserver/tautulli
     environment:
@@ -456,7 +482,7 @@ services:
     container_name: prod_guacd
     hostname: guacd
     networks:
-      - guac
+      - servers
     image: ghcr.io/linuxserver/guacd:latest
     #image: guacamole/guacd
       #https://hub.docker.com/r/linuxserver/guacd
@@ -469,7 +495,7 @@ services:
     container_name: prod_guac_db
     hostname: guac_db
     networks:
-      - guac
+      - servers
     build:
       context: ./app/guac_db
     environment:
@@ -491,7 +517,8 @@ services:
     container_name: prod_guac
     hostname: guac
     networks:
-      - guac
+      - servers
+      - swag
     image: guacamole/guacamole:latest
       #https://hub.docker.com/r/guacamole/guacamole
     environment:
@@ -510,7 +537,9 @@ services:
         limits:
           memory: 1g
   wireguard:
-    command: ["/bin/bash"]
+    restart: unless-stopped
+    entrypoint: ["/bin/bash"]
+      #comment to disable
     network_mode: host
     container_name: prod_wireguard
     #hostname: wireguard
@@ -536,7 +565,6 @@ services:
     #  - net.ipv6.conf.all.disable_ipv6=0
     #ports:
     #  - 51820:51820/udp
-    restart: unless-stopped
     #deploy:
     #  resources:
     #    limits:
@@ -545,7 +573,8 @@ services:
     container_name: prod_download
     hostname: download
     networks:
-      - download
+      - servers
+      - swag
     image: ghcr.io/linuxserver/qbittorrent:latest
       #https://hub.docker.com/r/linuxserver/qbittorrent
     environment:
@@ -563,6 +592,8 @@ services:
         limits:
           memory: 4g
   rdesktop:
+    entrypoint: ["/bin/bash"]
+      #comment to disable
     container_name: prod_rdesktop
     hostname: rdesktop
     networks:
@@ -574,30 +605,32 @@ services:
       - PGID=1000
       - TZ=$TZ
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      #- /var/run/docker.sock:/var/run/docker.sock
       - $RDESKTOP_CONFIG_DIR:/config
     ports:
       - $SRV_IP_1:3389:3389
     shm_size: "2gb"
     restart: unless-stopped
   radius_proxy:
+    entrypoint: ["/bin/bash"]
     depends_on:
       - radius_srv
     container_name: prod_radius_proxy
     hostname: radius_proxy
     networks:
       - servers
-      - freeradius
+      - swag
     build:
       context: ./app/freeradius/proxy 
     shm_size: "2gb"
     restart: unless-stopped
   rproxy:
+    entrypoint: ["/bin/bash"]
+      #comment to disable
     container_name: prod_rproxy
     hostname: rproxy
     networks:
       - servers
-      - freeradius
     build:
       context: ./app/rproxy
     ports:
