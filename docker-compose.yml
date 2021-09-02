@@ -486,9 +486,9 @@ services:
     hostname: guacd
     networks:
       - servers
-    image: ghcr.io/linuxserver/guacd:latest
-    #image: guacamole/guacd
-      #https://hub.docker.com/r/linuxserver/guacd
+    #image: ghcr.io/linuxserver/guacd:latest
+    image: guacamole/guacd
+      #https://hub.docker.com/r/guacamole/guacd
     restart: unless-stopped
     #deploy:
     #  resources:
@@ -641,62 +641,10 @@ services:
     shm_size: "2gb"
     restart: unless-stopped
 networks:
-  ns1:
-    ipam:
-      config:
-        - subnet: $NS1_NETWORK
-  ns2:
-    ipam:
-      config:
-        - subnet: $NS2_NETWORK
-  elk:
-    ipam:
-      config:
-        - subnet: $ELK_NETWORK
-  freeradius:
-    ipam:
-      config:
-        - subnet: $FREERADIUS_NETWORK
-  ntp-a:
-    ipam:
-      config:
-        - subnet: $NTP_A_NETWORK
-  ntp-b:
-    ipam:
-      config:
-        - subnet: $NTP_B_NETWORK
-  nagios:
-    ipam:
-      config:
-        - subnet: $NAGIOS_NETWORK
-  www:
-    ipam:
-      config:
-        - subnet: $WWW_NETWORK
-  rocket:
-    ipam:
-      config:
-        - subnet: $ROCKET_NETWORK
-  devbox:
-    ipam:
-      config:
-        - subnet: $DEVBOX_NETWORK
   swag:
     ipam:
       config:
         - subnet: $SWAG_NETWORK
-  plex:
-    ipam:
-      config:
-        - subnet: $PLEX_NETWORK
-  guac:
-    ipam:
-      config:
-        - subnet: $GUAC_NETWORK
-  download:
-    ipam:
-      config:
-        - subnet: $DOWNLOAD_NETWORK
   servers:
     ipam:
       config:
