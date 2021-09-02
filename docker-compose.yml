@@ -384,12 +384,15 @@ services:
       context: ./app/devbox
     ports:
       - $SRV_IP_1:2013:22
+    environment:
+      - USER=testuser
+      #- SSH_KEY=""
     volumes:
       - $DEVBOX_DATA_DIR:/app
     deploy:
       resources:
         limits:
-          memory: 1g
+          memory: 512m
   swag:
     container_name: prod_swag
     hostname: swag
