@@ -1,5 +1,28 @@
 version: "3.9"
 services:
+  code-server:
+    container_name: prod_code-server
+    hostname: code-server
+    networks:
+      - servers
+    image: ghcr.io/linuxserver/code-server:latest
+      #https://hub.docker.com/r/linuxserver/code-server
+    environment:
+      - TZ=$TZ
+      - PUID=$ID
+      - PGID=$ID
+      #- PASSWORD=$CS_PW
+    ports:
+      - $SRV_IP_1:9080:8443
+    volumes:
+       - $CS_CONFIG_DIR:/config
+       #- $CS_USER_DATA_DIR:/cs
+       #- $ROOT_DIR:/docker
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1g
   ns1:
     container_name: prod_ns1
     hostname: ns1
@@ -640,6 +663,24 @@ services:
       - 9090:80
     shm_size: "2gb"
     restart: unless-stopped
+  nessus:
+    container_name: prod_nessus
+    hostname: nessus
+    networks:
+      - servers
+    image: tenableofficial/nessus
+    ports:
+      - 8834:8834
+    environment:
+      - ACTIVATION_CODE=H4XC-U9RX-D24D-LUC8-Y9D3
+      - USERNAME=admin
+      - PASSWORD=admin
+    deploy:
+      resources:
+        limits:
+          cpus: '4.00'
+          memory: 8g
+    #restart: unless-stopped
 networks:
   swag:
     ipam:

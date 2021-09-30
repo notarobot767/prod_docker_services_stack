@@ -1,8 +1,7 @@
 #!/bin/bash
 
 if [ -z "$USER" ]
-#if var USER nonempty
-
+#if var USER empty
 then
   echo "USER enviornment variable unset!"
 else
@@ -21,7 +20,7 @@ else
   #create user, add to sudo group, remove password
   
   if [ -z "$SSH_KEY" ]
-    #if var SSH_KEY nonempty
+    #if var SSH_KEY empty
   then
     echo "SSH_KEY enviornment variable unset!"
   else
