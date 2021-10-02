@@ -1,0 +1,29 @@
+services:
+  ntp-a:
+    container_name: ${COMPOSE_PROJECT_NAME}_ntp-a
+    hostname: ntp-a
+    networks:
+      - servers
+    build:
+      context: ./app/ntp/ntp-a
+    ports:
+      - $SRV_IP_1:123:123/udp
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 256m
+  ntp-b:
+    container_name: ${COMPOSE_PROJECT_NAME}_ntp-b
+    hostname: ntp-b
+    networks:
+      - servers
+    build:
+      context: ./app/ntp/ntp-b
+    ports:
+      - $SRV_IP_2:123:123/udp
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 256m

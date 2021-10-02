@@ -1,0 +1,151 @@
+services:
+  elastic:
+    entrypoint: ["/bin/bash"]
+      #comment to disable
+    container_name: prod_elastic
+    hostname: elastic
+    networks:
+      - servers
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.3
+      #https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms4g -Xmx4g"
+        #set no more than half of allocated memory
+        #https://www.elastic.co/guide/en/elasticsearch/reference/current/advanced-configuration.html#set-jvm-options
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - $ELASTIC_DATA_DIR:/usr/share/elasticsearch/data
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 8g
+  logstash:
+    entrypoint: ["/bin/bash"]
+      #comment to disable
+    depends_on:
+      - elastic
+    container_name: prod_logstash
+    hostname: logstash
+    networks:
+      - servers
+    build:
+      context: ./app/elk/logstash
+    volumes:
+      - ${LOGSTASH_DATA_DIR}:/usr/share/logstash/data
+    #ports:
+    #  - $SRV_IP_1:$LOGSTASH_H_PORT:$LOGSTASH_C_PORT/udp
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 3g
+  kibana:
+    entrypoint: ["/bin/bash"]
+      #comment to disable
+    depends_on:
+      - elastic
+    container_name: prod_kibana
+    hostname: kibana
+    networks:
+      - servers
+      - swag
+    build:
+      context: ./app/elk/kibana
+    volumes:
+      - ${KIBANA_DATA_DIR}:/usr/share/kibana/data
+    ports:
+      - $SRV_SWAG_PROXY:$KIBANA_H_PORT:5601
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+  fb_dns:
+    entrypoint: ["/bin/bash"]
+      #comment to disable
+    depends_on:
+      - logstash
+    container_name: prod_fb_dns
+    hostname: fb_dns
+    networks:
+      - servers
+    build:
+      context: ./app/elk/filebeat/dns
+      #may have to restrict fb.yml to read only on host
+    volumes:
+      - $FB_DNS_DATA_DIR:/usr/share/filebeat/data
+      - $DNS_LOG_DIR:/app/log:ro
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 256m
+  fb_freeradius:
+    entrypoint: ["/bin/bash"]
+      #comment to disable
+    depends_on:
+      - logstash
+    container_name: prod_fb_freeradius
+    hostname: fb_freeradius
+    networks:
+      - servers
+    build:
+      context: ./app/elk/filebeat/freeradius
+      #may have to restrict fb.yml to read only on host
+    volumes:
+      - $FB_FREERADIUS_DATA_DIR:/usr/share/filebeat/data
+      - $RAD_LOG_DIR:/app/log:ro
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 256m
+  fb_netflow:
+    entrypoint: ["/bin/bash"]
+      #comment to disable
+    depends_on:
+      - elastic
+    container_name: prod_fb_netflow
+    hostname: fb_netflow
+    networks:
+      - servers
+    build:
+      context: ./app/elk/filebeat/netflow
+      #may have to restrict fb.yml to read only on host
+    #ports:
+    #  - $SRV_IP_1:$FB_NETFLOW_PORT:$FB_NETFLOW_PORT/udp
+    #volumes:
+    #  - $FB_NETFLOW_DATA_DIR:/usr/share/filebeat/data
+    #restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 256m
+  fb_nginx:
+    entrypoint: ["/bin/bash"]
+      #comment to disable
+    depends_on:
+      - elastic
+    container_name: prod_fb_nginx
+    hostname: fb_nginx
+    networks:
+      - servers
+    build:
+      context: ./app/elk/filebeat/nginx
+      #may have to restrict fb.yml to read only on host
+    volumes:
+      - $FB_NGINX_DATA_DIR:/usr/share/filebeat/data
+      #- $RPROXY_LOG_DIR:/app/log:ro
+    #restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 256m

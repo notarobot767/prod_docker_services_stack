@@ -29,5 +29,6 @@ EXPOSE 123/udp
 CMD ["chronyd", "-d", "-4", "-x"]
 #-d	all messages will be written to the terminal instead of syslog
 #-4	only resolve hostnames to ipv4
-#-n	disable reverse lookups
+#-n	program will not detach itself from the terminal
+#-x disables the control of the system clock
 #https://chrony.tuxfamily.org/doc/4.0/chronyd.html

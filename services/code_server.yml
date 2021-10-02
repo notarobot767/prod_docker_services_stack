@@ -1,0 +1,24 @@
+services:
+  code-server:
+    container_name: ${COMPOSE_PROJECT_NAME}_code-server
+    hostname: code-server
+    networks:
+      - servers
+    image: ghcr.io/linuxserver/code-server:latest
+      #https://hub.docker.com/r/linuxserver/code-server
+    environment:
+      - TZ=$TZ
+      - PUID=$ID
+      - PGID=$ID
+      #- PASSWORD=$CS_PW
+    ports:
+      - $SRV_IP_1:9080:8443
+    volumes:
+       - $CS_CONFIG_DIR:/config
+       #- $CS_USER_DATA_DIR:/cs
+       #- $ROOT_DIR:/docker
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1g

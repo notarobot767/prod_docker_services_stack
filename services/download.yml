@@ -1,0 +1,23 @@
+services:
+  download:
+    container_name: ${COMPOSE_PROJECT_NAME}_download
+    hostname: download
+    networks:
+      - servers
+      - swag
+    image: ghcr.io/linuxserver/qbittorrent:latest
+      #https://hub.docker.com/r/linuxserver/qbittorrent
+    environment:
+      - TZ=$TZ
+      - PUID=$ID
+      - PGID=$ID
+    ports:
+      - $SRV_SWAG_PROXY:$DOWNLOAD_H_PORT:8080
+    volumes:
+      - $DOWNLOADS_DATA_DIR:/config
+      - $DOWNLOADS_DIR:/downloads
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 4g

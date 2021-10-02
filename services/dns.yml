@@ -1,0 +1,35 @@
+services:
+  ns1:
+    container_name: ${COMPOSE_PROJECT_NAME}_ns1
+    hostname: ns1
+    networks:
+      - servers
+    build:
+      context: ./app/bind9
+    volumes:
+      - $DNS_LOG_DIR:/app/log
+    ports:
+      - $SRV_IP_1:53:53
+      - $SRV_IP_1:53:53/udp
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 2g
+  ns2:
+    container_name: ${COMPOSE_PROJECT_NAME}_ns2
+    hostname: ns2
+    networks:
+      - servers
+    build:
+      context: ./app/bind9
+    volumes:
+      - $DNS_LOG_DIR:/app/log
+    ports:
+      - $SRV_IP_2:53:53
+      - $SRV_IP_2:53:53/udp
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 2g
