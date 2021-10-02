@@ -13,13 +13,10 @@ services:
     networks:
       - servers
       - swag
-    #env_file:
-    #  - services/plex.env
+    env_file:
+      - env/linuxserver.env
     environment:
       - VERSION=docker
-      - TZ=$TZ
-      - PUID=$ID
-      - PGID=$ID
     ports:
       - $SRV_SWAG_PROXY:$PLEX_H_PORT:32400
     volumes:
@@ -42,12 +39,8 @@ services:
       - swag
     image: ghcr.io/linuxserver/tautulli:latest
       #https://hub.docker.com/r/linuxserver/tautulli
-    #env_file:
-    #  - services/plex.env
-    environment:
-      - TZ=$TZ
-      - PUID=$ID
-      - PGID=$ID
+    env_file:
+      - env/linuxserver.env
     ports:
       - $SRV_SWAG_PROXY:$PLEXSTATS_H_PORT:8181
     restart: unless-stopped

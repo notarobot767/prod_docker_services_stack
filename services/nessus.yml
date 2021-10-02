@@ -1,0 +1,18 @@
+services:
+  nessus:
+    container_name: ${COMPOSE_PROJECT_NAME}_nessus
+    hostname: nessus
+    networks:
+      - servers
+    image: tenableofficial/nessus
+      #https://docs.tenable.com/nessus/Content/DeployNessusDocker.htm
+    ports:
+      - 8834:8834
+    env_file:
+      - secrets/nessus.env
+    deploy:
+      resources:
+        limits:
+          cpus: '4.00'
+          memory: 8g
+    #restart: unless-stopped

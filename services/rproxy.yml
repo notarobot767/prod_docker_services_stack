@@ -12,21 +12,3 @@ services:
       - 9090:80
     shm_size: "2gb"
     restart: unless-stopped
-  nessus:
-    container_name: prod_nessus
-    hostname: nessus
-    networks:
-      - servers
-    image: tenableofficial/nessus
-    ports:
-      - 8834:8834
-    environment:
-      - ACTIVATION_CODE=H4XC-U9RX-D24D-LUC8-Y9D3
-      - USERNAME=admin
-      - PASSWORD=admin
-    deploy:
-      resources:
-        limits:
-          cpus: '4.00'
-          memory: 8g
-    #restart: unless-stopped

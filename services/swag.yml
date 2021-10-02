@@ -6,17 +6,10 @@ services:
       - swag
     image: ghcr.io/linuxserver/swag:latest
       #https://hub.docker.com/r/linuxserver/swag
-    environment:
-      - TZ=$TZ
-      - PUID=$ID
-      - PGID=$ID
-      - URL=$SWAG_URL
-      - SUBDOMAINS=$SWAG_SUBDOMAINS
-      - VALIDATION=http
-      - EMAIL=$EMAIL
-      - ONLY_SUBDOMAINS=false
-      - EXTRA_DOMAINS=$SWAG_EXTRA_DOMAINS
-      - STAGING=false
+    env_file:
+      - env/linuxserver.env
+      - env/swag.env
+      - secrets/swag.env
     ports:
       - $SRV_IP_1:80:80
       - $SRV_IPV6_1:80:80
