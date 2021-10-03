@@ -2,8 +2,11 @@ services:
   devbox:
     container_name: ${COMPOSE_PROJECT_NAME}_devbox
     hostname: devbox
+    #networks:
+    #  - servers
     networks:
-      - servers
+      servers_vlan:
+        ipv4_address: 10.0.20.5
     build:
       context: ./app/devbox
     ports:

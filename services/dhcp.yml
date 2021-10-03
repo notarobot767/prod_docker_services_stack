@@ -1,0 +1,20 @@
+services:
+  dhcp-a:
+    container_name: ${COMPOSE_PROJECT_NAME}_dhcp-a
+    hostname: dhcp-a
+    networks:
+      servers_vlan:
+        ipv4_address: 10.0.20.6
+    build:
+      context: ./app/dhcp/dhcp-a
+    ports:
+      - 67:67/udp
+    volumes:
+      - ${ROOT_DIR}/app/dhcp/dhcp-a/leases:/var/lib/dhcp
+    #  - $DHCP_LOG_DIR:/app/log
+    #  - ${ROOT_DIR}/app/bind9/app/rndc.key:/app/rndc.key:ro
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 512m

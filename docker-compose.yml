@@ -8,3 +8,12 @@ networks:
     ipam:
       config:
         - subnet: $SERVERS_NETWORK
+  servers_vlan:
+    driver: macvlan
+    driver_opts:
+      parent: bond0
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.0.20.0/24
+          gateway: 10.0.20.1
