@@ -11,9 +11,9 @@ networks:
   servers_vlan:
     driver: macvlan
     driver_opts:
-      parent: bond0
+      parent: $SERVERS_VLAN_DEV
     ipam:
       driver: default
       config:
-        - subnet: 10.0.20.0/24
-          gateway: 10.0.20.1
+        - subnet: $SERVERS_VLAN
+          gateway: $SERVERS_VLAN_GW
