@@ -12,6 +12,7 @@ $TTL 1h
 ;ptr records
 1               IN      PTR     gateway.ogrydziak.net.
 2               IN      PTR     switch.ogrydziak.net.
+6               IN      PTR     dhcp-a.ogrydziak.net.
 9               IN      PTR     ns2.ogrydziak.net.
 10              IN      PTR     ns1.ogrydziak.net.
 11              IN      PTR     dropzone.ogrydziak.net.

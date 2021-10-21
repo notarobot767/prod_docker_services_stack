@@ -28,6 +28,9 @@ _kpasswd._udp.ogrydziak.net.    3600  IN SRV 0 100 464 dc1.ogrydziak.net
 gateway         IN      A       10.0.0.255
 switch          IN      A       10.0.20.2
 
+;dhcp
+dhcp-a          IN      A       10.0.20.6
+
 ;docker
 @               IN      A       10.0.20.10
 @               IN      AAAA    2601:100:8181:f9e2:0:0:dead:beef
@@ -46,6 +49,11 @@ rocket          IN      CNAME   @
 guac            IN      CNAME   @
 
 ;ntp pool
+ntp-a                IN      A       10.0.20.10
+ntp-a                IN      AAAA    2601:100:8181:f9e2:0:0:dead:beef
+ntp-b                IN      A       10.0.20.9
+ntp-b                IN      AAAA    2601:100:8181:f9e2:0:0:cafe:babe
+;
 pool.ntp             IN      A       10.0.20.10
 pool.ntp             IN      A       10.0.20.9
 pool.ntp             IN      AAAA    2601:100:8181:f9e2:0:0:dead:beef
@@ -58,7 +66,7 @@ dropzone        IN      A       10.0.20.11
 unifi           IN      A       10.0.20.12
 
 ;cisco call manager
-cucm            IN      A       10.0.10.210
+cucm-01         IN      A       10.0.10.210
 
 ;oracle
 sabriel         IN      A       129.159.85.122
