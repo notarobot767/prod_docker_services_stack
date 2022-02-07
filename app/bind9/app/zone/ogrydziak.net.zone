@@ -30,7 +30,7 @@ switch          IN      A       10.0.20.2
 dhcp-a          IN      A       10.0.20.17
 
 ;docker
-@               IN      A       10.0.20.10
+@               IN      A       10.0.20.12
 blackskull      IN      CNAME   @
 www             IN      CNAME   @
 download        IN      CNAME   @

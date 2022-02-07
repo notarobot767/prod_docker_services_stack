@@ -11,12 +11,8 @@ services:
       - env/swag.env
       - secrets/swag.env
     ports:
-      - $SRV_IP_1:80:80
-      - $SRV_IPV6_1:80:80
-      - $SRV_IPV6_WAN:80:80
-      - $SRV_IP_1:443:443
-      - $SRV_IPV6_1:443:443
-      - $SRV_IPV6_WAN:443:443
+      - $SRV_IP_3:80:80
+      - $SRV_IP_3:443:443
     volumes:
       - $SWAG_CONFIG_DIR:/config
     restart: unless-stopped
