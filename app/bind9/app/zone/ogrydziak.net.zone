@@ -1,5 +1,5 @@
 $TTL 1h
-@	              IN      SOA	    ns1.ogrydziak.net. god.ogrydziak.net. (
+@	              IN      SOA	    ns1.ogrydziak.net. human.ogrydziak.net. (
     20210107;         #Serial
     1h;               #Refresh                #default value in minutes
     120;              #Retry                  #default value in seconds
@@ -10,30 +10,27 @@ $TTL 1h
                 IN      NS      ns1.ogrydziak.net.
                 IN      NS      ns2.ogrydziak.net.
 ns1             IN      A       10.0.20.10
-ns2             IN      A       10.0.20.9
-ns1             IN      AAAA    2601:100:8181:f9e2:0:0:dead:beef
-ns2             IN      AAAA    2601:100:8181:f9e2:0:0:cafe:babe
+ns2             IN      A       10.0.20.11
 
 ;domain controller
-_msdcs.ogrydziak.net.           86400 IN NS dc1.ogrydziak.net.
-_sites.ogrydziak.net.           86400 IN NS dc1.ogrydziak.net.
-_ldap._tcp.ogrydziak.net.       86400 IN CNAME _ldap._tcp.dc._msdcs.ogrydziak.net.
-_gc._tcp.ogrydziak.net.         86400 IN CNAME _ldap._tcp.gc._msdcs.ogrydziak.net.
-_kerberos._tcp.ogrydziak.net.   86400 IN CNAME _kerberos._tcp.dc._msdcs.ogrydziak.net.
-_kerberos._udp.ogrydziak.net.   86400 IN CNAME _kerberos._tcp.dc._msdcs.ogrydziak.net.
-_kpasswd._tcp.ogrydziak.net.    3600  IN SRV 0 100 464 dc1.ogrydziak.net
-_kpasswd._udp.ogrydziak.net.    3600  IN SRV 0 100 464 dc1.ogrydziak.net
+;_msdcs.ogrydziak.net.           86400 IN NS dc1.ogrydziak.net.
+;_sites.ogrydziak.net.           86400 IN NS dc1.ogrydziak.net.
+;_ldap._tcp.ogrydziak.net.       86400 IN CNAME _ldap._tcp.dc._msdcs.ogrydziak.net.
+;_gc._tcp.ogrydziak.net.         86400 IN CNAME _ldap._tcp.gc._msdcs.ogrydziak.net.
+;_kerberos._tcp.ogrydziak.net.   86400 IN CNAME _kerberos._tcp.dc._msdcs.ogrydziak.net.
+;_kerberos._udp.ogrydziak.net.   86400 IN CNAME _kerberos._tcp.dc._msdcs.ogrydziak.net.
+;_kpasswd._tcp.ogrydziak.net.    3600  IN SRV 0 100 464 dc1.ogrydziak.net
+;_kpasswd._udp.ogrydziak.net.    3600  IN SRV 0 100 464 dc1.ogrydziak.net
 
 ;net infastructure
 gateway         IN      A       10.0.0.255
 switch          IN      A       10.0.20.2
 
 ;dhcp
-dhcp-a          IN      A       10.0.20.6
+dhcp-a          IN      A       10.0.20.17
 
 ;docker
 @               IN      A       10.0.20.10
-@               IN      AAAA    2601:100:8181:f9e2:0:0:dead:beef
 blackskull      IN      CNAME   @
 www             IN      CNAME   @
 download        IN      CNAME   @
@@ -50,27 +47,23 @@ guac            IN      CNAME   @
 
 ;ntp pool
 ntp-a                IN      A       10.0.20.10
-ntp-a                IN      AAAA    2601:100:8181:f9e2:0:0:dead:beef
-ntp-b                IN      A       10.0.20.9
-ntp-b                IN      AAAA    2601:100:8181:f9e2:0:0:cafe:babe
+ntp-b                IN      A       10.0.20.11
 ;
 pool.ntp             IN      A       10.0.20.10
-pool.ntp             IN      A       10.0.20.9
-pool.ntp             IN      AAAA    2601:100:8181:f9e2:0:0:dead:beef
-pool.ntp             IN      AAAA    2601:100:8181:f9e2:0:0:cafe:babe
+pool.ntp             IN      A       10.0.20.11
 
 ;synology file share
-dropzone        IN      A       10.0.20.11
+dropzone        IN      A       10.0.20.20
 
 ;unifi wap controller
-unifi           IN      A       10.0.20.12
+unifi           IN      A       10.0.21.10
 
 ;cisco call manager
-cucm-01         IN      A       10.0.10.210
+;cucm-01         IN      A       10.0.10.210
 
 ;oracle
-sabriel         IN      A       129.159.85.122
-lirael          IN      A       150.136.203.248
+;sabriel         IN      A       129.159.85.122
+;lirael          IN      A       150.136.203.248
 
 ;domain controller
-dc1             IN      A       10.0.10.240
+;dc1             IN      A       10.0.10.240

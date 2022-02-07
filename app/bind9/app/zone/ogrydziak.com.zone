@@ -10,11 +10,8 @@ $TTL 1h
 								IN			NS			ns1.ogrydziak.com.
 								IN			NS			ns2.ogrydziak.com.
 ns1							IN			A				10.0.20.10
-ns2							IN			A				10.0.20.9
-ns1							IN			AAAA		2601:100:8181:f9e2:0:0:dead:beef
-ns2							IN			AAAA		2601:100:8181:f9e2:0:0:cafe:babe
+ns2							IN			A				10.0.20.11
 
 ;docker
 @								IN			A				10.0.20.10
-@								IN			AAAA		2601:100:8181:f9e2:0:0:dead:beef
 www							IN			CNAME		@

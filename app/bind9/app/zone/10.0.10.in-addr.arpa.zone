@@ -10,4 +10,4 @@ $TTL 1h
                 IN      NS      ns1.ogrydziak.net.
                 IN      NS      ns2.ogrydziak.net.
 ;ptr records
-210             IN      PTR     cucm-01.ogrydziak.net.
+;210             IN      PTR     cucm-01.ogrydziak.net.
