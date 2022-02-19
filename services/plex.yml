@@ -4,21 +4,20 @@ services:
       - swag
     container_name: ${COMPOSE_PROJECT_NAME}_plex
     hostname: plex
-    networks:
-      - plex
     devices:
       - $GPU_DEV:$GPU_DEV
     image: ghcr.io/linuxserver/plex:latest
       #https://hub.docker.com/r/linuxserver/plex
-    networks:
-      - servers
-      - swag
+    network_mode: host
+    #networks:
+    #  - servers
+    #  - swag
     env_file:
       - env/linuxserver.env
     environment:
       - VERSION=docker
-    ports:
-      - $SRV_SWAG_PROXY:$PLEX_H_PORT:32400
+    #ports:
+    #  - $SRV_SWAG_PROXY:$PLEX_H_PORT:32400
     volumes:
       - $PLEX_CONFIG_DIR:/config
       - $PLEX_MEDIA_DIR:/media
