@@ -2,17 +2,19 @@ services:
   devbox:
     container_name: ${COMPOSE_PROJECT_NAME}_devbox
     hostname: devbox
-    #networks:
-    #  - servers
     networks:
-      servers_vlan:
-        ipv4_address: 10.0.20.5
+      - servers
+    #networks:
+      #servers_vlan:
+        #ipv4_address: 10.0.20.5
     build:
       context: ./app/devbox
     ports:
       - $SRV_IP_1:2013:22
-    environment:
-      - USER=testuser
+    env_file:
+      - secrets/devbox.env
+    #environment:
+      #- USER=testuser
       #- SSH_KEY=""
     volumes:
       - $DEVBOX_DATA_DIR:/app

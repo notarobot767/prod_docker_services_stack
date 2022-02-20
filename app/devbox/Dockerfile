@@ -6,7 +6,7 @@ LABEL maintainer="notarobot" \
   org.label-schema.build-date="2021-09-01" \
   org.label-schema.description="Custom Devbox Server"
 
-ENV TZ=America/New_York
+ENV TZ="US/Hawaii"
 #set timezone variable
 #https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 
@@ -17,6 +17,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
   #update, upgrade, set timezone
 
 RUN apt-get update -y && apt-get upgrade -y && apt-get install -y \
+  awscli \
   bash-completion \
   dnsutils \
   curl \
