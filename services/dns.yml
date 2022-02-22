@@ -15,7 +15,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 2g
+          memory: 4g
   ns2:
     container_name: ${COMPOSE_PROJECT_NAME}_ns2
     hostname: ns2
@@ -32,4 +32,4 @@ services:
     deploy:
       resources:
         limits:
-          memory: 2g
+          memory: 4g
