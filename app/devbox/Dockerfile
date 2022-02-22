@@ -43,7 +43,7 @@ RUN apt-get update -y && apt-get upgrade -y && apt-get install -y \
   whois && \
   #install packages
   \
-  pip install --upgrade pip
+  pip3 install --upgrade pip awscli
   #upgrade pip
 
 COPY ./init.sh /etc/
