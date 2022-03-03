@@ -8,10 +8,10 @@ services:
     image: guacamole/guacd
       #https://hub.docker.com/r/guacamole/guacd
     restart: unless-stopped
-    #deploy:
-    #  resources:
-    #    limits:
-    #      memory: 512m
+    deploy:
+      resources:
+        limits:
+          memory: 512m
   guac_db:
     container_name: prod_guac_db
     hostname: guac_db
@@ -19,8 +19,10 @@ services:
       - servers
     build:
       context: ./app/guac_db
-    environment:
-      MYSQL_ROOT_PASSWORD: $GUAC_SQL_ROOT_PW
+    env_file:
+      - secrets/guac.env
+    #environment:
+      #MYSQL_ROOT_PASSWORD: $GUAC_SQL_ROOT_PW
       #change this before deployment
       #also change default pws in
         #./app/guac_db/docker-entrypoint-initdb.d/002-create-admin-user.sql
@@ -42,15 +44,17 @@ services:
       - swag
     image: guacamole/guacamole:latest
       #https://hub.docker.com/r/guacamole/guacamole
-    environment:
-      - GUACD_HOSTNAME=guacd
-      - MYSQL_HOSTNAME=guac_db
-      - MYSQL_DATABASE=$GUAC_DB
-      - MYSQL_USER=$GUAC_DB_USER
-      - MYSQL_PASSWORD=$GUAC_DB_PW
-      - TOTP_ENABLED=true
+    env_file:
+      - env/guac.env
+      - secrets/guac.env
+    #environment:
+    #  - GUACD_HOSTNAME=guacd
+    #  - MYSQL_HOSTNAME=guac_db
+    #  - MYSQL_DATABASE=$GUAC_DB
+    #  - MYSQL_USER=$GUAC_DB_USER
+    #  - MYSQL_PASSWORD=$GUAC_DB_PW
+    #  - TOTP_ENABLED=true
     ports:
-      - 9080:8080
       - $SRV_SWAG_PROXY:$GUAC_H_PORT:8080
     restart: unless-stopped
     deploy:

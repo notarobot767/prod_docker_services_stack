@@ -8,12 +8,12 @@ LABEL maintainer="notarobot" \
   org.label-schema.url="https://www.ogrydziak.net" \
   org.label-schema.vcs-ref="https://github.com/notarobot767/fa26a-docker-services"
 
-ENV TZ=America/New_York
+ENV TZ="US/Hawaii"
 
-RUN export DEBIAN_FRONTEND=noninteractive && \
-  ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
-  apt-get update -y && apt-get upgrade -y && apt-get install -y tzdata && \
-  dpkg-reconfigure --frontend noninteractive tzdata
+#RUN export DEBIAN_FRONTEND=noninteractive && \
+#  ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
+#  apt-get update -y && apt-get upgrade -y && apt-get install -y tzdata && \
+#  dpkg-reconfigure --frontend noninteractive tzdata
 #update, upgrade, set timezone
 
 COPY ./schema/. /docker-entrypoint-initdb.d/
