@@ -44,6 +44,7 @@ daloradius      IN      CNAME   @
 nagios          IN      CNAME   @
 rocket          IN      CNAME   @
 guac            IN      CNAME   @
+cs              IN      CNAME   @
 
 ;ntp pool
 ntp-a                IN      A       10.0.20.10

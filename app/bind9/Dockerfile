@@ -10,7 +10,7 @@ LABEL maintainer="notarobot" \
   org.label-schema.url="https://www.ogrydziak.net" \
   org.label-schema.vcs-ref="https://github.com/notarobot767/fa26a-docker-services"
 
-ENV TZ=America/New_York
+ENV TZ="US/Hawaii"
 #set timezone variable
 #https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 
