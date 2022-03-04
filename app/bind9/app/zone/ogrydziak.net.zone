@@ -37,15 +37,14 @@ download        IN      CNAME   @
 plex            IN      CNAME   @
 plexstats       IN      CNAME   @
 portainer       IN      CNAME   @
-synclounge      IN      CNAME   @
 files           IN      CNAME   @
 kibana          IN      CNAME   @
-daloradius      IN      CNAME   @
-nagios          IN      CNAME   @
-rocket          IN      CNAME   @
 guac            IN      CNAME   @
 cs              IN      CNAME   @
-guac            IN      CNAME   @
+eve-ng          IN      CNAME   @
+;daloradius      IN      CNAME   @
+;nagios          IN      CNAME   @
+;rocket          IN      CNAME   @
 
 ;ntp pool
 ntp-a                IN      A       10.0.20.10
