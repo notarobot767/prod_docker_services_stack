@@ -2,8 +2,8 @@ services:
   nagios:
     entrypoint: ["/bin/bash"]
       #comment to disable
-    depends_on:
-      - swag
+    #depends_on:
+    #  - swag
     container_name: prod_nagios
     hostname: nagios
     networks:

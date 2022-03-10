@@ -41,7 +41,6 @@ services:
     hostname: guac
     networks:
       - servers
-      - swag
     image: guacamole/guacamole:latest
       #https://hub.docker.com/r/guacamole/guacamole
     env_file:

@@ -1,7 +1,7 @@
 services:
   download:
-    depends_on:
-      - swag
+    #depends_on:
+    #  - swag
     container_name: ${COMPOSE_PROJECT_NAME}_download
     hostname: download
     networks:

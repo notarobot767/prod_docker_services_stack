@@ -28,9 +28,9 @@ services:
         limits:
           memory: 16g
   plexstats:
-    depends_on:
-      - plex
-      - swag
+    #depends_on:
+    #  - plex
+    #  - swag
     container_name: ${COMPOSE_PROJECT_NAME}_plexstats
     hostname: plexstats
     networks:
