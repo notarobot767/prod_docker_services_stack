@@ -1,0 +1,44 @@
+services:
+  virtualbox:
+    container_name: ${COMPOSE_PROJECT_NAME}_virtualbox
+    hostname: vbox
+    network_mode: host
+    build:
+      context: ./app/vbox/virtualbox
+    restart: unless-stopped
+    volumes:
+      - $VBOX_DATA_DIR:/app/vbox
+      - $VBOX_ISO_DIR:/app/iso
+      - /dev/vboxdrv:/dev/vboxdrv
+      #must also install on host OS: linux-headers-generic virtualbox-dkms
+    deploy:
+      resources:
+        limits:
+          memory: 16g
+  phpvirtualbox:
+    #depends_on:
+    #  - virtualbox
+    container_name: ${COMPOSE_PROJECT_NAME}_phpvirtualbox
+    hostname: phpvirtualbox
+    networks:
+      - servers
+    image: joweisberg/phpvirtualbox
+      #https://hub.docker.com/r/joweisberg/phpvirtualbox
+    #env_file:
+      #- env/linuxserver.env
+    environment:
+      - TZ=$TZ
+      - ID_NAME=OG_Server
+      - ID_HOSTPORT=240.0.13.1:18083
+      - ID_USER=vbox
+      - ID_PW=vbox
+      - CONF_noAuth=true
+      #- CONF_browserRestrictFolders="/app"
+    ports:
+      #- $SRV_SWAG_PROXY:$PLEXSTATS_H_PORT:8181
+      - 10.0.20.10:8080:80
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1g
