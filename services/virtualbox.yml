@@ -4,7 +4,7 @@ services:
     hostname: vbox
     network_mode: host
     build:
-      context: ./app/vbox/virtualbox
+      context: ./app/virtualbox
     restart: unless-stopped
     volumes:
       - $VBOX_DATA_DIR:/app/vbox
