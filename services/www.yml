@@ -15,3 +15,20 @@ services:
       resources:
         limits:
           memory: 512m
+  files:
+    container_name: ${COMPOSE_PROJECT_NAME}_files
+    hostname: files
+    networks:
+      - servers
+    build:
+      context: ./app/files
+    ports:
+      #- $SRV_SWAG_PROXY:$PLEXSTATS_H_PORT:8181
+      - 10.0.20.10:8090:80
+    volumes:
+      - $FILES_DATA_DIR:/var/www/html
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1g
