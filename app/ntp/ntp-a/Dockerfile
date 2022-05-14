@@ -1,4 +1,4 @@
-FROM docker.io/library/ubuntu:latest
+FROM docker.io/library/ubuntu:20.04
 
 LABEL maintainer="notarobot" \
   org.label-schema.name="Chrony NTP Server" \
