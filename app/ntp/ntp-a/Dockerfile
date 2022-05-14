@@ -1,24 +1,26 @@
-FROM docker.io/library/ubuntu:20.04
+FROM docker.io/library/ubuntu:22.04
 
 LABEL maintainer="notarobot" \
   org.label-schema.name="Chrony NTP Server" \
   org.label-schema.vendor="OG Networks" \
-  org.label-schema.build-date="2021-09-01" \
-  org.label-schema.description="Chrony NTP server on Ubuntu"
+  org.label-schema.build-date="2022-05-14" \
+  org.label-schema.description="Chrony NTP server on Ubuntu" \
+  org.label-schema.url="https://www.ogrydziak.net" \
+  org.label-schema.vcs-ref="https://github.com/notarobot767/prod_docker_services_stack"
 
-ENV TZ=America/New_York
+ENV TZ="US/Hawaii"
 #set timezone variable
 #https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 
-RUN export DEBIAN_FRONTEND=noninteractive && \
-  ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
-  apt-get update -y && apt-get upgrade -y && apt-get install -y tzdata && \
-  dpkg-reconfigure --frontend noninteractive tzdata
-#update, upgrade, set timezone
-
-RUN apt-get update -y && apt-get upgrade -y && apt-get install -y \
-  chrony
-#install chrony package
+RUN ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && \
+  apt-get update -y && apt-get upgrade -y && apt-get install -y tzdata \
+  #update, upgrade, set timezone
+  \
+  chrony && \
+  #install chrony package
+  \
+  rm -rf /var/lib/apt/lists/*
+  #remove apt package cache
 
 COPY ./chrony.conf /etc/chrony/
 #copy conf files to chrony default directory
