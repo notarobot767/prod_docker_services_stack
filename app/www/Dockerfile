@@ -1,5 +1,8 @@
 FROM nginx:latest
-#
+
+RUN rm -rf /usr/share/nginx/html/*
+
+COPY ./html/. /usr/share/nginx/html/
 
 LABEL maintainer="notarobot" \
   org.label-schema.name="WWW" \
@@ -8,7 +11,3 @@ LABEL maintainer="notarobot" \
   org.label-schema.description="Custom Nginx Server" \
   org.label-schema.url="https://www.ogrydziak.net" \
   org.label-schema.vcs-ref="https://github.com/notarobot767/fa26a-docker-services"
-
-RUN rm -rf /usr/share/nginx/html/*
-
-COPY ./html/. /usr/share/nginx/html/

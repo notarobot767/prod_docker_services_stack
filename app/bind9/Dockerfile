@@ -1,14 +1,4 @@
-#!/bin/bash
-
 FROM docker.io/library/ubuntu:22.04
-
-LABEL maintainer="notarobot" \
-  org.label-schema.name="Bind9 DNS Server" \
-  org.label-schema.vendor="OG Networks" \
-  org.label-schema.build-date="2022-05-15" \
-  org.label-schema.description="Bind9 DNS Server with Docker Compose" \
-  org.label-schema.url="https://www.ogrydziak.net" \
-  org.label-schema.vcs-ref="https://github.com/notarobot767/prod_docker_services_stack"
 
 ENV TZ="US/Hawaii"
 #set timezone variable
@@ -27,10 +17,6 @@ RUN ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && \
 COPY ./app /app
 #config will live locally on image
 
-EXPOSE 53/tcp
-EXPOSE 53/udp
-#dns uses both tcp and udp port 53
-
 CMD ["named", "-f", "-4", "-c", "/app/named.conf"]
 #CMD would allow user to specify alternative config for container instance
 
@@ -38,3 +24,15 @@ CMD ["named", "-f", "-4", "-c", "/app/named.conf"]
 #-f #Run the server in the foreground. Necessary when running as docker instance
 #-c #Use config-file as the configuration file instead of the default, /etc/named.conf
 #https://linux.die.net/man/8/named
+
+EXPOSE 53/tcp
+EXPOSE 53/udp
+#dns uses both tcp and udp port 53
+
+LABEL maintainer="notarobot" \
+  org.label-schema.name="Bind9 DNS Server" \
+  org.label-schema.vendor="OG Networks" \
+  org.label-schema.build-date="2022-05-15" \
+  org.label-schema.description="Bind9 DNS Server with Docker Compose" \
+  org.label-schema.url="https://www.ogrydziak.net" \
+  org.label-schema.vcs-ref="https://github.com/notarobot767/prod_docker_services_stack"

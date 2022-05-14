@@ -1,6 +1,6 @@
-FROM ubuntu:latest
+FROM ubuntu:22.04
 
-ENV TZ="Pacific/Honolulu"
+ENV TZ="US/Hawaii"
 #set timezone variable
 #https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 
@@ -10,7 +10,7 @@ RUN ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && \
   \
   nginx \
   libnginx-mod-http-fancyindex && \
-  #install chrony package and module
+  #install ngix package and module
   \
   rm -f /etc/nginx/sites-available/default
   #remove default config
