@@ -9,9 +9,9 @@ $TTL 1h
 ;name servers
 								IN			NS			ns1.ogrydziak.com.
 								IN			NS			ns2.ogrydziak.com.
-ns1							IN			A				10.0.20.10
-ns2							IN			A				10.0.20.11
+ns1							IN			A				10.0.20.30
+ns2							IN			A				10.0.20.31
 
 ;docker
-@								IN			A				10.0.20.10
+@								IN			A				10.0.30.10
 www							IN			CNAME		@
