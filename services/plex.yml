@@ -44,7 +44,7 @@ services:
       - $SRV_SWAG_PROXY:$PLEXSTATS_H_PORT:8181
     restart: unless-stopped
     volumes:
-      - $PLEXSTATS_CONFIG_DIR:/config
+      - $PLEXSTATS_DATA_DIR:/config
       - $PLEX_CONFIG_DIR:/plex:ro
         #to read plex logs
     deploy:
