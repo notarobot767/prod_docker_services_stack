@@ -9,15 +9,9 @@ services:
     image: ghcr.io/linuxserver/plex:latest
       #https://hub.docker.com/r/linuxserver/plex
     network_mode: host
-    #networks:
-    #  - servers
-    #  - swag
     env_file:
       - env/linuxserver.env
-    environment:
-      - VERSION=docker
-    #ports:
-    #  - $SRV_SWAG_PROXY:$PLEX_H_PORT:32400
+      - env/plex.env
     volumes:
       - $PLEX_CONFIG_DIR:/config
       - $PLEX_MEDIA_DIR:/media
@@ -28,14 +22,10 @@ services:
         limits:
           memory: 48g
   plexstats:
-    #depends_on:
-    #  - plex
-    #  - swag
     container_name: ${COMPOSE_PROJECT_NAME}_plexstats
     hostname: plexstats
     networks:
       - servers
-      - swag
     image: ghcr.io/linuxserver/tautulli:latest
       #https://hub.docker.com/r/linuxserver/tautulli
     env_file:
