@@ -1,55 +1,35 @@
 services:
   rocket_db:
-    entrypoint: ["/bin/bash"]
-      #comment to disable
     container_name: prod_rocket_db
     hostname: rocket_db
     networks:
       - servers
-    image: mongo:4.0
+    image: mongo:4.2
     restart: unless-stopped
-    command: mongod --smallfiles --oplogSize 128 --replSet rs0
-    labels:
-      - "traefik.enable=false"
+    command: ["--oplogSize", "128", "--replSet", rs0"]
     volumes:
       - $ROCKET_DB_DIR:/data/db
-      #datastore
     restart: unless-stopped
     deploy:
       resources:
         limits:
           memory: 1g
-  #run once and then comment it out to avoid accidently deleting data 
-  rocket-mongo-init-replica:
-    image: mongo:4.0
-    networks:
-      - servers
-    entrypoint: ["/bin/bash"]
-    #command: 'mongo rocket_db/rocketchat --eval "rs.initiate({ _id: ''rs0'', members: [ { _id: 0, host: ''localhost:27017'' } ]})"'
-    depends_on:
-      - rocket_db
+  #run once to intiate database
+  #sudo docker exec -it prod_rocket_db mongo --eval "printjson(rs.initiate())"
   rocket_chat:
-    entrypoint: ["/bin/bash"]
-      #comment to disable
     depends_on:
       - rocket_db
     container_name: prod_rocket_chat
     hostname: rocket_chat
     networks:
       - servers
-      - swag
     image: rocketchat/rocket.chat:latest
-    labels:
-      - "traefik.backend=rocketchat"
-      - "traefik.frontend.rule=Host: $ROCKET_ROOT_URL"
+    #https://hub.docker.com/_/rocket-chat
     restart: unless-stopped
     ports:
-      - $SRV_SWAG_PROXY:$ROCKET_H_PORT:3000
-    environment:
-      - PORT=3000
-      - ROOT_URL=https://$ROCKET_ROOT_URL
-      - MONGO_OPLOG_URL=mongodb://rocket_db:27017/local
-      - MONGO_URL=mongodb://rocket_db:27017/rocketchat
+      - $SRV_SWAG_PROXY:$ROCKET_H_PORT:80
+    env_file:
+      - env/rocket.env
     restart: unless-stopped
     deploy:
       resources:

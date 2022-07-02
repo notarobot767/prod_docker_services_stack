@@ -46,7 +46,7 @@ cs              IN      CNAME   @
 eve-ng          IN      CNAME   @
 ;daloradius      IN      CNAME   @
 ;nagios          IN      CNAME   @
-;rocket          IN      CNAME   @
+rocket          IN      CNAME   @
 
 ;dhcp
 ;dhcp-a          IN      A       10.0.20.17
