@@ -4,18 +4,15 @@ services:
     hostname: devbox
     networks:
       - servers
-    #networks:
-      #servers_vlan:
-        #ipv4_address: 10.0.20.5
     build:
       context: ./app/devbox
     ports:
       - $SRV_IP_1:2013:22
     env_file:
       - secrets/devbox.env
-    #environment:
+      #add sercrets in env
       #- USER=testuser
-      #- SSH_KEY=""
+      #- SSH_KEY=[public_key]
     volumes:
       - $DEVBOX_DATA_DIR:/app
     deploy:
