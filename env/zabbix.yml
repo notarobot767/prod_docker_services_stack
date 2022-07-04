@@ -1,0 +1,3 @@
+ZBX_SERVER_HOST=zabbix_srv
+PHP_TZ=$TZ
+ZBX_SERVER_NAME=OG_Networks
