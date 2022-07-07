@@ -48,6 +48,7 @@ eve-ng          IN      CNAME   @
 ;nagios          IN      CNAME   @
 rocket          IN      CNAME   @
 meet            IN      CNAME   @
+zabbix          IN      CNAME   @
 
 ;dhcp
 ;dhcp-a          IN      A       10.0.20.17

@@ -1,6 +1,6 @@
 services:
   zabbix_db:
-    container_name: zabbix_db
+    container_name: ${COMPOSE_PROJECT_NAME}_zabbix_db
     hostname: zabbix_db
     networks:
       - servers
@@ -11,8 +11,12 @@ services:
       #https://mariadb.com/kb/en/mariadb-docker-environment-variables/
     volumes:
       - $ZABBIX_DB_DIR:/var/lib/mysql
+    deploy:
+      resources:
+        limits:
+          memory: 1g
   zabbix_srv:
-    container_name: zabbix_srv
+    container_name: ${COMPOSE_PROJECT_NAME}_zabbix_srv
     hostname: zabbix_srv
     image: zabbix/zabbix-server-mysql
     depends_on:
@@ -24,8 +28,12 @@ services:
       - secrets/zabbix.yml
       #DB_SERVER_HOST, MYSQL_USER, MYSQL_PASSWORD
       #https://www.zabbix.com/documentation/current/en/manual/installation/containers
+    deploy:
+      resources:
+        limits:
+          memory: 1g
   zabbix_www:
-    container_name: zabbix_www
+    container_name: ${COMPOSE_PROJECT_NAME}_zabbix_www
     hostname: zabbix_www
     image: zabbix/zabbix-web-nginx-mysql
     #https://hub.docker.com/r/zabbix/zabbix-web-nginx-mysql
@@ -34,12 +42,16 @@ services:
     networks:
       - servers
     ports:
-      - $SRV_IP_1:8080:8080
+      - $SRV_SWAG_PROXY:$ZABBIX_H_PORT:8080
     env_file:
       - env/zabbix.yml
       - secrets/zabbix.yml
+    deploy:
+      resources:
+        limits:
+          memory: 1g
   zabbix_agent:
-    container_name: zabbix_agent
+    container_name: ${COMPOSE_PROJECT_NAME}_zabbix_agent
     hostname: zabbix_agent
     image: zabbix/zabbix-agent
     #https://hub.docker.com/r/zabbix/zabbix-agent2
@@ -58,3 +70,7 @@ services:
     #zabbitx needs permissions to docker
     #usermod -a -G docker zabbix
     #https://medium.com/geekculture/monitor-docker-containers-on-linux-server-with-zabbix-agent2-2a4e7708dbb7
+    deploy:
+      resources:
+        limits:
+          memory: 512m
