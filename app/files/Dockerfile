@@ -12,8 +12,11 @@ RUN ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && \
   libnginx-mod-http-fancyindex && \
   #install ngix package and module
   \
-  rm -f /etc/nginx/sites-available/default
-  #remove default config
+  rm -rf /var/lib/apt/lists/* && \
+  #remove apt package cache
+  \
+  rm -rf /etc/nginx/sites-available
+  #remove folder
 
 COPY ./nginx/. /etc/nginx
 #copy virtual hosts and default
@@ -27,6 +30,7 @@ EXPOSE 80/tcp
 LABEL maintainer="notarobot" \
   org.label-schema.name="Files Proxy" \
   org.label-schema.vendor="OG Networks" \
-  org.label-schema.build-date="2022-03-10" \
+  org.label-schema.build-date="2022-07-8" \
   org.label-schema.description="Custom Nginx File Server Proxy" \
-  org.label-schema.url="https://www.ogrydziak.net"
+  org.label-schema.url="https://www.ogrydziak.net" \
+  org.label-schema.vcs-ref="https://github.com/notarobot767/prod_docker_services_stack"
