@@ -1,14 +1,20 @@
 services:
   rproxy:
-    entrypoint: ["/bin/bash"]
-      #comment to disable
+    #entrypoint: ["/bin/bash"]
+      #uncomment to disable
     container_name: ${COMPOSE_PROJECT_NAME}_rproxy
     hostname: rproxy
-    networks:
-      - servers
+    network_mode: host
+    #networks:
+    #  - servers
     build:
       context: ./app/rproxy
-    ports:
-      - 9090:80
-    shm_size: "2gb"
+    #ports:
+    #  - 9090:80
+    volumes:
+      - $CERTBOT_DATA_DIR_ETC:/etc/letsencrypt:ro
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 4g
