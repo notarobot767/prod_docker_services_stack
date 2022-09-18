@@ -5,11 +5,15 @@ services:
       - rproxy
     container_name: ${COMPOSE_PROJECT_NAME}_plex
     hostname: plex
+    network_mode: host
+    #networks:
+      #- servers
+    #ports:
+      #- $SRV_SWAG_PROXY:$PLEX_H_PORT:32400
     #devices:
       #- $GPU_DEV:$GPU_DEV
     image: ghcr.io/linuxserver/plex:latest
       #https://hub.docker.com/r/linuxserver/plex
-    network_mode: host
     env_file:
       - env/linuxserver.env
       - env/plex.env
