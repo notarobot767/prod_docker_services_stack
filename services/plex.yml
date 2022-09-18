@@ -1,11 +1,12 @@
 services:
   plex:
+  #https://tizutech.com/plex-transcoding-with-docker-nvidia-gpu/
     depends_on:
-      - swag
+      - rproxy
     container_name: ${COMPOSE_PROJECT_NAME}_plex
     hostname: plex
-    devices:
-      - $GPU_DEV:$GPU_DEV
+    #devices:
+      #- $GPU_DEV:$GPU_DEV
     image: ghcr.io/linuxserver/plex:latest
       #https://hub.docker.com/r/linuxserver/plex
     network_mode: host
@@ -19,8 +20,11 @@ services:
     restart: unless-stopped
     deploy:
       resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
         limits:
-          memory: 48g
+          memory: 56g
   plexstats:
     container_name: ${COMPOSE_PROJECT_NAME}_plexstats
     hostname: plexstats
