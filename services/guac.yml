@@ -4,8 +4,8 @@ services:
     hostname: guacd
     networks:
       - servers
-    #image: ghcr.io/linuxserver/guacd:latest
-    image: guacamole/guacd
+    image: ghcr.io/linuxserver/guacd:latest
+    #image: guacamole/guacd
       #https://hub.docker.com/r/guacamole/guacd
     restart: unless-stopped
     deploy:
@@ -55,6 +55,7 @@ services:
     #  - TOTP_ENABLED=true
     ports:
       - $SRV_SWAG_PROXY:$GUAC_H_PORT:8080
+      - $SRV_IP_1:8080:8080
     restart: unless-stopped
     deploy:
       resources:

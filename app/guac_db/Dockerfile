@@ -1,13 +1,5 @@
 FROM docker.io/library/mariadb:latest
 
-LABEL maintainer="notarobot" \
-  org.label-schema.name="Guac Database Server" \
-  org.label-schema.vendor="OG Networks" \
-  org.label-schema.build-date="2021-06-26" \
-  org.label-schema.description="MYSQL database for Guac" \
-  org.label-schema.url="https://www.ogrydziak.net" \
-  org.label-schema.vcs-ref="https://github.com/notarobot767/fa26a-docker-services"
-
 ENV TZ="US/Hawaii"
 
 #RUN export DEBIAN_FRONTEND=noninteractive && \
@@ -22,3 +14,11 @@ COPY ./schema/. /docker-entrypoint-initdb.d/
 EXPOSE 3306
 
 CMD ["mysqld"]
+
+LABEL maintainer="notarobot" \
+  org.label-schema.name="Guac Database Server" \
+  org.label-schema.vendor="OG Networks" \
+  org.label-schema.build-date="2021-06-26" \
+  org.label-schema.description="MYSQL database for Guac" \
+  org.label-schema.url="https://www.ogrydziak.net" \
+  org.label-schema.vcs-ref="https://github.com/notarobot767/fa26a-docker-services"
