@@ -43,7 +43,7 @@ files           IN      CNAME   @
 kibana          IN      CNAME   @
 guac            IN      CNAME   @
 cs              IN      CNAME   @
-eve-ng          IN      CNAME   @
+pod01.eve-ng    IN      CNAME   @
 ;daloradius      IN      CNAME   @
 ;nagios          IN      CNAME   @
 rocket          IN      CNAME   @
