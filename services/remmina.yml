@@ -1,0 +1,21 @@
+services:
+  remmina:
+    container_name: ${COMPOSE_PROJECT_NAME}_remmina
+    hostname: remmina
+    networks:
+      - servers
+    image: ghcr.io/linuxserver/remmina:latest
+      #https://hub.docker.com/r/linuxserver/code-server
+    env_file:
+      - env/linuxserver.env
+      - secrets/cs.env
+    ports:
+      - $SRV_SWAG_PROXY:3000:3000
+      - $SRV_IP_1:3000:3000
+    volumes:
+       - $REMMINA_CONFIG_DIR:/config
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1g
