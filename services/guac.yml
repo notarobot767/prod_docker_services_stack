@@ -13,6 +13,8 @@ services:
         limits:
           memory: 512m
   guac_db:
+    depends_on:
+      - guacd
     container_name: prod_guac_db
     hostname: guac_db
     networks:
@@ -60,4 +62,4 @@ services:
     deploy:
       resources:
         limits:
-          memory: 1g
+          memory: 2g
