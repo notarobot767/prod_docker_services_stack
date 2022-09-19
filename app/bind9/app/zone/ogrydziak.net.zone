@@ -49,6 +49,7 @@ pod01.eve-ng    IN      CNAME   @
 rocket          IN      CNAME   @
 meet            IN      CNAME   @
 zabbix          IN      CNAME   @
+pma             IN      CNAME   @
 
 ;dhcp
 ;dhcp-a          IN      A       10.0.20.17
