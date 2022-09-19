@@ -7,8 +7,8 @@ services:
     build:
       context: ./app/devbox
     ports:
-      #- $SRV_IP_1:2013:22
-      - 2013:22
+      - $SRV_SWAG_PROXY:2013:22
+      #- 2013:22
     env_file:
       - secrets/devbox.env
       #add sercrets in env
