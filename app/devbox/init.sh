@@ -12,9 +12,12 @@ else
   echo "AllowUsers $DEV_USER" >> /etc/ssh/sshd_config
   cd /home/$DEV_USER
   mkdir .ssh
-  ssh-keygen -q -t rsa -b 2048 -N '' \
+  ssh-keygen -q -t ecdsa -b 521 -N '' \
     -f /home/$DEV_USER/.ssh/id_rsa \
-    -C $DEV_USER@$HOSTNAME
+    -C rsa2048@$HOSTNAME
+  ssh-keygen -q -t rsa -b 4096 -N '' \
+    -f /home/$DEV_USER/.ssh/id_rsa \
+    -C ecdsa521@$HOSTNAME
   chmod 400 .ssh/id_rsa
   chmod 444 .ssh/id_rsa.pub
   #create user, add to sudo group, remove password
