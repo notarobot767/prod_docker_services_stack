@@ -1,7 +1,7 @@
 services:
-  code-server:
-    container_name: ${COMPOSE_PROJECT_NAME}_code-server
-    hostname: code-server
+  code_server:
+    container_name: ${COMPOSE_PROJECT_NAME}_code_server
+    hostname: code_server
     networks:
       - servers
     image: ghcr.io/linuxserver/code-server:latest
@@ -13,7 +13,7 @@ services:
     ports:
       - $SRV_SWAG_PROXY:8040:8443
     volumes:
-       - $CS_CONFIG_DIR:/config
+       - $CS_DATA_DIR:/config
        - $ROOT_DIR:/docker
     restart: unless-stopped
     deploy:
