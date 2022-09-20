@@ -16,4 +16,4 @@ networks:
       driver: default
       config:
         - subnet: $SERVERS_VLAN
-          gateway: $SERVERS_VLAN_GW
+          gateway: $SERVERS_VLAN_GWe

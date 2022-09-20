@@ -14,7 +14,10 @@ services:
       - $SRV_SWAG_PROXY:8040:8443
     volumes:
        - $CS_DATA_DIR:/config
-       - $ROOT_DIR:/docker
+       - $ROOT_DIR:/cs/docker
+       - $GDRIVE_DIR:/cs/gdrive
+       - /home/crashdummy:/cs/crashdummy
+       - $DEVBOX_DATA_DIR:/cs/devbox
     restart: unless-stopped
     deploy:
       resources:
