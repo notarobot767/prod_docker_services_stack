@@ -6,7 +6,6 @@ services:
       - servers
     ports:
       - $SRV_SWAG_PROXY:$PHPMYADMIN_H_PORT:80
-      - 9080:80
     image: lscr.io/linuxserver/phpmyadmin:latest
       #https://hub.docker.com/r/linuxserver/phpmyadmin
     env_file:
