@@ -1,0 +1,21 @@
+services:
+  keycloak:
+    container_name: ${COMPOSE_PROJECT_NAME}_code_server
+    hostname: code_server
+    networks:
+      - servers
+    image: ghcr.io/linuxserver/code-server:latest
+      #https://hub.docker.com/r/linuxserver/code-server
+    env_file:
+      - env/keycloak.env
+      - secrets/keycloak.env
+    ports:
+      #- $SRV_SWAG_PROXY:8040:8080
+      - 8080:8080
+    #volumes:
+       #- $CS_DATA_DIR:/config
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 4g
