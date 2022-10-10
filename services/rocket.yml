@@ -4,9 +4,9 @@ services:
     hostname: rocket_db
     networks:
       - servers
-    image: mongo:4.2
+    image: mongo:5.0
     restart: unless-stopped
-    command: ["--oplogSize", "128", "--replSet", rs0"]
+    command: ["--oplogSize", "128", "--replSet", "rs0", "--storageEngine=wiredTiger"]
     volumes:
       - $ROCKET_DB_DIR:/data/db
     restart: unless-stopped
@@ -23,7 +23,7 @@ services:
     hostname: rocket_chat
     networks:
       - servers
-    image: rocketchat/rocket.chat:latest
+    image: rocket.chat:5
     #https://hub.docker.com/_/rocket-chat
     restart: unless-stopped
     ports:

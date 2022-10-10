@@ -4,11 +4,15 @@ services:
     hostname: zabbix_db
     networks:
       - servers
-    image: docker.io/library/mariadb:10.7
+    image: docker.io/library/mariadb:10.8
     env_file:
-      - secrets/zabbix_db.yml
+      - env/zabbix_db.env
+      - secrets/zabbix_db.env
       #MYSQL_PASSWORD=password
       #https://mariadb.com/kb/en/mariadb-docker-environment-variables/
+    environment:
+      MARIADB_AUTO_UPGRADE: "1"
+      MARIADB_INITDB_SKIP_TZINFO: "1"
     volumes:
       - $ZABBIX_DB_DIR:/var/lib/mysql
     deploy:
@@ -24,8 +28,8 @@ services:
     networks:
       - servers
     env_file:
-      - env/zabbix.yml
-      - secrets/zabbix.yml
+      - env/zabbix.env
+      - secrets/zabbix.env
       #DB_SERVER_HOST, MYSQL_USER, MYSQL_PASSWORD
       #https://www.zabbix.com/documentation/current/en/manual/installation/containers
     deploy:
@@ -44,8 +48,8 @@ services:
     ports:
       - $SRV_SWAG_PROXY:$ZABBIX_H_PORT:8080
     env_file:
-      - env/zabbix.yml
-      - secrets/zabbix.yml
+      - env/zabbix.env
+      - secrets/zabbix.env
     deploy:
       resources:
         limits:
