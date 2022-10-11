@@ -1,4 +1,4 @@
-FROM docker.io/library/mariadb:latest
+FROM docker.io/library/mariadb:10
 
 ENV TZ="US/Hawaii"
 
