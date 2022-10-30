@@ -8,6 +8,7 @@ services:
       context: ./app/ntp/ntp-a
     ports:
       - $SRV_IP_1:123:123/udp
+    privileged: true
     restart: unless-stopped
     deploy:
       resources:
