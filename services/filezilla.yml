@@ -1,0 +1,24 @@
+services:
+  filezilla:
+    container_name: ${COMPOSE_PROJECT_NAME}_filezilla
+    hostname: filezilla
+    networks:
+      - servers
+    image: lscr.io/linuxserver/filezilla:latest
+      #https://hub.docker.com/r/linuxserver/filezilla
+    env_file:
+      - env/linuxserver.env
+    ports:
+      - 8080:3000
+      #- $SRV_SWAG_PROXY:8040:8443
+    volumes:
+       - $FZ_DATA_DIR:/config
+       - $ROOT_DIR:/app/docker
+       - $GDRIVE_DIR:/app/gdrive
+       - /home/crashdummy:/app/crashdummy
+       - $DEVBOX_DATA_DIR:/app/devbox
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 4g
