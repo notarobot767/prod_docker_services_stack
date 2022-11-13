@@ -1,0 +1,20 @@
+services:
+  sftp:
+    container_name: ${COMPOSE_PROJECT_NAME}_sftp
+    networks:
+      - servers
+    build:
+      context: ./app/sftp
+    ports:
+      - $SRV_IP_2:22:22
+    env_file:
+      - secrets/sftp.env
+      #add sercrets in env
+      #- USER=testuser
+      #- SSH_KEY=[public_key]
+    volumes:
+      - $SFTP_DATA_DIR:/app/sftp
+    deploy:
+      resources:
+        limits:
+          memory: 4G
