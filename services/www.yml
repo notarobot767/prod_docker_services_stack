@@ -31,3 +31,19 @@ services:
       resources:
         limits:
           memory: 1g
+  upload:
+    container_name: ${COMPOSE_PROJECT_NAME}_upload
+    hostname: upload
+    networks:
+      - servers
+    build:
+      context: ./app/upload
+    ports:
+      - 8000:8000
+    #volumes:
+      #- $FILES_DATA_DIR:/var/www/html
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 2g
