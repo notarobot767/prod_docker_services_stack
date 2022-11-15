@@ -9,12 +9,12 @@ services:
       - $SRV_IP_2:22:22
     env_file:
       - secrets/sftp.env
-      #add sercrets in env
-      #- USER=testuser
-      #- SSH_KEY=[public_key]
+      #add sercrets below in 'secrets/sftp.env'
+      #DEV_USER=user
+      #DEV_PW=password
     volumes:
       - $SFTP_DATA_DIR:/app/sftp
     deploy:
       resources:
         limits:
-          memory: 4G
+          memory: 4g

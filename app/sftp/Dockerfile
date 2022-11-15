@@ -12,14 +12,15 @@ RUN ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && \
   #openssh server
   \
   rm -rf /var/lib/apt/lists/*
-  #remove apt package cache
+    #remove apt package cache
 
 COPY ./init.sh /etc/
 
-RUN ln -s /usr/lib/nagios/plugins/* /bin/ && \
-  chmod +x /etc/init.sh && \
+RUN chmod +x /etc/init.sh && \
+    #ensure init.sh is executable
   service ssh start
-  #why do I need this?...
+    #why do I need this?...
+  #extra run layer allows us to keep initial run cache if edit init.sh
 
 CMD ["/etc/init.sh"]
 
