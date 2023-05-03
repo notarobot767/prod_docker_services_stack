@@ -1,5 +1,7 @@
 services:
   code_server:
+    depends_on:
+      - rproxy
     container_name: ${COMPOSE_PROJECT_NAME}_code_server
     hostname: code_server
     networks:
@@ -10,8 +12,6 @@ services:
       - env/linuxserver.env
       - env/cs.env
       - secrets/cs.env
-    ports:
-      - $SRV_SWAG_PROXY:8040:8443
     volumes:
        - $CS_DATA_DIR:/config
        - $ROOT_DIR:/cs/docker
