@@ -1,14 +1,13 @@
 services:
   portainer:
+    depends_on:
+      - rproxy
     container_name: ${COMPOSE_PROJECT_NAME}_portainer
     hostname: portainer
     networks:
       - servers
     image: portainer/portainer-ce
       #https://hub.docker.com/r/portainer/portainer-ce
-    ports:
-      - $SRV_SWAG_PROXY:$PORTAINER_H_PORT:$PORTAINER_H_PORT
-      #- 9000:9000
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - $PORTAINER_DATA_DIR:/data
