@@ -4,7 +4,7 @@ services:
     hostname: zabbix_db
     networks:
       - servers
-    image: docker.io/library/mariadb:10.8
+    image: docker.io/library/mariadb:10.11
     env_file:
       - env/zabbix_db.env
       - secrets/zabbix_db.env
@@ -15,6 +15,7 @@ services:
       MARIADB_INITDB_SKIP_TZINFO: "1"
     volumes:
       - $ZABBIX_DB_DIR:/var/lib/mysql
+    restart: unless-stopped
     deploy:
       resources:
         limits:
@@ -32,6 +33,7 @@ services:
       - secrets/zabbix.env
       #DB_SERVER_HOST, MYSQL_USER, MYSQL_PASSWORD
       #https://www.zabbix.com/documentation/current/en/manual/installation/containers
+    restart: unless-stopped
     deploy:
       resources:
         limits:
@@ -50,6 +52,7 @@ services:
     env_file:
       - env/zabbix.env
       - secrets/zabbix.env
+    restart: unless-stopped
     deploy:
       resources:
         limits:
@@ -57,12 +60,13 @@ services:
   zabbix_agent:
     container_name: ${COMPOSE_PROJECT_NAME}_zabbix_agent
     hostname: zabbix_agent
-    image: zabbix/zabbix-agent
+    image: zabbix/zabbix-agent2
     #https://hub.docker.com/r/zabbix/zabbix-agent2
     depends_on:
       - zabbix_srv
     networks:
       - servers
+    user: root
     environment:
       - ZBX_HOSTNAME=zabbix_srv
       - ZBX_SERVER_HOST=zabbix_srv
