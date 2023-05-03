@@ -1,29 +1,27 @@
 services:
   www:
-    #depends_on:
-    #  - swag
+    depends_on:
+      - rproxy
     container_name: ${COMPOSE_PROJECT_NAME}_www
     hostname: www
     networks:
-      - swag
+      - servers
     build:
       context: ./app/www
-    ports:
-      - $SRV_SWAG_PROXY:$WWW_H_PORT:80
     restart: unless-stopped
     deploy:
       resources:
         limits:
-          memory: 512m
+          memory: 1g
   files:
+    depends_on:
+      - rproxy
     container_name: ${COMPOSE_PROJECT_NAME}_files
     hostname: files
     networks:
       - servers
     build:
       context: ./app/files
-    ports:
-      - $SRV_SWAG_PROXY:$FILES_H_PORT:80
     volumes:
       - $FILES_DATA_DIR:/var/www/html
     restart: unless-stopped
@@ -31,19 +29,3 @@ services:
       resources:
         limits:
           memory: 1g
-  upload:
-    container_name: ${COMPOSE_PROJECT_NAME}_upload
-    hostname: upload
-    networks:
-      - servers
-    build:
-      context: ./app/upload
-    ports:
-      - 8000:8000
-    #volumes:
-      #- $FILES_DATA_DIR:/var/www/html
-    restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          memory: 2g
