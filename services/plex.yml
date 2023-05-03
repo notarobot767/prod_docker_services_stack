@@ -5,18 +5,15 @@ services:
       - rproxy
     container_name: ${COMPOSE_PROJECT_NAME}_plex
     hostname: plex
-    network_mode: host
-    #networks:
-      #- servers
-    #ports:
-      #- $SRV_SWAG_PROXY:$PLEX_H_PORT:32400
-    #devices:
-      #- $GPU_DEV:$GPU_DEV
+    networks:
+      - servers
     image: ghcr.io/linuxserver/plex:latest
       #https://hub.docker.com/r/linuxserver/plex
     env_file:
       - env/linuxserver.env
       - env/plex.env
+    environment:
+      - 'ADVERTISE_IP=https://plex.ogrydziak.net/,http://plex.ogrydziak.net/'
     volumes:
       - $PLEX_CONFIG_DIR:/config
       - $PLEX_MEDIA_DIR:/media
@@ -30,6 +27,9 @@ services:
         limits:
           memory: 56g
   plexstats:
+    depends_on:
+      - plex
+      - rproxy
     container_name: ${COMPOSE_PROJECT_NAME}_plexstats
     hostname: plexstats
     networks:
@@ -38,8 +38,6 @@ services:
       #https://hub.docker.com/r/linuxserver/tautulli
     env_file:
       - env/linuxserver.env
-    ports:
-      - $SRV_SWAG_PROXY:$PLEXSTATS_H_PORT:8181
     restart: unless-stopped
     volumes:
       - $PLEXSTATS_DATA_DIR:/config
