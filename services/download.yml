@@ -1,17 +1,15 @@
 services:
   download:
-    #depends_on:
-    #  - swag
+    depends_on:
+      - rproxy
     container_name: ${COMPOSE_PROJECT_NAME}_download
     hostname: download
     networks:
-      - swag
+      - servers
     env_file:
       - env/linuxserver.env
     image: ghcr.io/linuxserver/qbittorrent:latest
       #https://hub.docker.com/r/linuxserver/qbittorrent
-    ports:
-      - $SRV_SWAG_PROXY:$DOWNLOAD_H_PORT:8080
     volumes:
       - $DOWNLOADS_DATA_DIR:/config
       - $DOWNLOADS_DIR:/downloads
