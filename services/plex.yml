@@ -4,9 +4,7 @@ services:
     depends_on:
       - rproxy
     container_name: ${COMPOSE_PROJECT_NAME}_plex
-    hostname: plex
-    networks:
-      - servers
+    network_mode: host
     image: ghcr.io/linuxserver/plex:latest
       #https://hub.docker.com/r/linuxserver/plex
     env_file:
