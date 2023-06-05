@@ -1,9 +1,5 @@
 version: "3"
 networks:
-#  swag:
-#    ipam:
-#      config:
-#        - subnet: $SWAG_NETWORK
   servers:
     ipam:
       config:
