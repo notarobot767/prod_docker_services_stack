@@ -17,7 +17,7 @@ RUN ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && \
 COPY ./chrony.conf /etc/chrony/
 #copy conf files to chrony default directory
 
-CMD ["chronyd", "-d", "-4", "-x"]
+CMD ["chronyd", "-d", "-4", "-x", "-s"]
 #-d	all messages will be written to the terminal instead of syslog
 #-4	only resolve hostnames to ipv4
 #-n	program will not detach itself from the terminal
@@ -26,6 +26,9 @@ CMD ["chronyd", "-d", "-4", "-x"]
 
 EXPOSE 123/udp
 #ntp uses UDP port 123
+
+HEALTHCHECK --interval=5m --timeout=3s \
+  CMD chronyc tracking || exit 1
 
 LABEL maintainer="notarobot" \
   org.label-schema.name="Chrony NTP Server" \
