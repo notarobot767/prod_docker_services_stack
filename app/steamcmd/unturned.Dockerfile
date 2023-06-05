@@ -17,7 +17,7 @@ RUN ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && \
 
 WORKDIR /app
 
-ENTRYPOINT ["./ServerHelper.sh"]
+ENTRYPOINT ["screen", "./ServerHelper.sh"]
 
 LABEL maintainer="human" \
   org.label-schema.name="Unturned" \
