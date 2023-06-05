@@ -23,7 +23,7 @@ services:
     hostname: rocket_chat
     networks:
       - servers
-    image: rocketchat/rocket.chat:6.1.6
+    image: rocketchat/rocket.chat:6.2.2
     #https://hub.docker.com/_/rocket-chat
     restart: unless-stopped
     ports:
