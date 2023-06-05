@@ -50,6 +50,8 @@ rocket          IN      CNAME   @
 meet            IN      CNAME   @
 zabbix          IN      CNAME   @
 pma             IN      CNAME   @
+eve             IN      CNAME   @
+wireshark.eve   IN      CNAME   @
 
 ;dhcp
 ;dhcp-a          IN      A       10.0.20.17
