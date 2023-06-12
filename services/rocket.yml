@@ -23,8 +23,8 @@ services:
     hostname: rocket_chat
     networks:
       - servers
-    image: rocketchat/rocket.chat:6.2.2
-    #https://hub.docker.com/_/rocket-chat
+    image: rocketchat/rocket.chat:6.2.5
+    #https://github.com/RocketChat/Rocket.Chat/releases
     restart: unless-stopped
     ports:
       - $SRV_SWAG_PROXY:$ROCKET_H_PORT:80
