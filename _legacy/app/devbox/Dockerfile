@@ -45,8 +45,8 @@ COPY ./init.sh /etc/
 
 RUN ln -s /usr/lib/nagios/plugins/* /bin/ && \
   echo "PasswordAuthentication no" >> /etc/ssh/sshd_config && \
-  echo "HostKeyAlgorithms +ssh-rsa" >> /etc/ssh/sshd_config && \
-  echo "PubkeyAcceptedKeyTypes +ssh-rsa" >> /etc/ssh/sshd_config && \
+  #echo "HostKeyAlgorithms +ssh-rsa" >> /etc/ssh/sshd_config && \
+  #echo "PubkeyAcceptedKeyTypes +ssh-rsa" >> /etc/ssh/sshd_config && \
   chmod +x /etc/init.sh && \
   service ssh start
   #why do I need this?...

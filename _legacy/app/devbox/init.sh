@@ -12,14 +12,17 @@ else
   echo "AllowUsers $DEV_USER" >> /etc/ssh/sshd_config
   cd /home/$DEV_USER
   mkdir .ssh
+  ssh-keygen -q -t ed25519 -N '' \
+    -f /home/$DEV_USER/.ssh/id_ed25519 \
+    -C ecdsa521@$HOSTNAME
   ssh-keygen -q -t ecdsa -b 521 -N '' \
-    -f /home/$DEV_USER/.ssh/id_rsa \
-    -C rsa2048@$HOSTNAME
+    -f /home/$DEV_USER/.ssh/id_ecdsa \
+    -C ecdsa521@$HOSTNAME
   ssh-keygen -q -t rsa -b 4096 -N '' \
     -f /home/$DEV_USER/.ssh/id_rsa \
-    -C ecdsa521@$HOSTNAME
-  chmod 400 .ssh/id_rsa
-  chmod 444 .ssh/id_rsa.pub
+    -C rsa4096@$HOSTNAME
+  chmod 400 .ssh/id_*
+  chmod 444 .ssh/id_*.pub
   #create user, add to sudo group, remove password
   
   if [ -z "$DEV_SSH_KEY" ]
