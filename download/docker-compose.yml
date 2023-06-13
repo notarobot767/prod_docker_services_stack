@@ -1,0 +1,15 @@
+version: "3"
+services:
+  download:
+    image: ghcr.io/linuxserver/qbittorrent:latest
+      #https://hub.docker.com/r/linuxserver/qbittorrent
+    volumes:
+      - ./data:/config
+      - $DOWNLOADS_DIR:/downloads
+    restart: unless-stopped
+    ports:
+      - $PROXY_BRIDGE:$PROXY_BRIDGE_PORT:8080
+    deploy:
+      resources:
+        limits:
+          memory: 4g
