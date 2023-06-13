@@ -1,0 +1,24 @@
+version: "3"
+services:
+  ntp-a:
+    build:
+      context: .
+    ports:
+      - $SRV_IP_1:123:123/udp
+    privileged: true
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+  ntp-b:
+    build:
+      context: .
+    ports:
+      - $SRV_IP_2:123:123/udp
+    privileged: true
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1g
