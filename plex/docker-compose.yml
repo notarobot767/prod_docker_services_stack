@@ -1,0 +1,48 @@
+services:
+  plex:
+  #https://tizutech.com/plex-transcoding-with-docker-nvidia-gpu/
+    network_mode: host
+    image: ghcr.io/linuxserver/plex:latest
+      #https://hub.docker.com/r/linuxserver/plex
+    env_file:
+      - linuxserver.env
+    environment:
+      - 'ADVERTISE_IP=https://plex.ogrydziak.net/,http://plex.ogrydziak.net/'
+      - VERSION=docker
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,video,utility
+      - NVIDIA_DISABLE_REQUIRE=1
+      #for Nvidia transcoding, must also install on host os
+      #https://tizutech.com/plex-transcoding-with-docker-nvidia-gpu/
+      #https://github.com/NVIDIA/nvidia-docker/issues/1034#issuecomment-520282450
+    volumes:
+      - ./data/plex:/config
+      - $PLEX_MEDIA_DIR:/media
+      - /dev/shm:/transcode
+      #RAM disk
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+        limits:
+          memory: 56g
+  plexstats:
+    depends_on:
+      - plex
+    image: ghcr.io/linuxserver/tautulli:latest
+      #https://hub.docker.com/r/linuxserver/tautulli
+    env_file:
+      - linuxserver.env
+    restart: unless-stopped
+    ports:
+      - $PROXY_BRIDGE:$PROXY_BRIDGE_PORT:8181
+    volumes:
+      - ./data/plexstats:/config
+      - ./data/plex:/plex:ro
+        #to read plex logs
+    deploy:
+      resources:
+        limits:
+          memory: 4g
