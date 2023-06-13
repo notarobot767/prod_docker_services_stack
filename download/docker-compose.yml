@@ -4,9 +4,9 @@ services:
     image: ghcr.io/linuxserver/qbittorrent:latest
       #https://hub.docker.com/r/linuxserver/qbittorrent
     environment:
-      - TZ=US/Hawaii
-      - PUID=1000
-      - PGID=1000
+      - TZ=$TZ
+      - PUID=$PUID
+      - PGID=$PGID
     volumes:
       - ./data:/config
       - $DOWNLOADS_DIR:/downloads
