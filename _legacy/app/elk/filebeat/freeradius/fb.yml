@@ -1,9 +1,0 @@
-filebeat.inputs:
-- type: log
-  enabled: true
-  paths:
-    - /app/log/radius.log
-
-output.logstash:
-  hosts: ["logstash:6002"]
-  #see logstash pipline/main.conf
