@@ -1,0 +1,25 @@
+services:
+  code_server:
+    image: ghcr.io/linuxserver/code-server:latest
+      #https://hub.docker.com/r/linuxserver/code-server
+    env_file:
+      - secrets.env
+    environment:
+      - TZ=US/Hawaii
+      - PUID=1000
+      - PGID=1000
+      - DEFAULT_WORKSPACE=/app
+      - PROXY_DOMAIN=$DOMAIN
+    volumes:
+       - ./data:/config
+       - /disk2/docker/prod/:/app/docker
+       - /nfs/gdrive:/app/gdrive
+       - /home/crashdummy:/app/crashdummy
+       #- /disk2/docker/prod/devbox/data:/cs/devbox
+    restart: unless-stopped
+    ports:
+      - $PROXY_BRIDGE:$PROXY_BRIDGE_PORT:8443
+    deploy:
+      resources:
+        limits:
+          memory: 4g
