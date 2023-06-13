@@ -1,0 +1,22 @@
+version: "3"
+services:
+  endlessh:
+    image: lscr.io/linuxserver/endlessh:latest
+      #https://docs.linuxserver.io/images/docker-endlessh
+    env_file:
+      - linuxserver.env
+    environment:
+      - LOGFILE=true    #default false
+      #- MSDELAY=1000    #default 10000
+      #- MAXLINES=32     #default 32
+      #- MAXCLIENTS=4096 #default 4096
+      #- BINDFAMILY=     #optional
+    volumes:
+      - ./data:/config
+    restart: unless-stopped
+    ports:
+      - $IP:$SSH_PORT:2222
+    deploy:
+      resources:
+        limits:
+          memory: 1g
