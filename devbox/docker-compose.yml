@@ -1,0 +1,19 @@
+version: "3"
+services:
+  devbox:
+    build:
+      context: .
+    ports:
+      - $PROXY_BRIDGE:$PROXY_BRIDGE_PORT:22
+      #- 2013:22
+    env_file:
+      - secrets/devbox.env
+      #add sercrets in env
+      #- USER=testuser
+      #- SSH_KEY=[public_key]
+    volumes:
+      - ./data:/app
+    deploy:
+      resources:
+        limits:
+          memory: 1g
