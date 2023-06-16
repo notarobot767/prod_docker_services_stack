@@ -2,20 +2,18 @@ version: "3"
 services:
   zabbix_db:
     #entrypoint: mysqld_safe --skip-grant-tables --user=mysql
-    #get access to db if locked out
+      #get access to db if locked out
     image: docker.io/library/mariadb:10.11
-    #find compatible mariadb tag in what's new manual
-    #https://www.zabbix.com/documentation/current/en/manual/introduction
-    env_file:
-      - secrets/zabbix_db.env
-      #ensure secrets has the following vars:
-      #MYSQL_ROOT_PASSWORD=password
-      #MYSQL_USER=zabbix
-      #MYSQL_PASSWORD=password
-      #https://mariadb.com/kb/en/mariadb-docker-environment-variables/
+      #find compatible mariadb tag in what's new manual
+      #https://www.zabbix.com/documentation/current/en/manual/introduction
+      #https://hub.docker.com/_/mariadb
     environment:
-      MARIADB_AUTO_UPGRADE: "1"
-      MARIADB_INITDB_SKIP_TZINFO: "1"
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+        #https://mariadb.com/kb/en/mariadb-docker-environment-variables/
+      MARIADB_AUTO_UPGRADE: 1
+      MARIADB_INITDB_SKIP_TZINFO: 1
+    secrets:
+      - db_root_password
     volumes:
       - ./data:/var/lib/mysql
     restart: unless-stopped
@@ -25,13 +23,37 @@ services:
           memory: 4g
   zabbix_srv:
     image: zabbix/zabbix-server-mysql
+      #https://hub.docker.com/r/zabbix/zabbix-server-mysql
     depends_on:
       - zabbix_db
     env_file:
-      - secrets/zabbix_db.env
-      #DB_SERVER_HOST, MYSQL_USER, MYSQL_PASSWORD
-      #https://www.zabbix.com/documentation/current/en/manual/installation/containers
       - zabbix.env
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+      MYSQL_USER_FILE: /run/secrets/db_user
+      MYSQL_PASSWORD_FILE: /run/secrets/db_password
+        #https://hub.docker.com/r/zabbix/zabbix-server-mysql
+    secrets:
+      - db_root_password
+      - db_user
+      - db_password
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 4g
+  zabbix_agent:
+    image: zabbix/zabbix-agent2
+    #https://hub.docker.com/r/zabbix/zabbix-agent2
+    depends_on:
+      - zabbix_db
+      - zabbix_srv
+    user: root
+      #needed to reader docker.sock
+    env_file:
+      - zabbix.env
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     restart: unless-stopped
     deploy:
       resources:
@@ -47,31 +69,22 @@ services:
     ports:
       - $PROXY_BRIDGE:$PROXY_BRIDGE_PORT:8080
     env_file:
-      - secrets/zabbix_db.env
       - zabbix.env
+    environment:
+      MYSQL_USER_FILE: /run/secrets/db_user
+      MYSQL_PASSWORD_FILE: /run/secrets/db_password
+    secrets:
+      - db_user
+      - db_password
     restart: unless-stopped
     deploy:
       resources:
         limits:
           memory: 4g
-  zabbix_agent:
-    image: zabbix/zabbix-agent2
-    #https://hub.docker.com/r/zabbix/zabbix-agent2
-    depends_on:
-      - zabbix_srv
-    user: root
-    env_file:
-      - zabbix.env
-    #environment:
-      #- ZBX_DEBUGLEVEL=4
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    restart: unless-stopped
-    privileged: true
-    #zabbix needs permissions to docker
-    #usermod -a -G docker zabbix
-    #https://medium.com/geekculture/monitor-docker-containers-on-linux-server-with-zabbix-agent2-2a4e7708dbb7
-    deploy:
-      resources:
-        limits:
-          memory: 4g
+secrets:
+  db_root_password:
+    file: ./secrets/db_root_password.txt
+  db_user:
+    file: ./secrets/db_user.txt
+  db_password:
+    file: ./secrets/db_password.txt
