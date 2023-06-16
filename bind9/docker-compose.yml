@@ -20,6 +20,10 @@ services:
       #useful for tshooting
     #https://linux.die.net/man/8/named
     #https://bind9.readthedocs.io/en/stable/manpages.html#named-internet-domain-name-server
+    deploy:
+      resources:
+        limits:
+          memory: 4g
   ns2:
     build:
       context: .
@@ -33,3 +37,7 @@ services:
     restart: unless-stopped
     user: ${UID}:${GID}
     command: ["-g"]
+    deploy:
+      resources:
+        limits:
+          memory: 4g
