@@ -1,4 +1,4 @@
-FROM nginx:1.23
+FROM nginx:1.25
 #https://hub.docker.com/_/nginx
 
 ENV TZ="US/Hawaii"
