@@ -1,0 +1,60 @@
+$TTL 1h
+@	              IN      SOA	    ns1.ogrydziak.net. human.ogrydziak.net. (
+  20210107;         #Serial
+  1h;               #Refresh                #default value in minutes
+  120;              #Retry                  #default value in seconds
+  1h;               #Expire                 #default value in minutes
+  1h;               #Negative caching TTL   #default value in minutes
+)
+
+;name servers
+                IN      NS      ns1.ogrydziak.net.
+                IN      NS      ns2.ogrydziak.net.
+ns1             IN      A       10.0.20.30
+ns2             IN      A       10.0.20.31
+
+;TXT
+@               IN      TXT     "OG Networks!"
+
+;A, AAAA, CNAME
+@               IN      A       10.0.20.32
+www             IN      CNAME   @
+
+;net infastructure
+gateway         IN      A       10.0.0.255
+switch          IN      A       10.0.20.2
+
+;ntp pool
+ntp-a           IN      A       10.0.20.30
+ntp-b           IN      A       10.0.20.31
+pool.ntp        IN      A       10.0.20.30
+pool.ntp        IN      A       10.0.20.31
+
+;synology file share
+dropzone        IN      A       10.0.20.20
+
+;unifi wap controller
+unifi           IN      A       10.0.21.10
+
+;docker reverse proxy
+@               IN      A       10.0.20.32
+www             IN      CNAME   @
+download        IN      CNAME   @
+plex            IN      CNAME   @
+plexstats       IN      CNAME   @
+portainer       IN      CNAME   @
+files           IN      CNAME   @
+kibana          IN      CNAME   @
+guac            IN      CNAME   @
+cs              IN      CNAME   @
+rocket          IN      CNAME   @
+meet            IN      CNAME   @
+zabbix          IN      CNAME   @
+pma             IN      CNAME   @
+eve             IN      CNAME   @
+wireshark       IN      CNAME   @
+
+;some resolvers will lookup AAAA before A records, even if the host lacks ability to communicate with IPv6
+;depending on environment, might be worth having seperate IPv4 and IPv6 domains
+;ex) www and www-v6
+;https://learning.oreilly.com/library/view/dns-and-bind/9781449308025/ch01.html#adding_aaaa_records_to_forward-mapping_z

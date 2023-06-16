@@ -1,0 +1,35 @@
+version: "3"
+services:
+  ns1:
+    build:
+      context: .
+    ports:
+      - $SRV_IP_1:53:53
+      - $SRV_IP_1:53:53/udp
+      #- $SRV_IP_1:853:853
+        #dns over tls
+    volumes:
+      - ./log/ns1:/app/log
+    restart: unless-stopped
+    user: ${UID}:${GID}
+    command: ["-g"]
+    #command is appending to entrypoint in Dockerfile
+    #-f foreground. no syslog but logging will write to file
+    #-g send all stdout to console.
+      #logging will cease writing to file and also send to stdout
+      #useful for tshooting
+    #https://linux.die.net/man/8/named
+    #https://bind9.readthedocs.io/en/stable/manpages.html#named-internet-domain-name-server
+  ns2:
+    build:
+      context: .
+    #uses same image as ns1
+    ports:
+      - $SRV_IP_2:53:53
+      - $SRV_IP_2:53:53/udp
+      #- $SRV_IP_2:853:853
+    volumes:
+      - ./log/ns2:/app/log
+    restart: unless-stopped
+    user: ${UID}:${GID}
+    command: ["-g"]
