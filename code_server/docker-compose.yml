@@ -2,14 +2,13 @@ services:
   code_server:
     image: ghcr.io/linuxserver/code-server:latest
       #https://hub.docker.com/r/linuxserver/code-server
-    env_file:
-      - secrets.env
     environment:
-      - TZ=US/Hawaii
-      - PUID=1000
-      - PGID=1000
-      - DEFAULT_WORKSPACE=/app
-      - PROXY_DOMAIN=$DOMAIN
+      FILE__PASSWORD: /run/secrets/password
+      TZ: $TZ
+      PUID: 1000
+      PGID: 1000
+      DEFAULT_WORKSPACE: /app
+      PROXY_DOMAIN: $DOMAIN
     volumes:
        - ./data:/config
        - /disk2/docker/prod/:/app/docker
@@ -19,7 +18,12 @@ services:
     restart: unless-stopped
     ports:
       - $PROXY_BRIDGE:$PROXY_BRIDGE_PORT:8443
+    secrets:
+      - password
     deploy:
       resources:
         limits:
           memory: 4g
+secrets:
+  password:
+    file: ./secrets/password.txt
