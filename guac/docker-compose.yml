@@ -11,20 +11,24 @@ services:
     image: mariadb:10
       #cant find compatibility matrix but mariadb:11 no work on guac v1.5.2
       #https://hub.docker.com/_/mariadb
-    env_file:
-      - secrets/guac.env
-        #inc secrets for:
-          #MYSQL_ROOT_PASSWORD=password1
-          #MYSQL_USER=dbadmin
-          #MYSQL_PASSWORD=password1
-          #MYSQL_DATABASE=dbname
-        #if set and on fresh mariadb, server will create new
-          #root pw, user, user pw, database
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+      MYSQL_USER_FILE: /run/secrets/db_user
+      MYSQL_PASSWORD_FILE: /run/secrets/db_password
+        #https://mariadb.com/kb/en/mariadb-docker-environment-variables/
+      MYSQL_DATABASE: guac
+      TZ: $TZ
+      MARIADB_AUTO_UPGRADE: 1
+      #MARIADB_INITDB_SKIP_TZINFO: 1
+    secrets:
+      - db_root_password
+      - db_user
+      - db_password
     volumes:
       - ./app:/docker-entrypoint-initdb.d:ro
-        #get init.sql script from container itself
-        #docker run --rm guacamole/guacamole /opt/guacamole/bin/initdb.sh --mysql > initdb.sql
-        #https://guacamole.apache.org/doc/gug/guacamole-docker.html
+          #get init.sql script from container itself
+          #docker run --rm guacamole/guacamole /opt/guacamole/bin/initdb.sh --mysql > initdb.sql
+          #https://guacamole.apache.org/doc/gug/guacamole-docker.html
       - ./data:/var/lib/mysql
     restart: unless-stopped
     deploy:
@@ -32,23 +36,32 @@ services:
         limits:
           memory: 4g
   guac:
-    volumes:
-      - ./app:/app
     depends_on:
       - guacd
       - guac_db
     image: guacamole/guacamole:latest
       #https://hub.docker.com/r/guacamole/guacamole
-    env_file:
-      - secrets/guac.env
     environment:
-      - GUACD_HOSTNAME=guacd
-      - MYSQL_HOSTNAME=guac_db
-      - TOTP_ENABLED=true
+      MYSQL_USER_FILE: /run/secrets/db_user
+      MYSQL_PASSWORD_FILE: /run/secrets/db_password
+      MYSQL_DATABASE: guac
+      GUACD_HOSTNAME: guacd
+      MYSQL_HOSTNAME: guac_db
+      TOTP_ENABLED: true
     ports:
       - $PROXY_BRIDGE:$PROXY_BRIDGE_PORT:8080
+    secrets:
+      - db_user
+      - db_password
     restart: unless-stopped
     deploy:
       resources:
         limits:
           memory: 4g
+secrets:
+  db_root_password:
+    file: ./secrets/db_root_password.txt
+  db_user:
+    file: ./secrets/db_user.txt
+  db_password:
+    file: ./secrets/db_password.txt
