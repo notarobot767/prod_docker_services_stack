@@ -10,6 +10,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
         #https://mariadb.com/kb/en/mariadb-docker-environment-variables/
+      TZ: $TZ
       MARIADB_AUTO_UPGRADE: 1
       MARIADB_INITDB_SKIP_TZINFO: 1
     secrets:
