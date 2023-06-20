@@ -1,0 +1,83 @@
+version: "3.9"
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.8.1
+      #https://github.com/elastic/elasticsearch
+      #https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
+    environment:
+      xpack.security.enabled: false
+      discovery.type: single-node
+      bootstrap.memory_lock: true
+      ES_JAVA_OPTS: "-Xms8g -Xmx8g"
+        #set no more than half of allocated memory
+        #https://www.elastic.co/guide/en/elasticsearch/reference/current/advanced-configuration.html#set-jvm-options
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./data/elastic:/usr/share/elasticsearch/data
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          #cpus: '4.0'
+          memory: 16g
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.8.1
+    depends_on:
+      - elasticsearch
+    environment:
+      SERVERNAME: kibana.ogrydziak.net
+      SERVER_HOST: 0.0.0.0
+      ELASTICSEARCH_HOSTS: '["http://elasticsearch:9200"]'
+    volumes:
+      - ./data/kibana:/usr/share/kibana/data
+    ports:
+      - $PROXY_BRIDGE:$PROXY_BRIDGE_PORT:5601
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 4g
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.8.1
+    depends_on:
+      - elasticsearch
+    volumes:
+      - ./data/logstash:/usr/share/logstash/data
+      - ./app/logstash/pipeline:/usr/share/logstash/pipeline:ro
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          #cpus: '4.0'
+          memory: 8g
+  fb_cisco_syslog:
+    image: docker.elastic.co/beats/filebeat:8.8.1
+    depends_on:
+      - logstash
+    volumes:
+      - ./data/filebeat/cisco_syslog:/usr/share/filebeat/data
+      - ./app/filebeat/cisco_syslog.yml:/usr/share/filebeat/filebeat.yml:ro
+    ports:
+        - 10.0.20.30:514:514/udp
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 2g
+  fb_cisco_netflow:
+    image: docker.elastic.co/beats/filebeat:8.8.1
+    depends_on:
+      - logstash
+    volumes:
+      - ./data/filebeat/netflow:/usr/share/filebeat/data
+      - ./app/filebeat/netflow.yml:/usr/share/filebeat/filebeat.yml:ro
+    ports:
+        - 10.0.20.30:2055:2055/udp
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 2g

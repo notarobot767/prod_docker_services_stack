@@ -1,0 +1,15 @@
+filebeat.modules:
+- module: netflow
+  log:
+    enabled: true
+    var:
+      netflow_host: 0.0.0.0
+      netflow_port: 2055
+
+setup.template:
+  name: "netflow"
+  pattern: "netflow-%{[agent.version]}-%{+YYYY.MM.dd}"
+
+output.elasticsearch:
+  hosts: ["elasticsearch:9200"]  
+  index: "netflow-%{[agent.version]}-%{+YYYY.MM.dd}"
