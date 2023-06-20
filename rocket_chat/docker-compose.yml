@@ -18,6 +18,7 @@ services:
     depends_on:
       - rocket_db
     image: rocketchat/rocket.chat:$ROCKET_TAG
+      #https://github.com/RocketChat/Rocket.Chat/releases
     restart: unless-stopped
     ports:
       - $PROXY_BRIDGE:$PROXY_BRIDGE_PORT:80
