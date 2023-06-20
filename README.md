@@ -13,6 +13,9 @@ dir: [code_server](code_server)
 ## qBittorrent
 dir: [download](download)
 
+## Elasticsearch Logstash Kibana (ELK) Stack
+dir: [elk](elk)
+
 ## Endless SSH (endlessh)
 dir: [endlessh](endlessh)
 
