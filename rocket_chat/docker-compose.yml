@@ -4,7 +4,7 @@ services:
   #run once to initiate database
   #sudo docker exec -it prod_rocket_db mongosh --eval "printjson(rs.initiate())"
   rocket_db:
-    image: mongo:6.0
+    image: mongo:$MONGO_TAG
     restart: unless-stopped
     command: ["--oplogSize", "128", "--replSet", "rs0"]
     volumes:
