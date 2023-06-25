@@ -47,7 +47,6 @@ services:
     image: zabbix/zabbix-agent2
     #https://hub.docker.com/r/zabbix/zabbix-agent2
     depends_on:
-      - zabbix_db
       - zabbix_srv
     user: root
       #needed to reader docker.sock
@@ -64,9 +63,7 @@ services:
     image: zabbix/zabbix-web-nginx-mysql
     #https://hub.docker.com/r/zabbix/zabbix-web-nginx-mysql
     depends_on:
-      - zabbix_db
       - zabbix_srv
-      - zabbix_agent
     ports:
       - $PROXY_BRIDGE:$PROXY_BRIDGE_PORT:8080
     env_file:
