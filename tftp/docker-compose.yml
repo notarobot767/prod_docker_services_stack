@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+  tftpd:
+    network_mode: host
+    build:
+      context: .
+    volumes:
+      - ./data:/srv/tftp
+      - ./logs:/var/log
+    #ports:
+      #- $SRV_IP:69:69/udp
+    deploy:
+      resources:
+        limits:
+          memory: 2g
