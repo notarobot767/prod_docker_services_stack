@@ -4,6 +4,8 @@ ENV TZ="US/Hawaii"
 #set timezone variable
 #https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 
+COPY ./app/init.sh /etc/init.sh
+
 RUN ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && \
   #set local timezone
   \
@@ -11,24 +13,23 @@ RUN ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && \
     #update, upgrade, and set time
     \
     busybox \
-    #busybox to see syslog
+    #busybox to capture syslog
     \
     tftpd-hpa && \
     #install tftp server
   \
+  rm -rf /var/lib/apt/lists/* && \
+  #remove apt package cache
+  \
   chown tftp:tftp /srv/tftp && \
   #set folder owner to tftp
-  chmod 777 /srv/tftp
+  chmod 777 /srv/tftp && \
   #give write permissions to the folder too
+  \
+  chmod +x /etc/init.sh
+  #ensure script is has execute permissions
 
-COPY ./app/init.sh /etc/init.sh
-RUN chmod +x /etc/init.sh
-
-CMD ["/etc/init.sh"]  
-#https://manpages.debian.org/testing/tftpd-hpa/tftpd.8.en.html
-#on cisco router, ensure
-#ip tftp blocksize 1468
-#ip tftp source-interface [interface]
+ENTRYPOINT ["/etc/init.sh"]
 
 EXPOSE 69/udp
 #tftp uses udp port 69

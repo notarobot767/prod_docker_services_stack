@@ -1,7 +1,7 @@
 #!/bin/bash
 
 busybox syslogd
-#start sysloging to /var/log/messages
+#start syslogging to /var/log/messages
 
 in.tftpd -V
 echo "starting tftp server..."
@@ -9,9 +9,8 @@ echo "starting tftp server..."
   #version of tftpd
   #server is starting
 
-in.tftpd -lscv -u tftp -B 1468 /srv/tftp
-#--foreground or -L is required if not tailing syslog with command below
-#https://manpages.debian.org/testing/tftpd-hpa/tftpd.8.en.html
+in.tftpd "$@"
+#allows injection of tftp args from docker-compose.yml in command field
 
 tail -f /var/log/messages
 #send to foreground the syslog file
