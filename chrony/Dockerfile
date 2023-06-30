@@ -17,12 +17,7 @@ RUN ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && \
 COPY ./app/chrony.conf /etc/chrony/
 #copy conf files to chrony default directory
 
-ENTRYPOINT ["chronyd", "-d", "-4", "-x", "-s"]
-#-d	all messages will be written to the terminal instead of syslog
-#-4	only resolve hostnames to ipv4
-#-n	program will not detach itself from the terminal
-#-x disables the control of the system clock
-#https://chrony.tuxfamily.org/doc/4.0/chronyd.html
+ENTRYPOINT ["chronyd"]
 
 EXPOSE 123/udp
 #ntp uses UDP port 123
