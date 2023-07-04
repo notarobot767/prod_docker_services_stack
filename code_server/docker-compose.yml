@@ -11,7 +11,7 @@ services:
       PROXY_DOMAIN: $DOMAIN
     volumes:
        - ./data:/config
-       - /disk2/docker/prod/:/app/docker
+       - /disk2/docker:/app/docker
        - /nfs/gdrive:/app/gdrive
        - /home/crashdummy:/app/crashdummy
        #- /disk2/docker/prod/devbox/data:/cs/devbox
