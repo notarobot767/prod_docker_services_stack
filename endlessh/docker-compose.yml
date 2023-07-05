@@ -15,7 +15,7 @@ services:
       - ./data:/config
     restart: unless-stopped
     ports:
-      - $IP:$SSH_PORT:2222
+      - $IP:2222:2222
     deploy:
       resources:
         limits:
