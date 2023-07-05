@@ -3,6 +3,7 @@ filebeat.inputs:
   format: rfc3164
   protocol.udp:
     host: "0.0.0.0:514"
+  fields: {server: "cisco-syslog", service: "cisco-syslog"}
 
 output.logstash:
   hosts: ["logstash:514"]

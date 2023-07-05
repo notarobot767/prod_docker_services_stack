@@ -81,3 +81,29 @@ services:
       resources:
         limits:
           memory: 2g
+  fb_endlessh:
+    image: docker.elastic.co/beats/filebeat:8.8.1
+    depends_on:
+      - logstash
+    volumes:
+      - ./data/filebeat/endlessh:/usr/share/filebeat/data
+      - ./app/filebeat/endlessh.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /disk2/docker/prod/endlessh/data/logs/endlessh:/logs:ro
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 2g
+  fb_bind9:
+    image: docker.elastic.co/beats/filebeat:8.8.1
+    depends_on:
+      - logstash
+    volumes:
+      - ./data/filebeat/bind9:/usr/share/filebeat/data
+      - ./app/filebeat/bind9.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /disk2/docker/prod/bind9/log:/logs:ro
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 2g
