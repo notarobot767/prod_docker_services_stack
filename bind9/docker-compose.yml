@@ -12,7 +12,7 @@ services:
       - ./log/ns1:/app/log
     restart: unless-stopped
     user: ${UID}:${GID}
-    command: ["-g"]
+    command: ["-f"]
     #command is appending to entrypoint in Dockerfile
     #-f foreground. no syslog but logging will write to file
     #-g send all stdout to console.
@@ -36,7 +36,7 @@ services:
       - ./log/ns2:/app/log
     restart: unless-stopped
     user: ${UID}:${GID}
-    command: ["-g"]
+    command: ["-f"]
     deploy:
       resources:
         limits:
