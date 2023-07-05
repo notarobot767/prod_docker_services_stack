@@ -12,4 +12,4 @@ filebeat.inputs:
     - "/logs/ns2/queries.log"
   fields: {server: "ns2", service: "bind9"}
 output.logstash:
-  hosts: ["logstash:514"]
+  hosts: ["logstash:515"]
