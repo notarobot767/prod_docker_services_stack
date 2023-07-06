@@ -1,10 +1,16 @@
 #!/bin/bash
 
+echo "setting timezone from TZ environment variable..."
+ln -fs /usr/share/zoneinfo/$TZ /etc/localtime
+dpkg-reconfigure -f noninteractive tzdata
+#reconfigure timezone from TZ environment variable
+
+echo "starting busybox..."
 busybox syslogd
 #start syslogging to /var/log/messages
 
-in.tftpd -V
 echo "starting tftp server..."
+in.tftpd -V
 #no operational purpose other than displaying to screen
   #version of tftpd
   #server is starting

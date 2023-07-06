@@ -23,6 +23,8 @@ services:
       #bridge network results in file creation but with no data written
     build:
       context: .
+    environment:
+      TZ: US/Hawaii
     volumes:
       - ./data:/srv/tftp
       - ./logs:/var/log

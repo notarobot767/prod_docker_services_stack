@@ -1,6 +1,6 @@
 FROM docker.io/library/ubuntu:22.04
 
-ENV TZ="US/Hawaii"
+ENV TZ="Etc/UTC"
 #set timezone variable
 #https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 
