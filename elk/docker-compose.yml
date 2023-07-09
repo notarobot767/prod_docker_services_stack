@@ -107,3 +107,16 @@ services:
       resources:
         limits:
           memory: 2g
+  fb_rproxy:
+    image: docker.elastic.co/beats/filebeat:8.8.1
+    depends_on:
+      - logstash
+    volumes:
+      - ./data/filebeat/rproxy:/usr/share/filebeat/data
+      - ./app/filebeat/rproxy.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /disk2/docker/prod/proxy/logs:/logs:ro
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 2g

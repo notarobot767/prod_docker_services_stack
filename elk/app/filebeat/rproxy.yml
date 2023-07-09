@@ -1,0 +1,13 @@
+filebeat.modules:
+- module: nginx
+  access:
+    enabled: true
+    var.paths: ["/logs/access.log"]
+
+setup.template:
+  name: "rproxy"
+  pattern: "rproxy-%{[agent.version]}-%{+YYYY.MM.dd}"
+
+output.elasticsearch:
+  hosts: ["elasticsearch:9200"]  
+  index: "rproxy-%{[agent.version]}-%{+YYYY.MM.dd}"
