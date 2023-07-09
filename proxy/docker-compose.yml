@@ -13,6 +13,7 @@ services:
       - $SRV_IP_4:443:443
     volumes:
       - ./secrets/certs:/etc/letsencrypt:ro
+      - ./logs:/var/log/nginx/
     restart: unless-stopped
     deploy:
       resources:
