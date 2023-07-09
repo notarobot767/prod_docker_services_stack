@@ -1,8 +1,6 @@
 version: "3"
 services:
   files:
-    command: ["-g", "daemon off;"]
-      #http://nginx.org/en/docs/switches.html
     build:
       context: .
     environment:
