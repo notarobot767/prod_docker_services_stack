@@ -1,14 +1,18 @@
 version: "3"
 services:
   files:
+    command: ["-g", "daemon off;"]
+      #http://nginx.org/en/docs/switches.html
     build:
       context: .
+    environment:
+      TZ: US/Hawaii
     volumes:
       - ./data:/var/www/html:ro
-    restart: unless-stopped
     ports:
       - $PROXY_BRIDGE:$PROXY_BRIDGE_PORT:80
     deploy:
       resources:
         limits:
           memory: 4g
+    restart: unless-stopped

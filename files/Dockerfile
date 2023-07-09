@@ -1,11 +1,13 @@
 FROM ubuntu:22.04
 
-ENV TZ="US/Hawaii"
+ENV TZ="Etc/UTC"
 #set timezone variable
 #https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 
 RUN ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && \
-  apt-get update -y && apt-get upgrade -y && apt-get install -y tzdata \
+  #set local timezone
+  \
+  apt-get update && apt-get install -y tzdata \
   #update, upgrade, set timezone
   \
   nginx \
@@ -18,10 +20,13 @@ RUN ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && \
   rm -rf /etc/nginx/sites-available
   #remove folder
 
-COPY ./app/. /etc/nginx
+COPY ./app/. /etc
 #copy virtual hosts and default
 
-CMD ["nginx", "-g", "daemon off;"]
+RUN chmod +x /etc/init.sh
+#add execution permission to script
+
+ENTRYPOINT ["/etc/init.sh"]
 #http://nginx.org/en/docs/switches.html
 
 EXPOSE 80/tcp
@@ -30,7 +35,7 @@ EXPOSE 80/tcp
 LABEL maintainer="notarobot" \
   org.label-schema.name="Files Proxy" \
   org.label-schema.vendor="OG Networks" \
-  org.label-schema.build-date="2022-07-8" \
+  org.label-schema.build-date="2023-07-8" \
   org.label-schema.description="Custom Nginx File Server Proxy" \
   org.label-schema.url="https://www.ogrydziak.net" \
   org.label-schema.vcs-ref="https://github.com/notarobot767/prod_docker_services_stack"
