@@ -3,9 +3,7 @@ services:
   zabbix_db:
     #entrypoint: mysqld_safe --skip-grant-tables --user=mysql
       #get access to db if locked out
-    image: docker.io/library/mariadb:10.11
-      #find compatible mariadb tag in what's new manual
-      #https://www.zabbix.com/documentation/current/en/manual/introduction
+    image: docker.io/library/mariadb:$MARIA_TAG
       #https://hub.docker.com/_/mariadb
     environment:
       MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
@@ -23,7 +21,7 @@ services:
         limits:
           memory: 4g
   zabbix_srv:
-    image: zabbix/zabbix-server-mysql
+    image: zabbix/zabbix-server-mysql:$ZABBIX_TAG
       #https://hub.docker.com/r/zabbix/zabbix-server-mysql
     depends_on:
       - zabbix_db
@@ -44,7 +42,7 @@ services:
         limits:
           memory: 4g
   zabbix_agent:
-    image: zabbix/zabbix-agent2
+    image: zabbix/zabbix-agent2:$ZABBIX_TAG
     #https://hub.docker.com/r/zabbix/zabbix-agent2
     depends_on:
       - zabbix_srv
@@ -60,7 +58,7 @@ services:
         limits:
           memory: 4g
   zabbix_www:
-    image: zabbix/zabbix-web-nginx-mysql
+    image: zabbix/zabbix-web-nginx-mysql:$ZABBIX_TAG
     #https://hub.docker.com/r/zabbix/zabbix-web-nginx-mysql
     depends_on:
       - zabbix_srv
