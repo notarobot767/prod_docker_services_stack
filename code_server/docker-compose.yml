@@ -10,11 +10,11 @@ services:
       DEFAULT_WORKSPACE: /app
       PROXY_DOMAIN: $DOMAIN
     volumes:
-       - ./data:/config
-       - /disk2/docker:/app/docker
-       - /nfs/gdrive:/app/gdrive
-       - /home/crashdummy:/app/crashdummy
-       #- /disk2/docker/prod/devbox/data:/cs/devbox
+      - ./data:/config
+      - /disk2/docker:/app/docker
+      - /nfs/gdrive:/app/gdrive
+      - /home/crashdummy:/app/crashdummy
+      #- /disk2/docker/prod/devbox/data:/cs/devbox
     restart: unless-stopped
     ports:
       - $PROXY_BRIDGE:$PROXY_BRIDGE_PORT:8443
