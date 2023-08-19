@@ -99,7 +99,7 @@ dir: [www](www)
 
 ## NGINX HTTP File Server
 The [Fancy Index module](https://www.nginx.com/resources/wiki/modules/fancy_index/)
-makes possible the generation of file listings, like the built-in autoindex module does, but adding a touch of style. 
+makes possible the generation of file listings, like the built-in autoindex module does, but adding a touch of style. This a better looking autoindex view with more features such as interactive sorting and listing file size in a human readable size.
 
 dir: [files](download)
 
@@ -112,6 +112,19 @@ is a software that monitors numerous parameters of a network and the health and 
 dir: [zabbix](zabbix)
 
 ## APT Mirror
-[apt-mirror](https://apt-mirror.github.io/) is a small tool that provides ability to mirror any parts (or even all) of Debian and Ubuntu GNU/Linux distributions or any other apt sources which typically provided by open source developers. This is useful for local update server in a closed or limited environment.
+[apt-mirror](https://apt-mirror.github.io/)
+is a small tool that provides ability to mirror any parts (or even all) of Debian and Ubuntu GNU/Linux distributions or any other apt sources which typically provided by open source developers. This is useful for local update server in a closed or limited environment.
 
 dir [apt-mirror](apt-mirror)
+
+## Authentik
+[Authentik](https://goauthentik.io/)
+is an open-source Identity Provider focused on flexibility and versatility. Add
+[authentication](https://goauthentik.io/#comparison)
+to any webapp and have Authentik act as a SAML, OIDC, SCIM, LDAP, or RADIUS identity provider. Web apps without or limited authentication can also authenticate with a forward proxy such as NGINX using the
+[auth_request](http://nginx.org/en/docs/http/ngx_http_auth_request_module.html)
+module to reach Authentik.
+
+[Reference Manual](https://goauthentik.io/docs/)
+
+dir: [authentik](authentik)
