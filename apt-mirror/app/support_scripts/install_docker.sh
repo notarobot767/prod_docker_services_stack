@@ -17,7 +17,6 @@ curl -fsSL $DOCKER_GPG_KEY | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 sudo chmod a+r /etc/apt/keyrings/docker.gpg
 #install docker key
 
-
 echo "deb [arch="$(dpkg --print-architecture)" \
   signed-by=/etc/apt/keyrings/docker.gpg] \
   $DOCKER_MIRROR $CODENAME stable" | \
@@ -25,5 +24,5 @@ echo "deb [arch="$(dpkg --print-architecture)" \
   #add docker repo
 
 sudo apt update
-sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 #update repo and install docker
