@@ -3,7 +3,7 @@ services:
     image: ghcr.io/linuxserver/code-server:latest
       #https://hub.docker.com/r/linuxserver/code-server
     environment:
-      FILE__PASSWORD: /run/secrets/password
+      #FILE__PASSWORD: /run/secrets/password
       TZ: $TZ
       PUID: 1000
       PGID: 1000
