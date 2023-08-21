@@ -2,7 +2,7 @@ version: "3"
 services:
   #rocket database
   #run once to initiate database
-  #sudo docker exec -it prod_rocket_db mongosh --eval "printjson(rs.initiate())"
+  #sudo docker exec -it prod_rocket-rocket_db-1 mongosh --eval "printjson(rs.initiate())"
   rocket_db:
     image: mongo:$MONGO_TAG
     restart: unless-stopped
@@ -22,6 +22,12 @@ services:
     restart: unless-stopped
     ports:
       - $PROXY_BRIDGE:$PROXY_BRIDGE_PORT:80
+    #env_file:
+      #- .secret/rocket.env
+        #for initial setup to avoid setup wizard
+        #- OVERWRITE_SETTING_Show_Setup_Wizard=completed
+        #- ADMIN_USERNAME=root
+        #- ADMIN_PASS=toor
     environment:
       - PORT=80
       - ROOT_URL=https://$ROCKET_ROOT_URL
