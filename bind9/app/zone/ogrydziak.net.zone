@@ -56,6 +56,7 @@ wireshark       IN      CNAME   @
 apt-mirror      IN      CNAME   @
 keycloak        IN      CNAME   @
 authentik       IN      CNAME   @
+netbox          IN      CNAME   @
 
 ;some resolvers will lookup AAAA before A records, even if the host lacks ability to communicate with IPv6
 ;depending on environment, might be worth having seperate IPv4 and IPv6 domains
