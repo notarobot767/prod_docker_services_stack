@@ -17,9 +17,8 @@ services:
       MYSQL_PASSWORD_FILE: /run/secrets/db_password
         #https://mariadb.com/kb/en/mariadb-docker-environment-variables/
       MYSQL_DATABASE: guac
-      TZ: $TZ
       MARIADB_AUTO_UPGRADE: 1
-      #MARIADB_INITDB_SKIP_TZINFO: 1
+      MARIADB_INITDB_SKIP_TZINFO: 1
     secrets:
       - db_root_password
       - db_user
@@ -42,12 +41,19 @@ services:
     image: guacamole/guacamole:latest
       #https://hub.docker.com/r/guacamole/guacamole
     environment:
+      GUACD_HOSTNAME: guacd
       MYSQL_USER_FILE: /run/secrets/db_user
       MYSQL_PASSWORD_FILE: /run/secrets/db_password
       MYSQL_DATABASE: guac
-      GUACD_HOSTNAME: guacd
       MYSQL_HOSTNAME: guac_db
-      TOTP_ENABLED: true
+      MYSQL_AUTO_CREATE_ACCOUNTS: true
+        #important for oauth accounts
+      OPENID_AUTHORIZATION_ENDPOINT: https://authentik.ogrydziak.net/application/o/authorize/
+      OPENID_CLIENT_ID: ldp9rawpQAHpmo2hMJfhP6kkOFec57IjTy89lE5q
+      OPENID_ISSUER: https://authentik.ogrydziak.net/application/o/guacamole/
+      OPENID_JWKS_ENDPOINT: https://authentik.ogrydziak.net/application/o/guacamole/jwks/
+      OPENID_REDIRECT_URI: https://guac.ogrydziak.net/
+        # This must match the redirect URI above
     ports:
       - $PROXY_BRIDGE:$PROXY_BRIDGE_PORT:8080
     secrets:
