@@ -36,6 +36,12 @@ dropzone        IN      A       10.0.20.20
 ;unifi wap controller
 unifi           IN      A       10.0.21.10
 
+;cucm
+cucm01          IN      A       10.0.22.10
+cms01           IN      A       10.0.22.11
+cmm01           IN      A       10.0.22.12
+cucm02          IN      A       10.0.23.10
+
 ;docker reverse proxy
 @               IN      A       10.0.20.32
 www             IN      CNAME   @
@@ -57,6 +63,7 @@ apt-mirror      IN      CNAME   @
 keycloak        IN      CNAME   @
 authentik       IN      CNAME   @
 netbox          IN      CNAME   @
+nessus          IN      CNAME   @
 
 ;some resolvers will lookup AAAA before A records, even if the host lacks ability to communicate with IPv6
 ;depending on environment, might be worth having seperate IPv4 and IPv6 domains
