@@ -3,8 +3,8 @@
 #install docker gpg key, add apt source, install docker
 #https://docs.docker.com/engine/install/ubuntu/
 
-DOCKER_MIRROR="https://apt-mirror.ogrydziak.net/docker"
-DOCKER_GPG_KEY="https://apt-mirror.ogrydziak.net/_support_scripts/docker.gpg"
+DOCKER_MIRROR="http://apt-mirror.ogrydziak.net/docker"
+DOCKER_GPG_KEY="http://apt-mirror.ogrydziak.net/_support_scripts/docker.gpg"
 CODENAME=jammy
 #specify mirrors and codename
 

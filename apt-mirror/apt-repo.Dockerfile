@@ -29,7 +29,7 @@ RUN ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && \
   chmod 555 /etc/init.sh
   #ensure init.sh is executable
 
-COPY ./app/apt-mirror/mirror.list /etc/apt/mirror.list
+#COPY ./app/apt-mirror/mirror.list /etc/apt/mirror.list
 #copy apt-mirror config file into image
 
 ENTRYPOINT ["/etc/init.sh"]
