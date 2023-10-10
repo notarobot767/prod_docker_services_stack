@@ -1,7 +1,7 @@
 services:
   plex:
   #https://tizutech.com/plex-transcoding-with-docker-nvidia-gpu/
-    network_mode: host
+    #network_mode: host
     image: ghcr.io/linuxserver/plex:latest
       #https://hub.docker.com/r/linuxserver/plex
     env_file:
@@ -17,7 +17,7 @@ services:
       #https://github.com/NVIDIA/nvidia-docker/issues/1034#issuecomment-520282450
     volumes:
       - ./data/plex:/config
-      - $PLEX_MEDIA_DIR:/media
+      - /nfs/media:/media
       - /dev/shm:/transcode
       #RAM disk
     restart: unless-stopped
@@ -28,6 +28,8 @@ services:
             - capabilities: [gpu]
         limits:
           memory: 56g
+    networks:
+      - proxy_gateway
   plexstats:
     depends_on:
       - plex
@@ -36,8 +38,6 @@ services:
     env_file:
       - linuxserver.env
     restart: unless-stopped
-    ports:
-      - $PROXY_BRIDGE:$PROXY_BRIDGE_PORT:8181
     volumes:
       - ./data/plexstats:/config
       - ./data/plex:/plex:ro
@@ -46,3 +46,9 @@ services:
       resources:
         limits:
           memory: 4g
+    networks:
+      - proxy_gateway
+networks:
+  proxy_gateway:
+    name: proxy_gateway
+    external: true
