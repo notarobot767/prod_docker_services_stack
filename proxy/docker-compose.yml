@@ -1,16 +1,11 @@
 services:
   rproxy:
+    hostname: rproxy
     build:
       context: .
     ports:
-      - $SRV_IP_1:80:80
-      - $SRV_IP_1:443:443
-      - $SRV_IP_2:80:80
-      - $SRV_IP_2:443:443
-      - $SRV_IP_3:80:80
-      - $SRV_IP_3:443:443
-      - $SRV_IP_4:80:80
-      - $SRV_IP_4:443:443
+      - 10.0.20.30:80:80
+      - 10.0.20.30:443:443
     volumes:
       - ./secrets/certs:/etc/letsencrypt:ro
       - ./logs:/var/log/nginx/
@@ -19,3 +14,67 @@ services:
       resources:
         limits:
           memory: 8g
+    networks:
+      - proxy_gateway
+  letsencrypt:
+    image: certbot/certbot
+    ports:
+      - 10.0.20.30:80:80
+      - 10.0.20.30:443:443
+    volumes:
+      - ./secrets/certs:/etc/letsencrypt
+    deploy:
+      resources:
+        limits:
+          memory: 8g
+    networks:
+      - rproxy
+    command: [
+      "-vn",
+      "certonly",
+      "--key-type=ecdsa",
+      "--elliptic-curve", "secp256r1",
+      "--standalone",
+      "--agree-tos",
+      "--debug-challenges",
+      "-m", "nrogrydziak@gmail.com",
+      "--cert-name", "ogrydziak.net-ecdsa",
+      "-d", "ogrydziak.net,www.ogrydziak.net",
+      "-d", "ogrydziak.com,www.ogrydziak.com",
+      "-d", "ogrydziak.org,www.ogrydziak.org",
+      "-d", "ogrydziak.ninja,www.ogrydziak.ninja",
+      "-d", "plex.ogrydziak.net,plexstats.ogrydziak.net",
+      "-d", "pma.ogrydziak.net",
+      "-d", "portainer.ogrydziak.net",
+      "-d", "download.ogrydziak.net",
+      "-d", "files.ogrydziak.net",
+      "-d", "code.ogrydziak.net",
+      "-d", "guac.ogrydziak.net",
+      "-d", "rocket.ogrydziak.net",
+      "-d", "meet.ogrydziak.net",
+      "-d", "zabbix.ogrydziak.net",
+      "-d", "eve.ogrydziak.net",
+      "-d", "wireshark.ogrydziak.net",
+      "-d", "kibana.ogrydziak.net",
+      "-d", "apt-mirror.ogrydziak.net",
+      "-d", "keycloak.ogrydziak.net",
+      "-d", "authentik.ogrydziak.net",
+      "-d", "netbox.ogrydziak.net",
+      "-d", "nessus.ogrydziak.net",
+      "-d", "pihole.ogrydziak.net",
+      "-d", "meet.ogrydziak.net",
+      "-d", "www.unifi.ogrydziak.net",
+      "-d", "www.cms.ogrydziak.net",
+      "-d", "www.cmm.ogrydziak.net",
+      "-d", "www.cucm.ogrydziak.net",
+      "-d", "www.esxi.ogrydziak.net",
+      "-d", "www.opnsense.ogrydziak.net",
+      "--dry-run"
+    ]
+    #"--dry-run"
+networks:
+  rproxy:
+    name: rproxy
+  proxy_gateway:
+    name: proxy_gateway
+    external: true
