@@ -1,6 +1,5 @@
 ---
 version: "3.4"
-
 services:
   postgresql:
     image: docker.io/library/postgres:12-alpine
@@ -19,6 +18,8 @@ services:
       POSTGRES_DB: ${PG_DB:-authentik}
     env_file:
       - .env
+    networks:
+      - authentik
   redis:
     image: docker.io/library/redis:alpine
     command: --save 60 1 --loglevel warning
@@ -31,8 +32,11 @@ services:
       timeout: 3s
     volumes:
       - ./data/redis:/data
+    networks:
+      - authentik
   server:
-    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2023.6.1}
+    hostname: authentik
+    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2023.8.3}
     restart: unless-stopped
     command: server
     environment:
@@ -47,13 +51,18 @@ services:
     env_file:
       - .env
     ports:
-      - "$COMPOSE_IP:${COMPOSE_PORT_HTTP:-9000}:9000"
+      - 10.0.20.31:80:9000
+      - 10.0.20.31:443:9443
+      #- "$COMPOSE_IP:${COMPOSE_PORT_HTTP:-9000}:9000"
       #- "${COMPOSE_PORT_HTTPS:-9443}:9443"
     depends_on:
       - postgresql
       - redis
+    networks:
+      - proxy_gateway
+      - authentik
   worker:
-    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2023.6.1}
+    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2023.8.3}
     restart: unless-stopped
     command: worker
     environment:
@@ -79,3 +88,11 @@ services:
     depends_on:
       - postgresql
       - redis
+    networks:
+      - authentik
+networks:
+  authentik:
+    name: authentik
+  proxy_gateway:
+    name: proxy_gateway
+    external: true
