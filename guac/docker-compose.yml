@@ -1,3 +1,4 @@
+---
 services:
   guacd:
     image: guacamole/guacd
@@ -7,7 +8,9 @@ services:
       resources:
         limits:
           memory: 4g
-  guac_db:
+    networks:
+      - guacamole
+  db:
     image: mariadb:10
       #cant find compatibility matrix but mariadb:11 no work on guac v1.5.2
       #https://hub.docker.com/_/mariadb
@@ -34,10 +37,12 @@ services:
       resources:
         limits:
           memory: 4g
+    networks:
+      - guacamole
   guac:
     depends_on:
       - guacd
-      - guac_db
+      - db
     image: guacamole/guacamole:latest
       #https://hub.docker.com/r/guacamole/guacamole
     environment:
@@ -45,17 +50,17 @@ services:
       MYSQL_USER_FILE: /run/secrets/db_user
       MYSQL_PASSWORD_FILE: /run/secrets/db_password
       MYSQL_DATABASE: guac
-      MYSQL_HOSTNAME: guac_db
+      MYSQL_HOSTNAME: db
       MYSQL_AUTO_CREATE_ACCOUNTS: true
         #important for oauth accounts
       OPENID_AUTHORIZATION_ENDPOINT: https://authentik.ogrydziak.net/application/o/authorize/
       OPENID_CLIENT_ID: ldp9rawpQAHpmo2hMJfhP6kkOFec57IjTy89lE5q
       OPENID_ISSUER: https://authentik.ogrydziak.net/application/o/guacamole/
       OPENID_JWKS_ENDPOINT: https://authentik.ogrydziak.net/application/o/guacamole/jwks/
-      OPENID_REDIRECT_URI: https://guac.ogrydziak.net/
+      OPENID_REDIRECT_URI: https://guac.ogrydziak.net/guacamole/
         # This must match the redirect URI above
-    ports:
-      - $PROXY_BRIDGE:$PROXY_BRIDGE_PORT:8080
+    #ports:
+      #- $PROXY_BRIDGE:$PROXY_BRIDGE_PORT:8080
     secrets:
       - db_user
       - db_password
@@ -64,6 +69,9 @@ services:
       resources:
         limits:
           memory: 4g
+    networks:
+      - guacamole
+      - proxy_gateway
 secrets:
   db_root_password:
     file: ./secrets/db_root_password.txt
@@ -71,3 +79,9 @@ secrets:
     file: ./secrets/db_user.txt
   db_password:
     file: ./secrets/db_password.txt
+networks:
+  guacamole:
+    name: guacamole
+  proxy_gateway:
+    name: proxy_gateway
+    external: true
