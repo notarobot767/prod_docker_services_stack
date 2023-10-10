@@ -8,7 +8,6 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
         #https://mariadb.com/kb/en/mariadb-docker-environment-variables/
-      TZ: $TZ
       MARIADB_AUTO_UPGRADE: 1
       MARIADB_INITDB_SKIP_TZINFO: 1
     secrets:
@@ -20,6 +19,8 @@ services:
       resources:
         limits:
           memory: 4g
+    networks:
+      - zabbix
   zabbix_srv:
     image: zabbix/zabbix-server-mysql:$ZABBIX_TAG
       #https://hub.docker.com/r/zabbix/zabbix-server-mysql
@@ -32,15 +33,22 @@ services:
       MYSQL_USER_FILE: /run/secrets/db_user
       MYSQL_PASSWORD_FILE: /run/secrets/db_password
         #https://hub.docker.com/r/zabbix/zabbix-server-mysql
+      #ZBX_SSO_SP_CERT: /run/secrets/tls_cert
+      #ZBX_SSO_IDP_CERT: /run/secrets/tls_cert
+      #ZBX_SSO_SP_KEY: /run/secrets/tls_key
     secrets:
       - db_root_password
       - db_user
       - db_password
+      #- tls_cert
+      #- tls_key
     restart: unless-stopped
     deploy:
       resources:
         limits:
           memory: 4g
+    networks:
+      - zabbix
   zabbix_agent:
     image: zabbix/zabbix-agent2:$ZABBIX_TAG
     #https://hub.docker.com/r/zabbix/zabbix-agent2
@@ -57,13 +65,13 @@ services:
       resources:
         limits:
           memory: 4g
+    networks:
+      - zabbix
   zabbix_www:
     image: zabbix/zabbix-web-nginx-mysql:$ZABBIX_TAG
     #https://hub.docker.com/r/zabbix/zabbix-web-nginx-mysql
     depends_on:
       - zabbix_srv
-    ports:
-      - $PROXY_BRIDGE:$PROXY_BRIDGE_PORT:8080
     env_file:
       - zabbix.env
     environment:
@@ -77,6 +85,15 @@ services:
       resources:
         limits:
           memory: 4g
+    networks:
+      - proxy_gateway
+      - zabbix
+networks:
+  zabbix:
+    name: zabbix
+  proxy_gateway:
+    name: proxy_gateway
+    external: true
 secrets:
   db_root_password:
     file: ./secrets/db_root_password.txt
@@ -84,3 +101,7 @@ secrets:
     file: ./secrets/db_user.txt
   db_password:
     file: ./secrets/db_password.txt
+  #tls_cert:
+    #file: ../rproxy/secrets/certs/live/ogrydziak.net-ecdsa/fullchain.pem
+  #tls_key:
+    #file: ../rproxy/secrets/certs/live/ogrydziak.net-ecdsa/privkey.pem
