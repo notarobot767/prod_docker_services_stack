@@ -1,14 +1,13 @@
 services:
-  code_server:
+  code:
     image: ghcr.io/linuxserver/code-server:latest
       #https://hub.docker.com/r/linuxserver/code-server
     environment:
-      #FILE__PASSWORD: /run/secrets/password
-      TZ: $TZ
+      TZ: US/Hawaii
       PUID: 1000
       PGID: 1000
       DEFAULT_WORKSPACE: /app
-      PROXY_DOMAIN: $DOMAIN
+      PROXY_DOMAIN: cs.ogrydziak.net
     volumes:
       - ./data:/config
       - /disk2/docker:/app/docker
@@ -16,14 +15,13 @@ services:
       - /home/crashdummy:/app/crashdummy
       #- /disk2/docker/prod/devbox/data:/cs/devbox
     restart: unless-stopped
-    ports:
-      - $PROXY_BRIDGE:$PROXY_BRIDGE_PORT:8443
-    secrets:
-      - password
     deploy:
       resources:
         limits:
           memory: 4g
-secrets:
-  password:
-    file: ./secrets/password.txt
+    networks:
+      - proxy_gateway
+networks:
+  proxy_gateway:
+    name: proxy_gateway
+    external: true
