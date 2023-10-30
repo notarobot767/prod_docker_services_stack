@@ -20,27 +20,35 @@ DAYS=3652
 
 rm -rf $CERT_DIR
 mkdir -p $CERT_DIR
-#delete cert folder if exists
-#create dir
+#remove key & cert if exist
 
 openssl ecparam -genkey -name $KEY -noout -out $KEY_FILE
 chmod 400 $KEY_FILE
+#create new key
 
 openssl req -new -nodes \
   -key $KEY_FILE -out $CSR_FILE \
   -config $CONF_FILE -extensions req_ext
 chmod 444 $CSR_FILE
+#create new csr
+#ensure csr is ready only
 
+echo signing certificate...
 openssl x509 -req -days $DAYS -sha512 -CAcreateserial \
   -in $CSR_FILE -CA $CA_CERT_FILE -CAkey $CA_KEY_FILE \
   -out $CERT_FILE -extfile $EXT_FILE -extensions req_ext
 chmod 444 $CERT_FILE
+echo
+#sign the certificate
 
 cat $CERT_FILE $CA_CERT_FILE > $CERT_CHAIN_FILE
 chmod 444 $CERT_CHAIN_FILE
 #create certificate chain
 
-openssl x509 -text -noout -in $CERT_CHAIN_FILE
+openssl x509 -text -noout -in $CERT_FILE
+#output cert to screen
+
 echo
 echo verifying cert is in CA chain...
 openssl verify -verbose -CAfile $CA_CERT_FILE $CERT_FILE
+#verify cert is in chain
