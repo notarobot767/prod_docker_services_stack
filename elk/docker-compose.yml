@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.8.1
+    image: docker.elastic.co/elasticsearch/elasticsearch:$TAG
       #https://github.com/elastic/elasticsearch
       #https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
     environment:
@@ -28,7 +28,7 @@ services:
     networks:
       - elk
   kibana:
-    image: docker.elastic.co/kibana/kibana:8.8.1
+    image: docker.elastic.co/kibana/kibana:$TAG
     depends_on:
       - elasticsearch
     environment:
@@ -46,7 +46,7 @@ services:
       - proxy_gateway
       - elk
   logstash:
-    image: docker.elastic.co/logstash/logstash:8.8.1
+    image: docker.elastic.co/logstash/logstash:$TAG
     depends_on:
       - elasticsearch
     volumes:
@@ -61,7 +61,7 @@ services:
     networks:
       - elk
   fb_cisco_syslog:
-    image: docker.elastic.co/beats/filebeat:8.8.1
+    image: docker.elastic.co/beats/filebeat:$TAG
     depends_on:
       - logstash
     volumes:
@@ -77,7 +77,7 @@ services:
     networks:
       - elk
   fb_cisco_netflow:
-    image: docker.elastic.co/beats/filebeat:8.8.1
+    image: docker.elastic.co/beats/filebeat:$TAG
     depends_on:
       - logstash
     volumes:
@@ -93,7 +93,7 @@ services:
     networks:
       - elk
   fb_endlessh:
-    image: docker.elastic.co/beats/filebeat:8.8.1
+    image: docker.elastic.co/beats/filebeat:$TAG
     depends_on:
       - logstash
     volumes:
@@ -108,7 +108,7 @@ services:
     networks:
       - elk
   fb_bind9:
-    image: docker.elastic.co/beats/filebeat:8.8.1
+    image: docker.elastic.co/beats/filebeat:$TAG
     depends_on:
       - logstash
     volumes:
@@ -123,7 +123,7 @@ services:
     networks:
       - elk
   fb_rproxy:
-    image: docker.elastic.co/beats/filebeat:8.8.1
+    image: docker.elastic.co/beats/filebeat:$TAG
     depends_on:
       - logstash
     volumes:
