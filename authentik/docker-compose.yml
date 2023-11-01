@@ -36,7 +36,7 @@ services:
       - authentik
   server:
     hostname: authentik
-    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2023.8.3}
+    image: ghcr.io/goauthentik/server:${AUTHENTIK_TAG}
     restart: unless-stopped
     command: server
     environment:
@@ -62,7 +62,7 @@ services:
       - proxy_gateway
       - authentik
   worker:
-    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2023.8.3}
+    image: ghcr.io/goauthentik/server:${AUTHENTIK_TAG}
     restart: unless-stopped
     command: worker
     environment:
