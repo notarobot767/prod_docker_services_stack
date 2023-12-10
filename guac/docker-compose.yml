@@ -11,7 +11,7 @@ services:
     networks:
       - guacamole
   db:
-    image: mariadb:10
+    image: mariadb:10.11
       #cant find compatibility matrix but mariadb:11 no work on guac v1.5.2
       #https://hub.docker.com/_/mariadb
     environment:
