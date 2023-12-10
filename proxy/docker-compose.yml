@@ -68,8 +68,7 @@ services:
       "-d", "www.cmm.ogrydziak.net",
       "-d", "www.cucm.ogrydziak.net",
       "-d", "www.esxi.ogrydziak.net",
-      "-d", "www.opnsense.ogrydziak.net",
-      "--dry-run"
+      "-d", "www.opnsense.ogrydziak.net"
     ]
     #"--dry-run"
 networks:
