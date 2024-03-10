@@ -1,3 +1,4 @@
+---
 services:
   code:
     image: ghcr.io/linuxserver/code-server:latest
@@ -9,9 +10,13 @@ services:
       DEFAULT_WORKSPACE: /app
       PROXY_DOMAIN: cs.ogrydziak.net
     volumes:
+      #dir for persistent settings
       - ./data:/config
+      
+      #dirs to map into vscode
       - /disk2/docker:/app/docker
       - /nfs/gdrive:/app/gdrive
+      - /nfs/media:/app/media
       - /home/crashdummy:/app/crashdummy
       #- /disk2/docker/prod/devbox/data:/cs/devbox
     restart: unless-stopped
