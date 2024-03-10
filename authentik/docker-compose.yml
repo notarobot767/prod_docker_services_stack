@@ -1,3 +1,5 @@
+#pulled from official page
+#https://docs.goauthentik.io/docs/installation/docker-compose
 ---
 version: "3.4"
 services:
@@ -20,6 +22,10 @@ services:
       - .env
     networks:
       - authentik
+    deploy:
+      resources:
+        limits:
+          memory: 4g
   redis:
     image: docker.io/library/redis:alpine
     command: --save 60 1 --loglevel warning
@@ -34,6 +40,10 @@ services:
       - ./data/redis:/data
     networks:
       - authentik
+    deploy:
+      resources:
+        limits:
+          memory: 4g
   server:
     hostname: authentik
     image: ghcr.io/goauthentik/server:${AUTHENTIK_TAG}
@@ -51,16 +61,18 @@ services:
     env_file:
       - .env
     ports:
-      - 10.0.20.31:80:9000
-      - 10.0.20.31:443:9443
-      #- "$COMPOSE_IP:${COMPOSE_PORT_HTTP:-9000}:9000"
-      #- "${COMPOSE_PORT_HTTPS:-9443}:9443"
+      - $COMPOSE_IP:$COMPOSE_PORT_HTTP:9000
+      #- $COMPOSE_IP:$COMPOSE_PORT_HTTPS:9443
     depends_on:
       - postgresql
       - redis
     networks:
       - proxy_gateway
       - authentik
+    deploy:
+      resources:
+        limits:
+          memory: 4g
   worker:
     image: ghcr.io/goauthentik/server:${AUTHENTIK_TAG}
     restart: unless-stopped
@@ -90,6 +102,10 @@ services:
       - redis
     networks:
       - authentik
+    deploy:
+      resources:
+        limits:
+          memory: 4g
 networks:
   authentik:
     name: authentik
