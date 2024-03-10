@@ -96,11 +96,11 @@ networks:
     external: true
 secrets:
   db_root_password:
-    file: ./secrets/db_root_password.txt
+    file: ./secrets/db_root_password.key
   db_user:
-    file: ./secrets/db_user.txt
+    file: ./secrets/db_user.key
   db_password:
-    file: ./secrets/db_password.txt
+    file: ./secrets/db_password.key
   #tls_cert:
     #file: ../rproxy/secrets/certs/live/ogrydziak.net-ecdsa/fullchain.pem
   #tls_key:
