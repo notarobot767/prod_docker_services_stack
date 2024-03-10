@@ -11,7 +11,6 @@ services:
       - "10.0.20.30:53:53/tcp"
       - "10.0.20.30:53:53/udp"
       #- "67:67/udp" # Only required if you are using Pi-hole as your DHCP server
-      #- "$PROXY_BRIDGE:8440:80/tcp"
     environment:
       TZ: 'US/Hawaii'
       # WEBPASSWORD: 'set a secure password here or it will be random'
@@ -25,6 +24,10 @@ services:
     restart: unless-stopped
     networks:
       - proxy_gateway
+    deploy:
+      resources:
+        limits:
+          memory: 8g
 networks:
   proxy_gateway:
     name: proxy_gateway
