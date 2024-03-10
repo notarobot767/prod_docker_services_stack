@@ -3,6 +3,6 @@ filebeat.inputs:
   id: endlessh
   paths:
     - "/logs/current"
-  fields: {server: "endlessh", service: "endlessh"}
+  fields: {server: "OG Networks", service: "endlessh"}
 output.logstash:
-  hosts: ["logstash:516"]
+  hosts: ["logstash:514"]
