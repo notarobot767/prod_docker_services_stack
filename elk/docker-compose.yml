@@ -52,6 +52,8 @@ services:
     volumes:
       - ./data/logstash:/usr/share/logstash/data
       - ./app/logstash/pipeline:/usr/share/logstash/pipeline:ro
+    ports:
+      - 10.0.20.30:514:514/udp
     restart: unless-stopped
     deploy:
       resources:
@@ -67,8 +69,8 @@ services:
     volumes:
       - ./data/filebeat/cisco_syslog:/usr/share/filebeat/data
       - ./app/filebeat/cisco_syslog.yml:/usr/share/filebeat/filebeat.yml:ro
-    ports:
-        - 10.0.20.30:514:514/udp
+    #ports:
+      #- 10.0.20.30:514:514/udp
     restart: unless-stopped
     deploy:
       resources:

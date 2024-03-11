@@ -5,4 +5,4 @@ filebeat.inputs:
     - "/logs/current"
   fields: {server: "OG Networks", service: "endlessh"}
 output.logstash:
-  hosts: ["logstash:514"]
+  hosts: ["logstash:515"]
