@@ -8,8 +8,8 @@ filebeat.modules:
 
 setup.template:
   name: "netflow"
-  pattern: "netflow-%{[agent.version]}-%{+YYYY.MM.dd}"
+  pattern: "netflow-cisco-og.networks"
 
 output.elasticsearch:
   hosts: ["elasticsearch:9200"]  
-  index: "netflow-%{[agent.version]}-%{+YYYY.MM.dd}"
+  index: "netflow-cisco-og.networks"
