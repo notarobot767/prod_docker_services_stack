@@ -13,3 +13,5 @@ setup.template:
 output.elasticsearch:
   hosts: ["elasticsearch:9200"]  
   index: "netflow-cisco-og.networks"
+  username: "beats_netflow"
+  password: "asd11Rs3@zA@19zuX7!sadf"

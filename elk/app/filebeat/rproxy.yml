@@ -1,13 +1,21 @@
 filebeat.modules:
-- module: nginx
-  access:
-    enabled: true
-    var.paths: ["/logs/access.log"]
+#- module: nginx
+#  access:
+#    enabled: true
+#    var.paths: ["/logs/access.log"]
+- type: syslog
+  format: rfc3164
+  protocol.udp:
+    host: "0.0.0.0:514"
+  fields: {server: "OG Networks", service: "cisco-syslog"}
 
-setup.template:
-  name: "rproxy"
-  pattern: "rproxy-%{[agent.version]}-%{+YYYY.MM.dd}"
+output.logstash:
+  hosts: ["logstash:515"]
 
-output.elasticsearch:
-  hosts: ["elasticsearch:9200"]  
-  index: "rproxy-%{[agent.version]}-%{+YYYY.MM.dd}"
+#setup.template:
+#  name: "rproxy"
+#  pattern: "syslog-nginx-rproxy}"
+
+#output.elasticsearch:
+#  hosts: ["elasticsearch:9200"]  
+#  index: "syslog-nginx-rproxy"

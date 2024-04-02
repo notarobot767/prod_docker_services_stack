@@ -1,0 +1,117 @@
+{
+    "template": {
+      "settings": {
+        "index": {
+          "routing": {
+            "allocation": {
+              "include": {
+                "_tier_preference": "data_hot"
+              }
+            }
+          }
+        }
+      },
+      "mappings": {
+        "properties": {
+          "app": {
+            "properties": {
+              "cisco": {
+                "properties": {
+                  "login": {
+                    "properties": {
+                      "localport": {
+                        "type": "integer"
+                      },
+                      "session": {
+                        "type": "integer",
+                        "ignore_malformed": false,
+                        "coerce": true
+                      },
+                      "source": {
+                        "type": "ip"
+                      },
+                      "tty": {
+                        "type": "short",
+                        "ignore_malformed": false,
+                        "coerce": true
+                      }
+                    }
+                  },
+                  "sequence": {
+                    "type": "integer",
+                    "ignore_malformed": false,
+                    "coerce": true
+                  }
+                }
+              },
+              "dst": {
+                "properties": {
+                  "ip": {
+                    "type": "ip"
+                  },
+                  "mac": {
+                    "type": "keyword",
+                    "index_options": "freqs"
+                  },
+                  "port": {
+                    "type": "integer",
+                    "ignore_malformed": false,
+                    "coerce": true
+                  }
+                }
+              },
+              "host": {
+                "properties": {
+                  "dst": {
+                    "properties": {
+                      "port": {
+                        "type": "integer"
+                      }
+                    }
+                  },
+                  "src": {
+                    "properties": {
+                      "ip": {
+                        "type": "ip"
+                      },
+                      "port": {
+                        "type": "integer",
+                        "ignore_malformed": false,
+                        "coerce": true
+                      }
+                    }
+                  }
+                }
+              },
+              "severity": {
+                "type": "byte",
+                "ignore_malformed": false,
+                "coerce": true
+              },
+              "src": {
+                "properties": {
+                  "ip": {
+                    "type": "ip"
+                  },
+                  "mac": {
+                    "type": "keyword",
+                    "index_options": "freqs"
+                  },
+                  "port": {
+                    "type": "integer",
+                    "ignore_malformed": false,
+                    "coerce": true
+                  }
+                }
+              },
+              "timestamp": {
+                "type": "date",
+                "format": "MMM  d yyyy HH:mm:ss.SSS zzz||MMM dd yyyy HH:mm:ss.SSS zzz"
+              }
+            }
+          }
+        }
+      },
+      "aliases": {}
+    }
+  }

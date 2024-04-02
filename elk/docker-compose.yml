@@ -1,16 +1,20 @@
-version: "3.9"
+---
 services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:$TAG
       #https://github.com/elastic/elasticsearch
       #https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
     environment:
-      xpack.security.enabled: false
       discovery.type: single-node
       bootstrap.memory_lock: true
       ES_JAVA_OPTS: "-Xms8g -Xmx8g"
         #set no more than half of allocated memory
         #https://www.elastic.co/guide/en/elasticsearch/reference/current/advanced-configuration.html#set-jvm-options
+      xpack.security.enabled: true
+        # https://www.elastic.co/guide/en/elasticsearch/reference/current/security-minimal-setup.html
+        # create basic elastic user and kibana system
+        # ./bin/elasticsearch-reset-password -u elastic
+        # ./bin/elasticsearch-reset-password -u kibana_system
     ulimits:
       memlock:
         soft: -1
@@ -23,7 +27,6 @@ services:
     deploy:
       resources:
         limits:
-          #cpus: '4.0'
           memory: 16g
     networks:
       - elk
@@ -36,6 +39,11 @@ services:
       SERVER_HOST: 0.0.0.0
       ELASTICSEARCH_HOSTS: '["http://elasticsearch:9200"]'
       SERVER_PUBLICBASEURL: 'https://kibana.ogrydziak.net'
+      ELASTICSEARCH_USERNAME: 'kibana_system'
+        # https://www.elastic.co/guide/en/elasticsearch/reference/current/security-minimal-setup.html
+        # match kibana_system users created in elastic
+        # ./bin/kibana-keystore create
+        # ./bin/kibana-keystore add elasticsearch.password
     volumes:
       - ./data/kibana:/usr/share/kibana/data
     restart: unless-stopped
@@ -50,6 +58,10 @@ services:
     image: docker.elastic.co/logstash/logstash:$TAG
     depends_on:
       - elasticsearch
+    env_file:
+      - ./secrets/logstash.env
+        # xpack.monitoring.elasticsearch.username: "user"
+        # xpack.monitoring.elasticsearch.password: "password"
     volumes:
       - ./data/logstash:/usr/share/logstash/data
       - ./app/logstash/pipeline:/usr/share/logstash/pipeline:ro
@@ -59,24 +71,7 @@ services:
     deploy:
       resources:
         limits:
-          #cpus: '4.0'
           memory: 8g
-    networks:
-      - elk
-  fb_cisco_syslog:
-    image: docker.elastic.co/beats/filebeat:$TAG
-    depends_on:
-      - logstash
-    volumes:
-      - ./data/filebeat/cisco_syslog:/usr/share/filebeat/data
-      - ./app/filebeat/cisco_syslog.yml:/usr/share/filebeat/filebeat.yml:ro
-    #ports:
-      #- 10.0.20.30:514:514/udp
-    restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          memory: 2g
     networks:
       - elk
   fb_cisco_netflow:
@@ -110,21 +105,6 @@ services:
           memory: 2g
     networks:
       - elk
-  fb_bind9:
-    image: docker.elastic.co/beats/filebeat:$TAG
-    depends_on:
-      - logstash
-    volumes:
-      - ./data/filebeat/bind9:/usr/share/filebeat/data
-      - ./app/filebeat/bind9.yml:/usr/share/filebeat/filebeat.yml:ro
-      - /disk2/docker/prod/bind9/log:/logs:ro
-    restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          memory: 2g
-    networks:
-      - elk
   fb_rproxy:
     image: docker.elastic.co/beats/filebeat:$TAG
     depends_on:
@@ -132,7 +112,7 @@ services:
     volumes:
       - ./data/filebeat/rproxy:/usr/share/filebeat/data
       - ./app/filebeat/rproxy.yml:/usr/share/filebeat/filebeat.yml:ro
-      - /disk2/docker/prod/proxy/logs:/logs:ro
+      #- /disk2/docker/prod/proxy/logs:/logs:ro
     restart: unless-stopped
     deploy:
       resources:
