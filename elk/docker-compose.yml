@@ -15,6 +15,23 @@ services:
         # create basic elastic user and kibana system
         # ./bin/elasticsearch-reset-password -u elastic
         # ./bin/elasticsearch-reset-password -u kibana_system
+      #xpack.security.authc.token.enabled: true
+      #xpack.security.authc.realms.oidc.oidc1:
+      #  order: 2
+      #  rp.client_id: "Jhmp6ViHVIDW8FFMgrR4v1X8qQJX1GK6jALIp1oi"
+      #  rp.response_type: code
+      #  rp.redirect_uri: "https://kibana.ogrydziak.net/api/security/oidc/callback"
+      #  op.issuer: "https://authentik.ogrydziak.net"
+      #  op.authorization_endpoint: "https://authentik.ogrydziak.net/oauth2/v1/authorize"
+      #  op.token_endpoint: "https://authentik.ogrydziak.net/oauth2/v1/token"
+      #  op.jwkset_path: oidc/jwkset.json
+      #  op.userinfo_endpoint: "https://authentik.ogrydziak.net/oauth2/v1/userinfo"
+      #  op.endsession_endpoint: "https://authentik.ogrydziak.net/oauth2/v1/logout"
+      #  rp.post_logout_redirect_uri: "https://kibana.ogrydziak.net/security/logged_out"
+      #  claims.principal: sub
+      #  claims.groups: "http://example.info/claims/groups"
+        # sso config
+        # https://www.elastic.co/guide/en/elasticsearch/reference/current/oidc-guide.html
     ulimits:
       memlock:
         soft: -1
