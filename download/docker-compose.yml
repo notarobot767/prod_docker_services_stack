@@ -1,9 +1,8 @@
 ---
-version: "3"
 services:
   download:
     image: ghcr.io/linuxserver/qbittorrent:latest
-      #https://hub.docker.com/r/linuxserver/qbittorrent
+      # https://hub.docker.com/r/linuxserver/qbittorrent
     environment:
       - TZ=US/Hawaii
       - PUID=1000
