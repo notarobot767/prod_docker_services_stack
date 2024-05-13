@@ -1,4 +1,3 @@
-version: "3"
 services:
   zabbix_db:
     #entrypoint: mysqld_safe --skip-grant-tables --user=mysql
