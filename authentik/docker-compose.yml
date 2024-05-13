@@ -1,7 +1,6 @@
 #pulled from official page
 #https://docs.goauthentik.io/docs/installation/docker-compose
 ---
-version: "3.4"
 services:
   postgresql:
     image: docker.io/library/postgres:12-alpine
@@ -60,8 +59,9 @@ services:
       - ./custom-templates:/templates
     env_file:
       - .env
-    ports:
-      - $COMPOSE_IP:$COMPOSE_PORT_HTTP:9000
+    #ports:
+      #- 10.0.20.30:1812:1812/udp
+      #- $COMPOSE_IP:$COMPOSE_PORT_HTTP:9000
       #- $COMPOSE_IP:$COMPOSE_PORT_HTTPS:9443
     depends_on:
       - postgresql
