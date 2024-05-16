@@ -1,7 +1,7 @@
 ---
 services:
   guacd:
-    image: guacamole/guacd
+    image: guacamole/guacd:$GUAC_TAG
       #https://hub.docker.com/r/guacamole/guacd
     restart: unless-stopped
     deploy:
@@ -11,8 +11,8 @@ services:
     networks:
       - guacamole
   db:
-    image: mariadb:10.11
-      #cant find compatibility matrix but mariadb:11 no work on guac v1.5.2
+    image: mariadb:$MARIA_TAG
+      #cant find compatibility matrix but 11.3 works for guac 1.5.5
       #https://hub.docker.com/_/mariadb
     environment:
       MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
@@ -43,7 +43,7 @@ services:
     depends_on:
       - guacd
       - db
-    image: guacamole/guacamole:latest
+    image: guacamole/guacamole:$GUAC_TAG
       #https://hub.docker.com/r/guacamole/guacamole
     environment:
       GUACD_HOSTNAME: guacd
@@ -59,8 +59,6 @@ services:
       OPENID_JWKS_ENDPOINT: https://authentik.ogrydziak.net/application/o/guacamole/jwks/
       OPENID_REDIRECT_URI: https://guac.ogrydziak.net/guacamole/
         # This must match the redirect URI above
-    #ports:
-      #- $PROXY_BRIDGE:$PROXY_BRIDGE_PORT:8080
     secrets:
       - db_user
       - db_password
