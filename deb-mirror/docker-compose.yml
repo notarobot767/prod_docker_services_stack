@@ -1,0 +1,55 @@
+services:
+  mirror:
+    command: [
+      "--arch", "amd64",
+      "--host", "us.archive.ubuntu.com",
+      "--dist", "jammy,jammy-security,jammy-updates,jammy-backports,noble,noble-security,noble-updates,noble-backports",
+      "--section", "main,restricted,universe,multiverse",
+      "--no-source",
+      "--progress",
+      "--root", "/ubuntu",
+      "--method=http",
+      "/app/ubuntu"
+    ]
+    # debmirror cli reference guide
+    # https://linux.die.net/man/1/debmirror
+    #
+    # rsync options could not be read when injected into command as a string
+    # had to add rsync-options in init.sh
+    # even if using http method, a few files are downloaded via rsync
+    build:
+      context: .
+      dockerfile: deb-mirror.Dockerfile
+    environment:
+      TZ: US/Hawaii
+    volumes:
+      - $NFS_DIR:/app/ubuntu
+      - ../sources.list:/etc/apt/sources.list:ro
+      # local apt mirror
+    deploy:
+      resources:
+        limits:
+          memory: 4g
+    networks:
+      - deb-mirror
+  deb-www:
+    build:
+      context: .
+      dockerfile: www.Dockerfile
+    environment:
+      TZ: US/Hawaii
+    volumes:
+      - $NFS_DIR:/usr/share/nginx/html/ubuntu:ro
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 4g
+    networks:
+      - proxy_gateway
+networks:
+  deb-mirror:
+    name: deb-mirror
+  proxy_gateway:
+    name: proxy_gateway
+    external: true
