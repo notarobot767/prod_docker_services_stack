@@ -24,7 +24,6 @@ services:
       TZ: US/Hawaii
     volumes:
       - $NFS_DIR:/app/ubuntu
-      - ../sources.list:/etc/apt/sources.list:ro
       # local apt mirror
     deploy:
       resources:

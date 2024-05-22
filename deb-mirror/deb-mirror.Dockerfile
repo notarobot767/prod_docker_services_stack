@@ -1,8 +1,11 @@
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 ENV TZ="Etc/UTC"
 # set timezone variable to default UTC
 # https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+
+COPY ./app/html/ubuntu-24.04.sources.list /etc/apt/sources.list
+# add local mirror sources.list for faster build
 
 COPY ./app/init.sh /etc/init.sh
 # copy init script into image
