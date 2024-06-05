@@ -1,3 +1,8 @@
+# https://manpages.ubuntu.com/manpages/bionic/man5/sources.list.5.html
+
+# to have custom Docker image use your local mirror, add the following line in the .Dockerfile
+# ADD http://mirror.ogrydziak.net/ubuntu-22.04.sources.list /etc/apt/sources.list
+
 deb http://mirror.ogrydziak.net/ubuntu/ jammy           main restricted universe multiverse
 deb http://mirror.ogrydziak.net/ubuntu/ jammy-security  main restricted universe multiverse
 deb http://mirror.ogrydziak.net/ubuntu/ jammy-updates   main restricted universe multiverse

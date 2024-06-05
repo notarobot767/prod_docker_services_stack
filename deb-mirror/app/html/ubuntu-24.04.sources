@@ -1,0 +1,15 @@
+# Use for Ubuntu 24.04
+# Ubuntu sources have moved to the /etc/apt/sources.list.d/ubuntu.sources
+# file, which uses the deb822 format. Use deb822-formatted .sources files
+# to manage package sources in the /etc/apt/sources.list.d/ directory.
+# See the sources.list(5) manual page for details.
+# https://manpages.debian.org/stretch/apt/sources.list.5.en.html
+
+# to have custom Docker image use your local mirror, add the following line in the .Dockerfile
+# ADD http://mirror.ogrydziak.net/ubuntu-24.04.sources /etc/apt/sources.list.d/ubuntu.sources
+
+Types: deb
+URIs: http://mirror.ogrydziak.net/ubuntu/
+Suites: noble noble-security noble-updates noble-backports
+Components: main universe restricted multiverse
+Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg

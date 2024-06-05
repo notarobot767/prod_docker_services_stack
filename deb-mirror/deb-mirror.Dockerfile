@@ -4,7 +4,7 @@ ENV TZ="Etc/UTC"
 # set timezone variable to default UTC
 # https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 
-COPY ./app/html/ubuntu-24.04.sources.list /etc/apt/sources.list
+COPY ./app/html/ubuntu-24.04.sources /etc/apt/sources.list.d/ubuntu.sources
 # add local mirror sources.list for faster build
 
 COPY ./app/init.sh /etc/init.sh
