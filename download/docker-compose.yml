@@ -1,7 +1,7 @@
 ---
 services:
   download:
-    image: ghcr.io/linuxserver/qbittorrent:latest
+    image: ghcr.io/linuxserver/qbittorrent:4.6.5
       # https://hub.docker.com/r/linuxserver/qbittorrent
     environment:
       - TZ=US/Hawaii
