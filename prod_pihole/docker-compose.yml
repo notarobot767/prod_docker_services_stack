@@ -1,0 +1,25 @@
+---
+# More info at https://github.com/pi-hole/docker-pi-hole/ and https://docs.pi-hole.net/
+services:
+  pihole:
+    image: pihole/pihole:latest
+    ports:
+      - 10.0.20.30:53:53
+      - 10.0.20.30:53:53/udp
+      - 172.31.255.255:5005:80
+      #- "67:67/udp"
+        # Only required if you are using Pi-hole as your DHCP server
+    environment:
+      TZ: 'US/Hawaii'
+      # WEBPASSWORD: 'set a secure password here or it will be random'
+    volumes:
+      - ./etc-pihole:/etc/pihole
+      - ./etc-dnsmasq.d:/etc/dnsmasq.d
+      # https://github.com/pi-hole/docker-pi-hole#note-on-capabilities
+    #cap_add:
+      #- NET_ADMIN # Required if you are using Pi-hole as your DHCP server, else not needed
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 8g

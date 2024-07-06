@@ -1,0 +1,129 @@
+---
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:$TAG
+      #https://github.com/elastic/elasticsearch
+      #https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
+    environment:
+      discovery.type: single-node
+      bootstrap.memory_lock: true
+      ES_JAVA_OPTS: "-Xms8g -Xmx8g"
+        #set no more than half of allocated memory
+        #https://www.elastic.co/guide/en/elasticsearch/reference/current/advanced-configuration.html#set-jvm-options
+      xpack.security.enabled: true
+        # https://www.elastic.co/guide/en/elasticsearch/reference/current/security-minimal-setup.html
+        # create basic elastic user and kibana system
+        # ./bin/elasticsearch-reset-password -u elastic
+        # ./bin/elasticsearch-reset-password -u kibana_system
+      #xpack.security.authc.token.enabled: true
+      #xpack.security.authc.realms.oidc.oidc1:
+      #  order: 2
+      #  rp.client_id: "Jhmp6ViHVIDW8FFMgrR4v1X8qQJX1GK6jALIp1oi"
+      #  rp.response_type: code
+      #  rp.redirect_uri: "https://kibana.ogrydziak.net/api/security/oidc/callback"
+      #  op.issuer: "https://authentik.ogrydziak.net"
+      #  op.authorization_endpoint: "https://authentik.ogrydziak.net/oauth2/v1/authorize"
+      #  op.token_endpoint: "https://authentik.ogrydziak.net/oauth2/v1/token"
+      #  op.jwkset_path: oidc/jwkset.json
+      #  op.userinfo_endpoint: "https://authentik.ogrydziak.net/oauth2/v1/userinfo"
+      #  op.endsession_endpoint: "https://authentik.ogrydziak.net/oauth2/v1/logout"
+      #  rp.post_logout_redirect_uri: "https://kibana.ogrydziak.net/security/logged_out"
+      #  claims.principal: sub
+      #  claims.groups: "http://example.info/claims/groups"
+        # sso config
+        # https://www.elastic.co/guide/en/elasticsearch/reference/current/oidc-guide.html
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./data/elastic:/usr/share/elasticsearch/data
+    #ports:
+      #- 10.0.20.30:9200:9200
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 16g
+  kibana:
+    image: docker.elastic.co/kibana/kibana:$TAG
+    depends_on:
+      - elasticsearch
+    environment:
+      SERVERNAME: kibana.ogrydziak.net
+      SERVER_HOST: 0.0.0.0
+      ELASTICSEARCH_HOSTS: '["http://elasticsearch:9200"]'
+      SERVER_PUBLICBASEURL: 'https://kibana.ogrydziak.net'
+      ELASTICSEARCH_USERNAME: 'kibana_system'
+        # https://www.elastic.co/guide/en/elasticsearch/reference/current/security-minimal-setup.html
+        # match kibana_system users created in elastic
+        # ./bin/kibana-keystore create
+        # ./bin/kibana-keystore add elasticsearch.password
+    volumes:
+      - ./data/kibana:/usr/share/kibana/data
+      #- ./secrets/kibana.keystore:/usr/share/kibana/config/kibana.keystore
+    ports:
+      - 172.31.255.255:5601:5601
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 4g
+  logstash:
+    image: docker.elastic.co/logstash/logstash:$TAG
+    depends_on:
+      - elasticsearch
+    env_file:
+      - ./secrets/logstash.env
+        # xpack.monitoring.elasticsearch.username: "user"
+        # xpack.monitoring.elasticsearch.password: "password"
+    volumes:
+      - ./data/logstash:/usr/share/logstash/data
+      - ./app/logstash/pipeline:/usr/share/logstash/pipeline:ro
+    ports:
+      - 10.0.20.30:514:514/udp
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 8g
+  fb_cisco_netflow:
+    image: docker.elastic.co/beats/filebeat:$TAG
+    depends_on:
+      - logstash
+    volumes:
+      - ./data/filebeat/netflow:/usr/share/filebeat/data
+      - ./app/filebeat/netflow.yml:/usr/share/filebeat/filebeat.yml:ro
+    ports:
+        - 10.0.20.30:2055:2055/udp
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 2g
+  fb_endlessh:
+    image: docker.elastic.co/beats/filebeat:$TAG
+    depends_on:
+      - logstash
+    volumes:
+      - ./data/filebeat/endlessh:/usr/share/filebeat/data
+      - ./app/filebeat/endlessh.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /disk2/docker/prod/prod_endlessh/data/logs/endlessh:/logs:ro
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 2g
+  fb_rproxy:
+    image: docker.elastic.co/beats/filebeat:$TAG
+    depends_on:
+      - logstash
+    volumes:
+      - ./data/filebeat/rproxy:/usr/share/filebeat/data
+      - ./app/filebeat/rproxy.yml:/usr/share/filebeat/filebeat.yml:ro
+      #- /disk2/docker/prod/proxy/logs:/logs:ro
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 2g

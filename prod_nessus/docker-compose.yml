@@ -1,0 +1,23 @@
+---
+services:
+  nessus:
+    image: tenable/nessus:latest-ubuntu
+    # https://hub.docker.com/r/tenable/nessus 
+    env_file:
+      - ./secrets/nessus.yml
+    volumes:
+      - ./data:/opt/nessus/etc/nessus
+    ports:
+      - 172.31.255.255:5025:8834
+    deploy:
+      resources:
+        limits:
+          memory: 16g
+          cpus: '7'
+          # warning:
+          # this app is CPU intensive and will use what resources are available
+          # cpu is utilized most during first run and compiling plugins
+          # my lab has 8 cores for a max usage of 800%
+          # in this lab environment, I opted for a max cap of '7' or 700%
+          # you may need more or less
+    restart: unless-stopped

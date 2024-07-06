@@ -1,0 +1,33 @@
+---
+services:
+  tftpd:
+    command: [
+      "--listen",
+      "--secure",
+      "--create",
+      "--verbose",
+      "--user", "tftp",
+      "--blocksize", "1468",
+      "--address", "0.0.0.0:69",
+      "/srv/tftp"
+      # https://manpages.debian.org/testing/tftpd-hpa/tftpd.8.en.html
+      # command command options as needed for server needs
+    ]
+    # To max transfer speeds on cisco router, ensure devices can match blocksize
+      # ip tftp blocksize 1468
+    # default blocksize on 3850 for example is 512
+    # don't be that guy
+    # https://www.cisco.com/c/en/us/support/docs/wireless/5760-wireless-lan-controller/117636-technote-tftpfile-00.html
+    build:
+      context: .
+    ports:
+      - 10.0.20.30:69:69/udp
+    environment:
+      TZ: US/Hawaii
+    volumes:
+      - ./data:/srv/tftp
+      - ./logs:/var/log
+    deploy:
+      resources:
+        limits:
+          memory: 2g

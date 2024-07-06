@@ -1,0 +1,28 @@
+########
+# SNMP #
+########
+# Simple Network Management Protocol
+# enable collection of network device system info
+# apply on XLESS T2R, XLESS Switch, NIPR Switches, SIPR T2R, SIPR Switches
+# version 2024-03-20
+!
+##########################################
+# XLESS T2R, XLESS Switch, NIPR Switches #
+##########################################
+snmp-server view ALL-ACCESS iso included
+snmp-server group NETENG v3 priv read ALL-ACCESS access NETENG
+snmp-server user neteng NETENG v3 auth sha 307307307 priv aes 128 307307307
+!
+ip access-list standard NETENG
+ permit 155.28.42.0 0.0.0.31
+ permit 10.107.112.0 0.0.0.31
+!
+###########################
+# SIPR T2R, SIPR Switches #
+###########################
+snmp-server view ALL-ACCESS iso included
+snmp-server group NETENG v3 priv read ALL-ACCESS access NETENG
+snmp-server user neteng NETENG v3 auth sha 307307307 priv aes 128 307307307
+!
+ip access-list standard NETENG
+ permit 22.225.42.0 0.0.0.31

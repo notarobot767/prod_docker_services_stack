@@ -1,0 +1,29 @@
+services:
+  ntp-a:
+    command: ["-d", "-x", "-s"]
+      #-d all messages will be written to the terminal instead of syslog
+      #-x disables the control of the system clock
+      #-s set the system clock from the computer’s real-time clock (RTC)
+      #https://chrony.tuxfamily.org/doc/4.0/chronyd.html
+    build:
+      context: .
+    ports:
+      - 10.0.20.30:123:123/udp
+    privileged: true
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+  ntp-b:
+    command: ["-d", "-x", "-s"]
+    build:
+      context: .
+    ports:
+      - 10.0.20.31:123:123/udp
+    privileged: true
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1g

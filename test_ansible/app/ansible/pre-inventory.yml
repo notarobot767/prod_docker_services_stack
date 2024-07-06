@@ -1,0 +1,10 @@
+---
+cisco_routers:
+  vars:
+    ansible_connection: ansible.netcommon.network_cli
+    ansible_network_os: cisco.ios.ios
+    ansible_user: cisco
+    ansible_ssh_pass: cisco
+  hosts:
+    og_net-csr1000-eveng:
+      ansible_host: 10.0.20.105

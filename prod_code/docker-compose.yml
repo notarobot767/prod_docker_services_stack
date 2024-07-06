@@ -1,0 +1,28 @@
+---
+services:
+  code:
+    image: ghcr.io/linuxserver/code-server:4.90.3
+      #https://hub.docker.com/r/linuxserver/code-server
+    environment:
+      TZ: US/Hawaii
+      PUID: 1000
+      PGID: 1000
+      DEFAULT_WORKSPACE: /app
+      PROXY_DOMAIN: code.ogrydziak.net
+      DOCKER_MODS: "linuxserver/mods:code-server-python3"
+    volumes:
+      #dir for persistent settings
+      - ./data:/config
+      #dirs to map into vscode
+      - /disk2/docker:/app/docker
+      - /nfs/gdrive:/app/gdrive
+      - /nfs/media:/app/media
+      - /home/crashdummy:/app/crashdummy
+      #- /disk2/docker/prod/devbox/data:/cs/devbox
+    ports:
+      - 172.31.255.255:5000:8443
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 4g

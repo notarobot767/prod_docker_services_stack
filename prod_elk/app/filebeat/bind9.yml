@@ -1,0 +1,15 @@
+filebeat.inputs:
+- type: filestream
+  id: ns1
+  paths:
+    - "/logs/ns1/default.log"
+    - "/logs/ns1/queries.log"
+  fields: {server: "ns1", service: "bind9"}
+- type: filestream
+  id: ns2
+  paths:
+    - "/logs/ns2/default.log"
+    - "/logs/ns2/queries.log"
+  fields: {server: "ns2", service: "bind9"}
+output.logstash:
+  hosts: ["logstash:515"]

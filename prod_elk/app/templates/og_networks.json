@@ -1,0 +1,66 @@
+{
+    "properties": {
+      "app.host.src.port": {
+        "coerce": true,
+        "index": true,
+        "ignore_malformed": false,
+        "store": false,
+        "type": "integer",
+        "doc_values": true
+      },
+      "app.src.ip": {
+        "index": true,
+        "store": false,
+        "type": "ip",
+        "doc_values": true
+      },
+      "app.src.mac": {
+        "eager_global_ordinals": false,
+        "norms": false,
+        "index": true,
+        "store": false,
+        "type": "keyword",
+        "split_queries_on_whitespace": false,
+        "index_options": "freqs",
+        "doc_values": true
+      },
+      "app.dst.ip": {
+        "index": true,
+        "store": false,
+        "type": "ip",
+        "doc_values": true
+      },
+      "app.dst.port": {
+        "coerce": true,
+        "index": true,
+        "ignore_malformed": false,
+        "store": false,
+        "type": "integer",
+        "doc_values": true
+      },
+      "app.host.src.ip": {
+        "type": "ip"
+      },
+      "app.host.dst.port": {
+        "type": "integer"
+      },
+      "app.dst.mac": {
+        "eager_global_ordinals": false,
+        "norms": false,
+        "index": true,
+        "store": false,
+        "type": "keyword",
+        "split_queries_on_whitespace": false,
+        "index_options": "freqs",
+        "doc_values": true
+      },
+      "app.src.port": {
+        "coerce": true,
+        "index": true,
+        "ignore_malformed": false,
+        "store": false,
+        "type": "integer",
+        "doc_values": true
+      }
+    }
+  }

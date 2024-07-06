@@ -1,0 +1,43 @@
+---
+services:
+  ns1:
+    build:
+      context: .
+    ports:
+      - 10.0.20.32:53:53
+      - 10.0.20.32:53:53/udp
+      #- 10.0.20.32:853:853
+        #dns over tls
+    volumes:
+      - ./log/ns1:/app/log
+    restart: unless-stopped
+    user: 1000:1000
+    command: ["-f"]
+    #command is appending to entrypoint in Dockerfile
+    #-f foreground. no syslog but logging will write to file
+    #-g send all stdout to console.
+      #logging will cease writing to file and also send to stdout
+      #useful for tshooting
+    #https://linux.die.net/man/8/named
+    #https://bind9.readthedocs.io/en/stable/manpages.html#named-internet-domain-name-server
+    deploy:
+      resources:
+        limits:
+          memory: 4g
+  ns2:
+    build:
+      context: .
+    #uses same image as ns1
+    ports:
+      - 10.0.20.32:53:53
+      - 10.0.20.32:53:53/udp
+      #- 10.0.20.32:853:853
+    volumes:
+      - ./log/ns2:/app/log
+    restart: unless-stopped
+    user: 1000:1000
+    command: ["-f"]
+    deploy:
+      resources:
+        limits:
+          memory: 4g

@@ -1,0 +1,93 @@
+services:
+  db:
+    #entrypoint: mysqld_safe --skip-grant-tables --user=mysql
+      #get access to db if locked out
+    image: docker.io/library/mariadb:$MARIA_TAG
+      #https://hub.docker.com/_/mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+        #https://mariadb.com/kb/en/mariadb-docker-environment-variables/
+      MARIADB_AUTO_UPGRADE: 1
+      MARIADB_INITDB_SKIP_TZINFO: 1
+    secrets:
+      - db_root_password
+    volumes:
+      - ./data:/var/lib/mysql
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 4g
+  server:
+    image: zabbix/zabbix-server-mysql:$ZABBIX_TAG
+      #https://hub.docker.com/r/zabbix/zabbix-server-mysql
+    depends_on:
+      - db
+    env_file:
+      - zabbix.env
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+      MYSQL_USER_FILE: /run/secrets/db_user
+      MYSQL_PASSWORD_FILE: /run/secrets/db_password
+        #https://hub.docker.com/r/zabbix/zabbix-server-mysql
+      #ZBX_SSO_SP_CERT: /run/secrets/tls_cert
+      #ZBX_SSO_IDP_CERT: /run/secrets/tls_cert
+      #ZBX_SSO_SP_KEY: /run/secrets/tls_key
+    secrets:
+      - db_root_password
+      - db_user
+      - db_password
+      #- tls_cert
+      #- tls_key
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 4g
+  agent:
+    image: zabbix/zabbix-agent2:$ZABBIX_TAG
+    #https://hub.docker.com/r/zabbix/zabbix-agent2
+    depends_on:
+      - server
+    user: root
+      #needed to reader docker.sock
+    env_file:
+      - zabbix.env
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 4g
+  www:
+    image: zabbix/zabbix-web-nginx-mysql:$ZABBIX_TAG
+    #https://hub.docker.com/r/zabbix/zabbix-web-nginx-mysql
+    depends_on:
+      - server
+    env_file:
+      - zabbix.env
+    environment:
+      MYSQL_USER_FILE: /run/secrets/db_user
+      MYSQL_PASSWORD_FILE: /run/secrets/db_password
+    secrets:
+      - db_user
+      - db_password
+    ports:
+      - 172.31.255.255:5020:8080
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 4g
+secrets:
+  db_root_password:
+    file: ./secrets/db_root_password.key
+  db_user:
+    file: ./secrets/db_user.key
+  db_password:
+    file: ./secrets/db_password.key
+  #tls_cert:
+    #file: ../rproxy/secrets/certs/live/ogrydziak.net-ecdsa/fullchain.pem
+  #tls_key:
+    #file: ../rproxy/secrets/certs/live/ogrydziak.net-ecdsa/privkey.pem

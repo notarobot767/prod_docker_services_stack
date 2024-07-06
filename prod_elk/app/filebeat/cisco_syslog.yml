@@ -1,0 +1,9 @@
+filebeat.inputs:
+- type: syslog
+  format: rfc3164
+  protocol.udp:
+    host: "0.0.0.0:514"
+  fields: {server: "OG Networks", service: "cisco-syslog"}
+
+output.logstash:
+  hosts: ["logstash:514"]

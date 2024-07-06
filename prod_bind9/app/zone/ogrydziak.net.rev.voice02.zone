@@ -1,0 +1,16 @@
+$TTL 1h
+@	              IN      SOA	    ns1.example.net. donotreply.example.net. (
+  20210107;         #Serial
+  1h;               #Refresh                #default value in minutes
+  120;              #Retry                  #default value in seconds
+  1h;               #Expire                 #default value in minutes
+  1h;               #Negative caching TTL   #default value in minutes
+)
+
+;name servers
+                IN      NS      ns1.ogrydziak.net.
+                IN      NS      ns2.ogrydziak.net.
+
+;ptr records
+1               IN      PTR     gateway.ogrydziak.net.
+10              IN      PTR     cucm01.ogrydziak.net.

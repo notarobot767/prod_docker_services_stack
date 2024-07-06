@@ -1,0 +1,20 @@
+version: "3"
+services:
+  files:
+    build:
+      context: .
+    environment:
+      TZ: US/Hawaii
+    volumes:
+      - ./data:/var/www/html:ro
+    deploy:
+      resources:
+        limits:
+          memory: 4g
+    restart: unless-stopped
+    networks:
+      - proxy_gateway
+networks:
+  proxy_gateway:
+    name: proxy_gateway
+    external: true

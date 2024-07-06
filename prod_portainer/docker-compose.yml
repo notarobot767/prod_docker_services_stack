@@ -1,0 +1,15 @@
+---
+services:
+  portainer:
+    image: portainer/portainer-ce:latest
+      #https://hub.docker.com/r/portainer/portainer-ce
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./data:/data
+    ports:
+      - 172.31.255.255:9000:9000
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 4g

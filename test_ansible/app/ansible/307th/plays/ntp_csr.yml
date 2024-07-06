@@ -1,0 +1,50 @@
+---
+- name: Apply NTP for CSR
+  hosts: cisco_routers
+  #hosts: xt2r
+  tasks:
+    - name: Disable NTP Control Mode
+      cisco.ios.ios_config:
+        lines:
+          - no ntp allow mode control 3
+
+    - name: Apply NTP Configuration
+      cisco.ios.ios_ntp_global:
+        config:
+           #access_group:
+            # peer:
+               #- access_list: NTP_PEER
+               #ipv4: true
+               #kod: true
+             #serve_only:
+               #- access_list: NTP_SERVE_ONLY
+           authenticate: true
+           authentication_keys:
+             - algorithm: md5
+               #id: 307
+               id: "{{ lookup('file', '/app/secrets/rccp_ntp_key_id.txt') }}"
+               encryption: 0
+               #key: pUbe6$AnRkuW^2a3
+               key: "{{ lookup('file', '/app/secrets/rccp_ntp.key') }}"
+           logging: true
+           orphan: 10
+           panic_update: true
+           servers:
+             - server: 150.149.1.20
+               key_id: "{{ lookup('file', '/app/secrets/rccp_ntp_key_id.txt') }}"
+               vrf: NIPR_ROUTER
+               #source: "{{ NTP_INTERFACE }}"
+               prefer: true
+             - server: 150.137.11.106
+               #key_id: 307
+               key_id: "{{ lookup('file', '/app/secrets/rccp_ntp_key_id.txt') }}"
+               vrf: NIPR_ROUTER
+               #source: "{{ NTP_INTERFACE }}"
+             - server: 141.190.11.60
+               #key_id: 307
+               key_id: "{{ lookup('file', '/app/secrets/rccp_ntp_key_id.txt') }}"
+               vrf: NIPR_ROUTER
+           source: "{{ NTP_INTERFACE }}"
+           trusted_keys:
+             - range_start: "{{ lookup('file', '/app/secrets/rccp_ntp_key_id.txt') }}"
+        state: replaced

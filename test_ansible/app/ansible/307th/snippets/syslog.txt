@@ -1,0 +1,73 @@
+#################
+# Remote Syslog #
+#################
+# enable routers/switches to send syslog to remote VSS
+# apply to XLESS T2R, XLESS Switch, NIPR Switch, SIPR T2R, SIPR Switches
+# verson 2024-03-20
+!
+#############
+# XLESS T2R #
+#############
+service timstamps log datetime localtime msec show-timezone year
+ip ssh logging events
+archive
+ log config
+ hidekeys
+ notify syslog
+ logging enable
+logging source-interface Loopback0
+logging host 10.107.112.20 session-id hostname sequence-num-session
+#logging source-interface Loopback7 vrf NIPR_ROUTER
+#logging host 155.28.42.21 vrf NIPR_ROUTER session-id hostname sequence-num-session
+!
+################
+# XLESS Switch #
+################
+service timestamps log datetime localtime msec show-timezone year
+ip ssh logging events
+archive
+ log config
+ hidekeys
+ notify syslog
+ logging enable
+logging source-interface vlan 222
+logging host 10.107.112.20 session-id hostname sequence-num-session
+!
+#################
+# NIPR Switches #
+#################
+service timestamps log datetime localtime msec show-timezone year
+ip ssh logging events
+archive
+ log config
+ hidekeys
+ notify syslog
+ logging enable
+logging source-interface vlan 222
+logging host 155.28.42.21 session-id hostname sequence-num-session
+!
+############
+# SIPR T2R #
+############
+service timestamps log datetime localtime msec show-timezone year
+ip ssh logging events
+archive
+ log config
+ hidekeys
+ notify syslog
+ logging enable
+logging source-interface Loopback0
+logging host 22.225.?.? session-id hostname sequence-num-session
+!
+#################
+# SIPR Switches #
+#################
+service timstaemps log datetime localtime msec show-timezone year
+ip ssh logging events
+archive
+ log config
+ hidekeys
+ notify syslog
+ logging enable
+logging source-interface vlan 222
+logging host 22.225.?.? session-id hostname sequence-num-session

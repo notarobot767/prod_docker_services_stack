@@ -1,0 +1,49 @@
+---
+version: "3"
+services:
+  #rocket database
+  #run once to initiate database
+  #docker exec -it rocket_chat-db-1 mongosh --eval "printjson(rs.initiate())"
+  db:
+    image: mongo:$MONGO_TAG
+    restart: unless-stopped
+    command: ["--oplogSize", "128", "--replSet", "rs0"]
+    volumes:
+      - ./data:/data/db
+    deploy:
+      resources:
+        limits:
+          memory: 4g
+    networks:
+      - rocket
+  #rocketchat webapp service
+  rocket_chat:
+    depends_on:
+      - db
+    image: rocketchat/rocket.chat:$ROCKET_TAG
+      #https://github.com/RocketChat/Rocket.Chat/releases
+    restart: unless-stopped
+    env_file:
+      - ./secret/rocket.env
+        #for initial setup to avoid setup wizard
+        #- OVERWRITE_SETTING_Show_Setup_Wizard=completed
+        #- ADMIN_USERNAME=root
+        #- ADMIN_PASS=toor
+    environment:
+      PORT: 80
+      ROOT_URL: https://rocket.ogrydziak.net
+      MONGO_OPLOG_URL: mongodb://db:27017/local
+      MONGO_URL: mongodb://db:27017/rocketchat
+    deploy:
+      resources:
+        limits:
+          memory: 4g
+    networks:
+      - proxy_gateway
+      - rocket
+networks:
+  rocket:
+    name: rocket
+  proxy_gateway:
+    name: proxy_gateway
+    external: true

@@ -1,0 +1,26 @@
+---
+- name: 307th NETOPS Baseline
+  hosts: cisco_routers
+  tasks:
+    - name: Apply Login Banner
+      cisco.ios.ios_banner:
+        banner: motd
+        text: "{{ lookup('file', '/app/banner/dod.txt') }}"
+        state: present
+
+    - name: Enable/Disable Services
+      cisco.ios.ios_service:
+        config:
+          call_home: false
+          config: false
+          exec_callback: false
+          nagle: true
+          pad: false
+          tcp_keepalives_in: true
+          tcp_keepalives_out: true
+          password_encryption: true
+
+    - name: Disable NTP Control Mode
+      cisco.ios.ios_config:
+        lines:
+          - no ip domain lookup

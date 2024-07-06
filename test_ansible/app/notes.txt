@@ -1,0 +1,9 @@
+# list connection types
+ansible-doc -t connection -l
+
+# list of network os
+ansible_connection: NETWORK
+https://docs.ansible.com/ansible/latest/network/user_guide/platform_index.html
+
+# basic ping
+ansible -m ping HOSTS
