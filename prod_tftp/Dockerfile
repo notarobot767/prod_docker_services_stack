@@ -4,7 +4,7 @@ ENV TZ="Etc/UTC"
 #set timezone variable
 #https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 
-ADD http://mirror.ogrydziak.net/ubuntu-24.04.sources /etc/apt/sources.list.d/ubuntu.sources
+#ADD http://mirror.ogrydziak.net/ubuntu-24.04.sources /etc/apt/sources.list.d/ubuntu.sources
 # add local mirror faster package downloads
 
 COPY ./app/init.sh /etc/init.sh
