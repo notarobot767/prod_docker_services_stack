@@ -1,4 +1,4 @@
-FROM nginx:1.25
+FROM nginx:1.26
 #https://hub.docker.com/_/nginx
 
 RUN rm -rf /usr/share/nginx/html/*
