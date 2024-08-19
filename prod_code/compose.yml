@@ -1,7 +1,7 @@
 ---
 services:
   code:
-    image: ghcr.io/linuxserver/code-server:4.90.3
+    image: ghcr.io/linuxserver/code-server:latest
       #https://hub.docker.com/r/linuxserver/code-server
     environment:
       TZ: US/Hawaii
@@ -14,7 +14,7 @@ services:
       #dir for persistent settings
       - ./data:/config
       #dirs to map into vscode
-      - /disk2/docker:/app/docker
+      - /app/docker:/app/docker
       - /nfs/gdrive:/app/gdrive
       - /nfs/media:/app/media
       - /home/crashdummy:/app/crashdummy
