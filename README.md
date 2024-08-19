@@ -1,26 +1,44 @@
 # OG Networks Production Service Stack
 This stack of services is used in my homelab and configured specifically to fit my needs. Feel free to use it change it for your own purposes. Each app is contained in its own folder with its own localized docker-compose.yml file. The purpose of this design decision is to grant modularity. Previous commits had a single docker file and separate files for each service. This proved to be overly complex as docker compose is not built in way at the time for scaling many apps in singe compose stack in my opinion. The apps include:
 
+## Authentik
+[Authentik](https://goauthentik.io/)
+is an open-source Identity Provider focused on flexibility and versatility. Add
+[authentication](https://goauthentik.io/#comparison)
+to any webapp and have Authentik act as a SAML, OIDC, SCIM, LDAP, or RADIUS identity provider. Web apps without or limited authentication can also authenticate with a forward proxy such as NGINX using the
+[auth_request](http://nginx.org/en/docs/http/ngx_http_auth_request_module.html)
+module to reach Authentik.
+
+[Reference Manual](https://goauthentik.io/docs/)
+
+dir: [authentik](prod_authentik)
+
 ## BIND9 DNS Server
 The Berkeley Internet Name Domain (BIND 9) implements an Internet domain name server. BIND 9 is the most widely-used name server software on the Internet, and is supported by the Internet Software Consortium, www.isc.org.
 
 [Reference Manual](https://bind9.readthedocs.io/en/stable/index.html)
 
-dir: [bind9](bind9)
+dir: [bind9](prod_bind9)
 
 ## Chrony NTP Server
 Chrony is an implementation of the Network Time Protocol (NTP). It's an alternative to ntpd, which is a reference implementation of NTP. It runs on Unix-like operating systems (including Linux and macOS) and is released under the GNU GPL v2. It's the default NTP client and server in Red Hat Enterprise Linux 8 and SUSE Linux Enterprise Server 15, and available in many Linux distributions.
 
 [Reference Manual](https://chrony-project.org/documentation.html)
 
-dir: [chrony](chrony)
+dir: [chrony](prod_chrony)
 
 ## Visual Studio Code Server
 Visual Studio Code is a streamlined code editor with support for development operations like debugging, task running, and version control. It aims to provide just the tools a developer needs for a quick code-build-debug cycle and leaves more complex workflows to fuller featured IDEs. Code-server is VS Code running on a remote server, accessible through the browser.
 
 [Docker Image](https://hub.docker.com/r/linuxserver/code-server)
 
-dir: [code_server](code_server)
+dir: [code_server](prod_code)
+
+## Deb Mirror
+[deb-mirror](https://linux.die.net/man/1/debmirror)
+is a small tool that provides ability to mirror any parts (or even all) of Debian and Ubuntu GNU/Linux distributions or any other apt sources which typically provided by open source developers. This is useful for local update server in a closed or limited environment.
+
+dir [deb-mirror](prod_mirror)
 
 ## qBittorrent
 The [qBittorrent project](https://www.qbittorrent.org/)
@@ -28,7 +46,7 @@ aims to provide an open-source software alternative to µTorrent. qBittorrent is
 
 [Docker Image](https://hub.docker.com/r/linuxserver/qbittorrent)
 
-dir: [download](download)
+dir: [qbittorrent](prod_qbittorrent)
 
 ## Elasticsearch Logstash Kibana (ELK) Stack
 The [Elastic Stack](https://www.elastic.co/guide/index.html)
@@ -40,14 +58,14 @@ Guides:
 [Kibana](https://www.elastic.co/guide/en/kibana/current/index.html)
 [Beats](https://www.elastic.co/guide/en/beats/libbeat/current/getting-started.html)
 
-dir: [elk](elk)
+dir: [elk](prod_elk)
 
 ## Endless SSH (endlessh)
 Endlessh is an SSH tarpit that very slowly sends an endless, random SSH banner. It keeps SSH clients locked up for hours or even days at a time. The purpose is to put your real SSH server on another port and then let the script kiddies get stuck in this tarpit instead of bothering a real server.
 
 [Docker Image](https://hub.docker.com/r/linuxserver/endlessh)
 
-dir: [endlessh](endlessh)
+dir: [endlessh](prod_endlessh)
 
 ## Guacamole RDP/SSH Server
 [Apache Guacamole](https://guacamole.apache.org/)
@@ -58,7 +76,7 @@ Docker Images:
 [guacd](https://hub.docker.com/r/guacamole/guacd)
 [guacamole](https://hub.docker.com/r/guacamole/guacamole)
 
-dir: [guac](guac)
+dir: [guac](prod_guac)
 
 ## Plex and Tautulli
 [Plex](https://www.plex.tv/about/)
@@ -70,7 +88,7 @@ Docker Images:
 [Plex](https://hub.docker.com/r/linuxserver/plex)
 [Tautulli](https://hub.docker.com/r/linuxserver/tautulli)
 
-dir: [plex](plex)
+dir: [plex](prod_plex)
 
 ## Portainer CE
 [Portainer](https://www.portainer.io/why-portainer)
@@ -78,7 +96,7 @@ is a web GUI approach to containers. It accelerates container adoption. It reduc
 
 [Docker Image](https://hub.docker.com/r/portainer/portainer-ce)
 
-dir: [portainer](portainer)
+dir: [portainer](prod_portainer)
 
 ## RocketChat
 [Rocket.Chat](https://docs.rocket.chat/)
@@ -88,20 +106,20 @@ Docker Images:
 [Mongodb](https://hub.docker.com/_/mongo)
 [RocketChat](https://github.com/RocketChat/Rocket.Chat/releases)
 
-dir: [rocket](rocket)
+dir: [rocket](test_rocket_chat)
 
 ## NGINX WWW Server
 Nginx (pronounced "engine-x") is an open source reverse proxy server for HTTP, HTTPS, SMTP, POP3, and IMAP protocols, as well as a load balancer, HTTP cache, and a web server (origin server). The nginx project started with a strong focus on high concurrency, high performance and low memory usage. It is licensed under the 2-clause BSD-like license and it runs on Linux, BSD variants, Mac OS X, Solaris, AIX, HP-UX, as well as on other *nix flavors. It also has a proof of concept port for Microsoft Windows.
 
 [Docker Image](https://hub.docker.com/_/nginx)
 
-dir: [www](www)
+dir: [www](prod_www)
 
 ## NGINX HTTP File Server
 The [Fancy Index module](https://www.nginx.com/resources/wiki/modules/fancy_index/)
 makes possible the generation of file listings, like the built-in autoindex module does, but adding a touch of style. This a better looking autoindex view with more features such as interactive sorting and listing file size in a human readable size.
 
-dir: [files](download)
+dir: [files](test_files)
 
 ## Zabbix Nework Monitoring
 [Zabbix](https://www.zabbix.com/documentation/current/en/manual/introduction/about)
@@ -109,22 +127,4 @@ is a software that monitors numerous parameters of a network and the health and 
 
 [Docker Images](https://www.zabbix.com/container_images)
 
-dir: [zabbix](zabbix)
-
-## APT Mirror
-[apt-mirror](https://apt-mirror.github.io/)
-is a small tool that provides ability to mirror any parts (or even all) of Debian and Ubuntu GNU/Linux distributions or any other apt sources which typically provided by open source developers. This is useful for local update server in a closed or limited environment.
-
-dir [apt-mirror](apt-mirror)
-
-## Authentik
-[Authentik](https://goauthentik.io/)
-is an open-source Identity Provider focused on flexibility and versatility. Add
-[authentication](https://goauthentik.io/#comparison)
-to any webapp and have Authentik act as a SAML, OIDC, SCIM, LDAP, or RADIUS identity provider. Web apps without or limited authentication can also authenticate with a forward proxy such as NGINX using the
-[auth_request](http://nginx.org/en/docs/http/ngx_http_auth_request_module.html)
-module to reach Authentik.
-
-[Reference Manual](https://goauthentik.io/docs/)
-
-dir: [authentik](authentik)
+dir: [zabbix](prod_zabbix)
