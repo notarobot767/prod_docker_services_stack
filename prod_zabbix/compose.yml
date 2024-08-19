@@ -33,6 +33,8 @@ services:
       #ZBX_SSO_SP_CERT: /run/secrets/tls_cert
       #ZBX_SSO_IDP_CERT: /run/secrets/tls_cert
       #ZBX_SSO_SP_KEY: /run/secrets/tls_key
+    ports:
+      - 10.0.20.30:10051:10051
     secrets:
       - db_root_password
       - db_user
