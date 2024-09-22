@@ -25,7 +25,7 @@ services:
     environment:
       TZ: US/Hawaii
     volumes:
-      - ./data:/srv/tftp
+      - ../_files:/srv/tftp
       - ./logs:/var/log
     deploy:
       resources:
