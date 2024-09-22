@@ -1,0 +1,22 @@
+---
+services:
+  files:
+    build:
+      context: .
+    #command: [""]
+    # inject additional commands here if needed
+    # http://nginx.org/en/docs/switches.html
+    environment:
+      TZ: US/Hawaii
+    ports:
+      - 172.31.255.255:5035:80
+      - 10.0.20.30:8080:80
+    volumes:
+      #- ./data:/var/www/html:ro
+      - ../_files:/var/www/html:ro
+      # use folder that tftp also points to
+    deploy:
+      resources:
+        limits:
+          memory: 4g
+    restart: unless-stopped
