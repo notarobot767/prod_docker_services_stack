@@ -41,6 +41,12 @@ services:
       - db
     image: guacamole/guacamole:$GUAC_TAG
       #https://hub.docker.com/r/guacamole/guacamole
+    env_file:
+      - ./secrets/guac.env
+      # used authentik to enable oauth/openid
+      # authentik guide below
+      # https://docs.goauthentik.io/integrations/services/apache-guacamole/
+      # guac.env expecting OPENID_CLIENT_ID
     environment:
       GUACD_HOSTNAME: guacd
       MYSQL_USER_FILE: /run/secrets/db_user
@@ -48,14 +54,15 @@ services:
       MYSQL_DATABASE: guac
       MYSQL_HOSTNAME: db
       MYSQL_AUTO_CREATE_ACCOUNTS: true
-        #important for oauth accounts
+
+      # if using openid, set the vars below or comment out
       OPENID_AUTHORIZATION_ENDPOINT: https://authentik.ogrydziak.net/application/o/authorize/
-      OPENID_CLIENT_ID: 2fCV0na7X7mwzBp0otSoPZQYseVrCX7MACGfAtyc
+      #OPENID_CLIENT_ID: # put in secrets/guac.env file
       OPENID_ISSUER: https://authentik.ogrydziak.net/application/o/guacamole/
       OPENID_JWKS_ENDPOINT: http://172.31.255.255:5015/application/o/guacamole/jwks/
-        # OPENID_JWKS_ENDPOINT: https://authentik.ogrydziak.net/application/o/guacamole/jwks/
-        # having this endpoint go directly to the authentik backend fixed the infinite loop
-      OPENID_REDIRECT_URI: https://guac.ogrydziak.net/guacmole/
+          # OPENID_JWKS_ENDPOINT: https://authentik.ogrydziak.net/application/o/guacamole/jwks/
+          # having this endpoint go directly to the docker authentik backend fixed the infinite loop
+      OPENID_REDIRECT_URI: https://guac.ogrydziak.net/guacamole/
     ports:
       - 172.31.255.255:5030:8080
     secrets:
@@ -68,8 +75,8 @@ services:
           memory: 4g
 secrets:
   db_root_password:
-    file: ./secrets/db_root_password.txt
+    file: ./secrets/db_root_password.key
   db_user:
     file: ./secrets/db_user.txt
   db_password:
-    file: ./secrets/db_password.txt
+    file: ./secrets/db_password.key
