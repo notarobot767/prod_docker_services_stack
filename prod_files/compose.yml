@@ -10,7 +10,6 @@ services:
       TZ: US/Hawaii
     ports:
       - 172.31.255.255:5035:80
-      - 10.0.20.30:8080:80
     volumes:
       #- ./data:/var/www/html:ro
       - ../_files:/var/www/html:ro
