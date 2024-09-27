@@ -1,5 +1,11 @@
+---
 services:
   rproxy:
+    command: ["-g", "daemon off;"]
+    # inject additional commands here if needed
+    # http://nginx.org/en/docs/switches.html
+    environment:
+      TZ: US/Hawaii
     hostname: rproxy
     build:
       context: .
@@ -39,31 +45,22 @@ services:
       "-d", "ogrydziak.com,www.ogrydziak.com",
       "-d", "ogrydziak.org,www.ogrydziak.org",
       "-d", "ogrydziak.ninja,www.ogrydziak.ninja",
-      "-d", "plex.ogrydziak.net,plexstats.ogrydziak.net",
-      "-d", "pma.ogrydziak.net",
-      "-d", "portainer.ogrydziak.net",
-      "-d", "download.ogrydziak.net",
-      "-d", "files.ogrydziak.net",
-      "-d", "code.ogrydziak.net",
-      "-d", "guac.ogrydziak.net",
-      "-d", "rocket.ogrydziak.net",
-      "-d", "meet.ogrydziak.net",
-      "-d", "zabbix.ogrydziak.net",
-      "-d", "eve.ogrydziak.net",
-      "-d", "wireshark.ogrydziak.net",
-      "-d", "kibana.ogrydziak.net",
-      "-d", "apt-mirror.ogrydziak.net",
-      "-d", "keycloak.ogrydziak.net",
       "-d", "authentik.ogrydziak.net",
-      "-d", "netbox.ogrydziak.net",
-      "-d", "nessus.ogrydziak.net",
-      "-d", "pihole.ogrydziak.net",
+      "-d", "code.ogrydziak.net",
+      "-d", "download.ogrydziak.net",
+      "-d", "eve.ogrydziak.net",
+      "-d", "files.ogrydziak.net",
+      "-d", "guac.ogrydziak.net",
+      "-d", "kibana.ogrydziak.net",
       "-d", "meet.ogrydziak.net",
-      "-d", "www.unifi.ogrydziak.net",
-      "-d", "www.cms.ogrydziak.net",
-      "-d", "www.cmm.ogrydziak.net",
-      "-d", "www.cucm.ogrydziak.net",
-      "-d", "www.esxi.ogrydziak.net",
-      "-d", "www.opnsense.ogrydziak.net"
+      "-d", "mirror.ogrydziak.net",
+      "-d", "nessus.ogrydziak.net",
+      "-d", "netbox.ogrydziak.net",
+      "-d", "opnsense.ogrydziak.net",
+      "-d", "plex.ogrydziak.net,plexstats.ogrydziak.net",
+      "-d", "portainer.ogrydziak.net",
+      "-d", "pve.ogrydziak.net",
+      "-d", "unifi.ogrydziak.net",
+      "-d", "zabbix.ogrydziak.net"
+      #"--dry-run"
     ]
-    #"--dry-run"
