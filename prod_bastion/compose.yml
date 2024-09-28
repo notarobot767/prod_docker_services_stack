@@ -1,0 +1,19 @@
+---
+services:
+  bastion:
+  # chrome browser meant us remote jump server to access
+  # internal web GUIs
+    image: lscr.io/linuxserver/chromium:latest
+    security_opt:
+      - seccomp:unconfined #optional
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - CHROME_CLI=https://duckduckgo.com/ #optional
+    volumes:
+      - ./data:/config
+    ports:
+      - 172.31.255.255:5040:3000
+    shm_size: "4gb"
+    restart: unless-stopped
