@@ -1,0 +1,24 @@
+---
+services:
+  iperf3:
+    build:
+      context: .
+    command: [
+      "--server",
+      "--version4",
+      "--logfile", "/logs/iperf3.log"
+    ]
+    volumes:
+      - ./logs:/logs
+    # inject additional commands here if needed
+    # https://iperf.fr/iperf-doc.php#3doc
+    environment:
+      TZ: US/Hawaii
+    ports:
+      - 10.0.20.30:5201:5201
+      - 10.0.20.30:5201:5201/udp
+    deploy:
+      resources:
+        limits:
+          memory: 4g
+    restart: unless-stopped
