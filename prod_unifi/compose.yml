@@ -1,0 +1,53 @@
+---
+services:
+# https://github.com/linuxserver/docker-unifi-network-application
+  unifi-db:
+    image: docker.io/mongo:7
+    container_name: unifi-db
+    env_file:
+      - ./secrets/db_user_password.env
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+      MONGO_USER: unifi
+      MONGO_DBNAME: unifi
+      MONGO_AUTHSOURCE: admin
+    volumes:
+      - ./data/db:/data/db
+      - ./init-mongo.sh:/docker-entrypoint-initdb.d/init-mongo.sh:ro
+    restart: unless-stopped
+    secrets:
+      - db_root_password
+  unifi-network-application:
+    image: lscr.io/linuxserver/unifi-network-application:latest
+    container_name: unifi-network-application
+    env_file:
+      - ./secrets/db_user_password.env
+    environment:
+      PUID: 1000
+      PGID: 1000
+      TZ: US/Hawaii
+      MONGO_USER: unifi
+      MONGO_HOST: unifi-db
+      MONGO_PORT: 27017
+      MONGO_DBNAME: unifi
+      MONGO_AUTHSOURCE: admin
+      #- MEM_LIMIT=1024 #optional
+      #- MEM_STARTUP=1024 #optional
+      #- MONGO_TLS= #optional
+    volumes:
+      - ./data/unifi:/config
+    ports:
+      - 10.0.21.10:8443:8443
+      - 10.0.21.10:3478:3478/udp
+      - 10.0.21.10:10001:10001/udp
+      - 10.0.21.10:8080:8080
+      - 10.0.21.10:1900:1900/udp #optional
+      - 10.0.21.10:8843:8843 #optional
+      - 10.0.21.10:8880:8880 #optional
+      - 10.0.21.10:6789:6789 #optional
+      - 10.0.21.10:5514:5514/udp #optional
+    restart: unless-stopped
+secrets:
+  db_root_password:
+    file: ./secrets/db_root_password.key
