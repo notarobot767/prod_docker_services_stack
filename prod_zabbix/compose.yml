@@ -23,9 +23,9 @@ services:
       #https://hub.docker.com/r/zabbix/zabbix-server-mysql
     depends_on:
       - db
-    env_file:
-      - zabbix.env
     environment:
+      ZBX_HOSTNAME: server
+      DB_SERVER_HOST: db
       MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
       MYSQL_USER_FILE: /run/secrets/db_user
       MYSQL_PASSWORD_FILE: /run/secrets/db_password
@@ -33,6 +33,7 @@ services:
       #ZBX_SSO_SP_CERT: /run/secrets/tls_cert
       #ZBX_SSO_IDP_CERT: /run/secrets/tls_cert
       #ZBX_SSO_SP_KEY: /run/secrets/tls_key
+      #ZBX_SSO_SETTINGS: {"strict":false, "baseurl":"https://zabbix.ogrydziak.net/zabbix/", "use_proxy_headers":true}
     ports:
       - 10.0.20.30:10051:10051
     secrets:
@@ -53,8 +54,8 @@ services:
       - server
     user: root
       #needed to reader docker.sock
-    env_file:
-      - zabbix.env
+    environment:
+      ZBX_SERVER_HOST: server
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     restart: unless-stopped
@@ -67,9 +68,14 @@ services:
     #https://hub.docker.com/r/zabbix/zabbix-web-nginx-mysql
     depends_on:
       - server
-    env_file:
-      - zabbix.env
+    volumes:
+      #- ./secrets/certs:/usr/share/zabbix/conf/certs:ro
+      - ./secrets/certs:/etc/zabbix/web/certs:ro
     environment:
+      ZBX_SERVER_NAME: OG_Networks
+      ZBX_SERVER_HOST: server
+      PHP_TZ: US/Hawaii
+      DB_SERVER_HOST: db
       MYSQL_USER_FILE: /run/secrets/db_user
       MYSQL_PASSWORD_FILE: /run/secrets/db_password
     secrets:
