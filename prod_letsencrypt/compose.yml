@@ -20,7 +20,7 @@ services:
       "--agree-tos",
       "--debug-challenges",
       "-m", "nrogrydziak@gmail.com",
-      "--cert-name", "ogrydziak.net-ecdsa",
+      "--cert-name", "ogrydziak.net-ecdsa-legacy",
       "-d", "ogrydziak.net,www.ogrydziak.net",
       "-d", "ogrydziak.com,www.ogrydziak.com",
       "-d", "ogrydziak.org,www.ogrydziak.org",
@@ -41,8 +41,8 @@ services:
       "-d", "portainer.ogrydziak.net",
       "-d", "pve.ogrydziak.net",
       "-d", "unifi.ogrydziak.net",
-      "-d", "zabbix.ogrydziak.net"
-      #"--dry-run"
+      "-d", "zabbix.ogrydziak.net",
+      "--dry-run"
     ]
   letsencrypt_dns:
     image: certbot/dns-cloudflare
@@ -71,6 +71,6 @@ services:
     command: [
       "-vn",
       "renew",
-      "--cert-name", "ogrydziak.net-ecdsa",
-      "--dry-run"
+      "--cert-name", "ogrydziak.net-ecdsa"
     ]
+    # "--dry-run"
