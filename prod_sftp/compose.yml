@@ -1,0 +1,22 @@
+---
+services:
+  sftp:
+    command: ["-D", "-e"]
+    # https://linux.die.net/man/8/sshd
+    build:
+      context: .
+    ports:
+      - 10.0.20.30:22:22
+    environment:
+      TZ: US/Hawaii
+    env_file:
+      - ./secrets/sftp.env
+      # DEV_USER=user
+      # DEV_PASSWORD=password
+    #volumes:
+      #- ./data/sftp:/app/sftp
+      #- ../_files/tftp-backup:/app/sftp
+    deploy:
+      resources:
+        limits:
+          memory: 2g
