@@ -1,0 +1,10 @@
+#docker run cloudflare/cloudflared:latest tunnel --no-autoupdate run --token eyJhIjoiNWUzNmI5NTcxNDdiMzYwZDRiNzdhZWI5NGZkZDNmZjEiLCJ0IjoiMzBlMTg0NTgtZjMzMS00ZTc3LWFlNzgtYjJiOTBjYmVmOGI1IiwicyI6Ik5HWXpNMk0zT0RVdE1UazRNQzAwTm1abUxUbG1NV0l0WlRFMk1UTmlOREE1Wm1OaCJ9
+
+---
+services:
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    command: tunnel run
+    env_file:
+      - ./secrets/cloudflared.env
+    restart: unless-stopped
