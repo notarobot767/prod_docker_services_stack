@@ -20,9 +20,13 @@ cd ../prod_qbittorrent
 docker compose pull; docker compose up -d
 
 # update zabbix
-cd ../prod_zabbix
-docker compose pull; docker compose up -d
+#cd ../prod_zabbix
+#docker compose pull; docker compose up -d
 
 # update authentik
 cd ../prod_authentik
+docker compose pull; docker compose up -d
+
+# update cloudflared tunnel
+cd ../prod_cloudflared
 docker compose pull; docker compose up -d
