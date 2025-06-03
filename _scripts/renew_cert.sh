@@ -5,7 +5,7 @@ cd "$(dirname "$0")" || exit 1
 
 cd ../prod_letsencrypt
 docker compose pull
-docker compose up -d renew
+docker compose up renew
 
 cd ../prod_proxy
 docker compose restart rproxy
